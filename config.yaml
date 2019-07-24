@@ -1,0 +1,5 @@
+metaT_accession: SH409
+inputDIR: /vortexfs1/omics/alexander/data/WAP
+outputDIR: /vortexfs1/omics/alexander/data/WAP/snakemake-output
+scratch: /vortexfs1/scratch/akrinos/wap
+
