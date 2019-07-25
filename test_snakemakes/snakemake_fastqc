@@ -1,5 +1,19 @@
+configfile: "../config.yaml"
 
+import io
+import os
+import pathlib
+from snakemake.exceptions import print_exception, WorkflowError
 
 rule fastqc:
 	input:
-		"reads/
+		"../testdata/{sample}.fastq"
+	output:
+		html = "qc/fastqc/{sample}.html",
+		zip = "qc/fastqc/{sample}.zip"
+	params: ""
+	log:
+		"logs/fastqc/{sample}.log"
+	wrapper:
+		"0.36.0/bio/fastqc"
+	
