@@ -1,0 +1,5 @@
+
+
+rule fastqc:
+	input:
+		"reads/

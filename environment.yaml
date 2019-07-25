@@ -8,3 +8,4 @@ dependencies:
         - networkx = 2.1
         - matplotlib 
         - graphviz = 2.38.0
+        - fastqc = 0.11.8
