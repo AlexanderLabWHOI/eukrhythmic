@@ -1,0 +1,3 @@
+WorkflowError in line 1 of /vortexfs1/home/akrinos/Summer2019/testsequences_9July19_sourmash/Snakefile:
+Config file config.yaml not found.
+  File "/vortexfs1/home/akrinos/Summer2019/testsequences_9July19_sourmash/Snakefile", line 1, in <module>
