@@ -1,0 +1,20 @@
+configfile: "../config.yaml"
+
+import io
+from snakemake.exceptions import print_exception, WorkflowError
+
+rule trinity:
+	input:
+		left = "firsttrim/{sample}_1.trimmed.fastq.gz",
+		right = "firsttrim/{sample}_2.trimmed.fastq.gz"
+	output:	
+		"trinity_results/Trinity.fasta"
+	log:
+		"logs/trinity/outputlog_trinity.log"
+	params:
+		extra = ""
+	threads: 4
+	wrapper:	
+		"0.36.0/bio/trinity"
+
+

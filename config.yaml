@@ -1,5 +1,8 @@
-metaT_accession: SH409
-inputDIR: /vortexfs1/omics/alexander/data/WAP
-outputDIR: /vortexfs1/omics/alexander/data/WAP/snakemake-output
+metaT_sample: /input/pipelineinput/smallscale_notes.txt
+inputDIR1: /vortexfs1/omics/alexander/data/WAP
+inputDIR2: /vortexfs1/omics/alexander/data/WAP.150616_SONYA_HARRIET_31_MARINEAL_RNA_TRUSEQ_60M_PE100_NORMAL/
+outputDIR: /vortexfs1/omics/alexander/data/WAP/arianna-snakemake-output
 scratch: /vortexfs1/scratch/akrinos/wap
+
+
 
