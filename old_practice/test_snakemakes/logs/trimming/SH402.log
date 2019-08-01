@@ -1,0 +1,5 @@
+TrimmomaticPE: Started with arguments:
+ -threads 1 ../testdata/gzips/SH402_R1.test.fastq.gz ../testdata/gzips/SH402_R2.test.fastq.gz firsttrim/SH402_1.trimmed.fastq.gz firsttrim/SH4021.unpaired.fastq.gz firsttrim/SH402_2.trimmed.fastq.gz firsttrim/SH4022.unpaired.fastq.gz TRAILING:3
+Quality encoding detected as phred33
+Input Read Pairs: 25000 Both Surviving: 24434 (97.74%) Forward Only Surviving: 287 (1.15%) Reverse Only Surviving: 202 (0.81%) Dropped: 77 (0.31%)
+TrimmomaticPE: Completed successfully
