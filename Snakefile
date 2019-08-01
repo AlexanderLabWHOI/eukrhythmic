@@ -16,7 +16,7 @@ OUTPUTDIR = config["outputDIR"]
 SCRATCHDIR = config["scratch"]
 INPUTFILES = [f for f in os.listdir(INPUTDIR1) if isfile(join(INPUTDIR1, f))] + [f for f in os.listdir(INPUTDIR2) if isfile(join(INPUTDIR2, f))];
 
-columbiasamplenames = list(pd.read_table(DATAFILE).ColumbiaID);
+columbiasamplenames = list(pd.read_csv(DATAFILE, sep = "\t").ColumbiaID);
 
 sample_barcodes = dict();
 sample_codes = dict();
@@ -31,7 +31,15 @@ def get_base_names():
 			sample_codes[split_i[0]] = split_i[2]
 
 get_base_names()
-print(sample_barcodes.values())
+#print(sample_barcodes.values())
+
+filenames = []
+name1 = list(sample_barcodes.keys())
+name2 = list(sample_barcodes.values())
+name3 = list(sample_codes.values())
+
+for i in range(0, len(name1)-1):
+	filenames.append(str(name1[i]) + "_" + str(name2[i]) + "_" + str(name3[i]))
 
 include: "modules/fastqc-snake"
 include: "modules/trimmomatic-snake"
@@ -40,5 +48,5 @@ include: "modules/trinity-snake"
 rule all:
 	input:
 		# TRIMMOMATIC OUTPUTS
-		trimmed = expand("{base}/firstrim/{columbia}_{barcode}_{code}_{num}.trimmed.fastq.gz", base = OUTPUTDIR, columbia = sample_barcodes.keys(), barcode = sample_barcodes.values(), code = sample_codes.values(), num = [1,2])
+		trimmed = expand("{base}/firstrim/{file}_{num}.trimmed.fastq.gz", base = OUTPUTDIR, file = filenames, num = [1,2])
  
