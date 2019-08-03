@@ -1,4 +1,4 @@
-ColumbiaID	SampleName	Treatment
+SampleID	SampleName	Treatment
 SH401	S1	N
 SH402	S2	N
 SH404	S4	N

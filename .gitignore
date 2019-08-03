@@ -4,4 +4,7 @@
 */.snakemake
 */log
 */firsttrim
-
+*/.snakemake/*
+.snakemake
+.snakemake/*
+.snakemake/

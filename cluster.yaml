@@ -1,0 +1,21 @@
+__default__:
+    system: `slurm'
+    account: akrinos
+    time: 60 # in minutes
+    mem: 10 # in GB
+    threads: 6
+    queue: compute
+    nodes: 1
+    command_options:
+        slurm:
+            command: "sbatch --parsable --qos=unlim"
+            key_mapping:
+            name: "--job-name={}"
+            threads: "-n {}"
+            mem: "--mem={}g"
+            account: "--account={}"
+            queue: "--partition={}"
+            time: "--time={}"
+            nodes: "-N {}"  # number of tasks
+
+
