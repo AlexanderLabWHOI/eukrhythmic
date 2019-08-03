@@ -1,0 +1,4 @@
+Building DAG of jobs...
+MissingInputException in line 20 of /vortexfs1/home/akrinos/Summer2019/testsequences_9July19_sourmash/Snakefile:
+Missing input files for rule compare_signatures:
+*.sig
