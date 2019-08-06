@@ -25,7 +25,7 @@ sample_codes = dict();
 def get_base_names():
     for i in INPUTFILES:
         split_i = i.split("_")
-        if split_i[0] in samplenames:
+        if (split_i[0] in samplenames) & (split_i[0] != "SH265"):
             sample_barcodes[split_i[0]] = split_i[1]
             sample_codes[split_i[0]] = split_i[2]
 
@@ -42,16 +42,17 @@ for i in range(0, len(name1)-1):
 
 include: "modules/fastqc-snake"
 include: "modules/trimmomatic-snake"
+include: "modules/fastqc-trimmed-snake"
 include: "modules/trinity-snake"
 
 rule all:
     input:
         # FASTQC OUTPUTS
-        fastqc1 = expand("{base}/qc/fastqc/{file}.{ext}", base = OUTPUTDIR, file = filenames, ext = ["zip", "html"])
+        fastqc1 = expand("{base}/qc/fastqc/{file}.{ext}", base = OUTPUTDIR, file = filenames, ext = ["zip", "html"]),
         # TRIMMOMATIC OUTPUTS
-        trimmed = expand("{base}/firsttrim/{file}_{num}.trimmed.fastq.gz", base = OUTPUTDIR, file = filenames, num = [1,2])
+        trimmed = expand("{base}/firsttrim/{file}_{num}.trimmed.fastq.gz", base = OUTPUTDIR, file = filenames, num = [1,2]),
         # FASTQC 2 OUTPUTS (trimmed)
-        fastqc2 = expand("{base}/qc/fastqc/{file}_{num}.trimmed.{ext}", base = OUTPUTDIR, file = filenames, num = [1,2], ext = ["zip", "html"])
+        fastqc2 = expand("{base}/qc/fastqc_trimmed/{file}_{num}.trimmed.{ext}", base = OUTPUTDIR, file = filenames, num = [1,2], ext = ["zip", "html"]),
         # TRINITY OUTPUTS
         trinity = expand("{base}/trinity_results/Trinity_{file}.fasta", base = OUTPUTDIR, file = filenames)
 

@@ -9,12 +9,12 @@ import os
 import pathlib
 from snakemake.exceptions import print_exception, WorkflowError
 
-rule fastqc:
+rule fastqc_trimmed:
 	input:
-		INPUTDIR + "{sample}.trimmed.fastq"
+		OUTPUTDIR + "/firsttrim/{sample}.trimmed.fastq.gz"
 	output:
-		html = OUTPUTDIR + "/qc/fastqc/{sample}.trimmed.html",
-		zip = OUTPUTDIR + "/qc/fastqc/{sample}.trimmed.zip"
+		html = OUTPUTDIR + "/qc/fastqc_trimmed/{sample}.trimmed.html",
+		zip = OUTPUTDIR + "/qc/fastqc_trimmed/{sample}.trimmed.zip"
 	params: ""
 	log: 
 		"logs/fastqc/{sample}.trimmed.log"

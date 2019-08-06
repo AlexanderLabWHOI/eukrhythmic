@@ -12,7 +12,7 @@ rule trinity:
 	output:	
 		OUTPUTDIR + "/trinity_results/Trinity_{sample}.fasta"
 	log:
-		"logs/trinity/outputlog_trinity.log"
+		"logs/trinity/{sample}_outputlog_trinity.log"
 	params:
 		extra = ""
 	threads: 4
