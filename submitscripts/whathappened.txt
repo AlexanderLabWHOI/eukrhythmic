@@ -1,0 +1,19 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	trimmomatic_in1
+	1
+
+[Mon Aug  5 13:55:16 2019]
+rule trimmomatic_in1:
+    input: /vortexfs1/omics/alexander/data/WAP/SH410_CTTGTA_L005_R1_001.fastq.gz, /vortexfs1/omics/alexander/data/WAP/SH410_CTTGTA_L005_R2_001.fastq.gz
+    output: /vortexfs1/omics/alexander/data/WAP/arianna-snakemake-output/firsttrim/SH410_CTTGTA_L005_1.trimmed.fastq.gz, /vortexfs1/omics/alexander/data/WAP/arianna-snakemake-output/firsttrim/SH410_CTTGTA_L005_2.trimmed.fastq.gz, /vortexfs1/omics/alexander/data/WAP/arianna-snakemake-output/firsttrim/SH410_CTTGTA_L0051.unpaired.fastq.gz, /vortexfs1/omics/alexander/data/WAP/arianna-snakemake-output/firsttrim/SH410_CTTGTA_L0052.unpaired.fastq.gz
+    log: logs/trimming/SH410_CTTGTA_L005.log
+    jobid: 0
+    wildcards: sample=SH410_CTTGTA_L005
+
+Activating conda environment: /vortexfs1/home/akrinos/Summer2019/metatranscriptomics-AIK/submitscripts/.snakemake/conda/8bae92ab
+slurmstepd: error: *** JOB 469836 ON pn048 CANCELLED AT 2019-08-05T14:15:33 DUE TO TIME LIMIT ***

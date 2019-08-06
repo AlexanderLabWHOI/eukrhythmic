@@ -5,8 +5,7 @@ import glob
 from snakemake.exceptions import print_exception, WorkflowError
 
 OUTPUTDIR = config["outputDIR"]
-INPUTDIR = config["inputDIR1"]
-INPUTDIR2 = config["inputDIR2"]
+INPUTDIR = config["inputDIR"]
 
 (DIRS,FILES) = glob_wildcards("{dir}/{file}.fastq.gz")
 
@@ -28,21 +27,4 @@ rule trimmomatic_in1:
         32
     wrapper:
         "0.36.0/bio/trimmomatic/pe"
-
-#rule trimmomatic_in2:
-#    input:
-#        r1 = INPUTDIR2 + "/{sample}_R1_001.fastq.gz",
-#        r2 = INPUTDIR2 + "/{sample}_R2_001.fastq.gz"
-#    output:
-#        r1 = OUTPUTDIR + "/firsttrim/{sample}_1.trimmed.fastq.gz",
-#        r2 = OUTPUTDIR + "/firsttrim/{sample}_2.trimmed.fastq.gz",
-#        r1_unpaired = OUTPUTDIR + "firsttrim/{sample}1.unpaired.fastq.gz",
-#        r2_unpaired = OUTPUTDIR + "firsttrim/{sample}2.unpaired.fastq.gz"
-#    log:
-#        "logs/trimming/{sample}.log"
-#    params:
-#         trimmer=["TRAILING:3"],
-#         extra=""
-#    wrapper:
-#         "0.36.0/bio/trimmomatic/pe"
 
