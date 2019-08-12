@@ -1,6 +1,7 @@
 configfile: "config.yaml"
 
 import io
+import os
 import glob
 from snakemake.exceptions import print_exception, WorkflowError
 
@@ -9,15 +10,15 @@ INPUTDIR = config["inputDIR"]
 
 (DIRS,FILES) = glob_wildcards("{dir}/{file}.fastq.gz")
 
-rule trimmomatic_in1:
+rule trimmomatic:
     input:
-        r1 = INPUTDIR + "/{sample}_R1_001.fastq.gz",
-        r2 = INPUTDIR + "/{sample}_R2_001.fastq.gz"
+        r1 = os.path.join(INPUTDIR, "{sample}_R1_001.fastq.gz"),
+        r2 = os.path.join(INPUTDIR, "{sample}_R2_001.fastq.gz")
     output:
-        r1 = OUTPUTDIR + "/firsttrim/{sample}_1.trimmed.fastq.gz",
-        r2 = OUTPUTDIR + "/firsttrim/{sample}_2.trimmed.fastq.gz",
-        r1_unpaired = OUTPUTDIR + "/firsttrim/{sample}1.unpaired.fastq.gz",
-        r2_unpaired = OUTPUTDIR + "/firsttrim/{sample}2.unpaired.fastq.gz"
+        r1 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_1.trimmed.fastq.gz"),
+        r2 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_2.trimmed.fastq.gz"),
+        r1_unpaired = os.path.join(OUTPUTDIR, "firsttrim", "{sample}1.unpaired.fastq.gz"),
+        r2_unpaired = os.path.join(OUTPUTDIR, "firsttrim", "{sample}2.unpaired.fastq.gz)"
     log:
         "logs/trimming/{sample}.log"
     params:

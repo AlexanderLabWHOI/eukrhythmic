@@ -18,4 +18,29 @@ __default__:
             time: "--time={}"
             nodes: "-N {}"  # number of tasks
 
+fastqc:
+    account: akrinos
+    queue: compute
+    threads: 1
+    mem: 1
+    time: 720
 
+fastqc_trimmed:
+    account: akrinos
+    queue: compute
+    threads: 1
+    mem: 1
+    time: 720
+
+trimmomatic:
+    account: akrinos
+    queue: compute
+    threads: 6
+    mem: 24
+    time: 720
+
+trinity:
+    queue: compute
+    threads: 8
+    mem: 24
+    time: 720

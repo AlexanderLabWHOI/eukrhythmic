@@ -3,14 +3,15 @@ configfile: "config.yaml"
 OUTPUTDIR = config['outputDIR']
 
 import io
+import os
 from snakemake.exceptions import print_exception, WorkflowError
 
 rule trinity:
 	input:
-		left = OUTPUTDIR + "/firsttrim/{sample}_1.trimmed.fastq.gz",
-		right = OUTPUTDIR + "/firsttrim/{sample}_2.trimmed.fastq.gz"
+		left = os.path.join(OUTPUTDIR, "firsttrim", {sample}_1.trimmed.fastq.gz",
+		right = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_2.trimmed.fastq.gz")
 	output:	
-		OUTPUTDIR + "/trinity_results/Trinity_{sample}.fasta"
+		os.path.join(OUTPUTDIR, "trinity_results", "Trinity_{sample}.fasta")
 	log:
 		"logs/trinity/{sample}_outputlog_trinity.log"
 	params:
