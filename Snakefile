@@ -12,6 +12,7 @@ from snakemake.exceptions import print_exception, WorkflowError
 DATAFILE = config["metaT_sample"]
 INPUTDIR = config["inputDIR"]
 OUTPUTDIR = config["outputDIR"]
+ASSEMBLYFILE = config["assembly"]
 SCRATCHDIR = config["scratch"]
 INPUTFILES = [f for f in os.listdir(INPUTDIR) if isfile(join(INPUTDIR, f))];
 
@@ -29,16 +30,26 @@ def get_base_names():
             sample_barcodes[split_i[0]] = split_i[1]
             sample_codes[split_i[0]] = split_i[2]
 
-get_base_names()
-#print(sample_barcodes.values())
+notatest = False # if false, this is a test
 
 filenames = []
-name1 = list(sample_barcodes.keys())
-name2 = list(sample_barcodes.values())
-name3 = list(sample_codes.values())
+if notatest:
+    get_base_names()
+    #print(sample_barcodes.values())
 
-for i in range(0, len(name1)-1):
-    filenames.append(str(name1[i]) + "_" + str(name2[i]) + "_" + str(name3[i]))
+    filenames = []
+    name1 = list(sample_barcodes.keys())
+    name2 = list(sample_barcodes.values())
+    name3 = list(sample_codes.values())
+
+if notatest:
+    for i in range(0, len(name1)-1):
+        filenames.append(str(name1[i]) + "_" + str(name2[i]) + "_" + str(name3[i]))
+else:
+    for i in range(0, len(samplenames)):
+        filenames.append(str(samplenames[i] + "_test"))
+
+assemblygroups = unique(list(pd.read_csv(ASSEMBLYFILE, sep = "\t").AssemblyGroup))
 
 include: "modules/fastqc-snake"
 include: "modules/trimmomatic-snake"
@@ -54,5 +65,4 @@ rule all:
         # FASTQC 2 OUTPUTS (trimmed)
         fastqc2 = expand("{base}/qc/fastqc_trimmed/{file}_{num}.trimmed.{ext}", base = OUTPUTDIR, file = filenames, num = [1,2], ext = ["zip", "html"]),
         # TRINITY OUTPUTS
-        trinity = expand("{base}/trinity_results/Trinity_{file}.fasta", base = OUTPUTDIR, file = filenames)
-
+        trinity = expand("{base}/trinity_results/Trinity_{assembly}.fasta", base = OUTPUTDIR, assembly = assemblygroups)

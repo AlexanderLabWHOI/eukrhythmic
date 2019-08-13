@@ -8,12 +8,12 @@ from snakemake.exceptions import print_exception, WorkflowError
 
 rule trinity:
 	input:
-		left = os.path.join(OUTPUTDIR, "firsttrim", {sample}_1.trimmed.fastq.gz",
+		left = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_1.trimmed.fastq.gz"),
 		right = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_2.trimmed.fastq.gz")
 	output:	
-		os.path.join(OUTPUTDIR, "trinity_results", "Trinity_{sample}.fasta")
+		os.path.join(OUTPUTDIR, "trinity_results", "{sample}_Trinity.fasta")
 	log:
-		"logs/trinity/{sample}_outputlog_trinity.log"
+		"logs/trinity/outputlog_{sample}_trinity.log"
 	params:
 		extra = ""
 	threads: 4
