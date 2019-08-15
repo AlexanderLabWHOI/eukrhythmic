@@ -1,6 +1,7 @@
-metaT_sample: pipelineinput/smallscale_notes_test.txt
+metaT_sample: input/smallscale_notes_test.txt
 #inputDIR: /vortexfs1/omics/alexander/data/WAP
 inputDIR: testdata/
+assembly: input/assemblyfile.txt
 outputDIR: /vortexfs1/omics/alexander/data/WAP/arianna-snakemake-output
 scratch: /vortexfs1/scratch/akrinos/wap
 

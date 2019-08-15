@@ -1,0 +1,3 @@
+	AssemblyGroup	SampleName
+0	1	SH401
+1	1	SH402

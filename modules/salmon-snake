@@ -1,0 +1,13 @@
+configfile: "config.yaml"
+
+import io
+import os
+from snakemake.exceptions import print_exception, WorkflowError
+
+OUTPUTDIR = config["outputDIR"]
+INPUTDIR = config["inputDIR"]
+
+rule salmon:
+    input: 
+        
+

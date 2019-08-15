@@ -49,19 +49,21 @@ else:
     for i in range(0, len(samplenames)):
         filenames.append(str(samplenames[i] + "_test"))
 
-assemblygroups = unique(list(pd.read_csv(ASSEMBLYFILE, sep = "\t").AssemblyGroup))
+assemblygroups = list(set(pd.read_csv(ASSEMBLYFILE, sep = "\t").AssemblyGroup))
 
 include: "modules/fastqc-snake"
 include: "modules/trimmomatic-snake"
 include: "modules/fastqc-trimmed-snake"
 include: "modules/trinity-snake"
 
+print(assemblygroups)
+
 rule all:
     input:
         # FASTQC OUTPUTS
         fastqc1 = expand("{base}/qc/fastqc/{file}.{ext}", base = OUTPUTDIR, file = filenames, ext = ["zip", "html"]),
         # TRIMMOMATIC OUTPUTS
-        trimmed = expand("{base}/firsttrim/{file}_{num}.trimmed.fastq.gz", base = OUTPUTDIR, file = filenames, num = [1,2]),
+        trimmed = expand("{base}/firsttrim/{id_name}_{num}.trimmed.fastq.gz", base = OUTPUTDIR, id_name = filenames, num = [1,2]),
         # FASTQC 2 OUTPUTS (trimmed)
         fastqc2 = expand("{base}/qc/fastqc_trimmed/{file}_{num}.trimmed.{ext}", base = OUTPUTDIR, file = filenames, num = [1,2], ext = ["zip", "html"]),
         # TRINITY OUTPUTS
