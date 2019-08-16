@@ -67,4 +67,4 @@ rule all:
         # FASTQC 2 OUTPUTS (trimmed)
         fastqc2 = expand("{base}/qc/fastqc_trimmed/{file}_{num}.trimmed.{ext}", base = OUTPUTDIR, file = filenames, num = [1,2], ext = ["zip", "html"]),
         # TRINITY OUTPUTS
-        trinity = expand("{base}/trinity_results/Trinity_{assembly}.fasta", base = OUTPUTDIR, assembly = assemblygroups)
+        trinity = expand("{base}/trinity_results_assembly_{assembly}/Trinity.fasta", base = OUTPUTDIR, assembly = assemblygroups)

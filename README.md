@@ -24,4 +24,8 @@ Depending on the application, some columns of this file must be added or may not
 
 The minimum required to run the general (default) pipeline without any comparative analysis between samples are the "SampleID" and the "FastqFileNames". In /scripts/, there is a Python script that will generate the `fastq` file names column, given your data input folder. If you use this script, all of the files with the fastq extension listed in your `INPUTDIR` that have a match to entries in your SampleID column will be included. This script also has a toggle for creating the metaT\_sample file essentially from scratch, in the case that you (1) want all `fastq` files to be included and (2) do not care about the choice of SampleID. 
 
+## Generating sample file with the file names
+
+Executing the `make_sample_file.py` file from the main directory of the repository (e.g. `python scripts/make_sample_file.py` will fit your input data file with the fastq file names from the directory you have specified as the input directory in `config.yaml`. 
+
 

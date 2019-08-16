@@ -8,11 +8,10 @@ from snakemake.exceptions import print_exception, WorkflowError
 OUTPUTDIR = config['outputDIR']
 ASSEMBLYFILE = pd.read_csv(config["assembly"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
-print(ASSEMBLYDICT[1])
-print(ASSEMBLYDICT)
 
 def get_samples(assemblygroup):
-    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == int(assemblygroup)]['SampleName']) 
+    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == int(assemblygroup)]['FastqFile']) 
+    print(samplelist)
     return samplelist
 
 # This module needs to grab all of the list of the 
@@ -23,10 +22,11 @@ def get_samples(assemblygroup):
 rule trinity:
 	input:
 		left = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
-		right = lambda filename: os.path.join(OUTPUTDIR, "firsttrim", ASSEMBLYDICT[int(filename.assembly)], "_2.trimmed.fastq.gz")
+		right = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+        #right = lambda filename: os.path.join(OUTPUTDIR, "firsttrim", ASSEMBLYDICT[int(filename.assembly)], "_2.trimmed.fastq.gz")
         #right = [os.path.join(OUTPUTDIR, "firsttrim", filename, "_2.trimmed.fastq.gz") for filename in ASSEMBLYDICT["{assembly}"]]
 	output:
-		os.path.join(OUTPUTDIR, "trinity_results", "Trinity_{assembly}.fasta")
+		os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta")
 	log:
 		"logs/trinity/outputlog_{assembly}_trinity.log"
 	params:
