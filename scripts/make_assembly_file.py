@@ -22,7 +22,9 @@ filenames = list(indexfile.FastqFile)
 # I will get there!). 
 
 assemblygroups = []
-assemblygroups.append(filenames) # this will be better later; for now every sample is in assembly group 1
+#assemblygroups.append(filenames) # this will be better later; for now every sample is in assembly group 1
+assemblygroups.append(indexfile[indexfile.SampleName == "S2"].FastqFile) # group of those in the diel grouping
+assemblygroups.append(indexfile[indexfile.SampleName != "S2"].FastqFile)
 
 assemblyfile = pd.DataFrame({'AssemblyGroup': [], \
                              'SampleName': []})

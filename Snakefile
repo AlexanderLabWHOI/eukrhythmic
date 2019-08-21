@@ -30,7 +30,7 @@ def get_base_names():
             sample_barcodes[split_i[0]] = split_i[1]
             sample_codes[split_i[0]] = split_i[2]
 
-notatest = False # if false, this is a test
+notatest = True # if false, this is a test
 
 filenames = []
 if notatest:
