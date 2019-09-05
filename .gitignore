@@ -8,3 +8,6 @@
 .snakemake
 .snakemake/*
 .snakemake/
+*.fq
+*.sig
+*.fastq.gz

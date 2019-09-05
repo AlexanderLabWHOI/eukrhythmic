@@ -31,6 +31,6 @@ rule trinity:
 	threads: 4
 	shell:
         """
-        
+        Trinity --seqType fq --max_memory 50G --left {input.left} --right {input.right}          
         """
 
