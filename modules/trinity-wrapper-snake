@@ -1,0 +1,37 @@
+configfile: "config.yaml"
+
+import io
+import os
+import pandas as pd
+from snakemake.exceptions import print_exception, WorkflowError
+
+OUTPUTDIR = config['outputDIR']
+ASSEMBLYFILE = pd.read_csv(config["assembly"], sep = "\t")
+ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+
+def get_samples(assemblygroup):
+    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == int(assemblygroup)]['FastqFile']) 
+    return samplelist
+
+# This module needs to grab all of the list of the 
+# individual files associated with the specified
+# assembly group, after the scripts/make-assembly-file.py
+# script builds said assembly groups according to user
+# specifications.  
+rule trinity:
+	input:
+		left = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
+		right = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+        #right = lambda filename: os.path.join(OUTPUTDIR, "firsttrim", ASSEMBLYDICT[int(filename.assembly)], "_2.trimmed.fastq.gz")
+        #right = [os.path.join(OUTPUTDIR, "firsttrim", filename, "_2.trimmed.fastq.gz") for filename in ASSEMBLYDICT["{assembly}"]]
+	output:
+		os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta")
+	log:
+		"logs/trinity/outputlog_{assembly}_trinity.log"
+	params:
+		extra = ""
+	threads: 4
+	wrapper:	
+		"0.36.0/bio/trinity"
+
+

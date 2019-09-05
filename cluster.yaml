@@ -34,7 +34,7 @@ fastqc_trimmed:
 
 trimmomatic:
     account: akrinos
-    queue: bigmem
+    queue: compute
     threads: 8
     mem: 48
     time: 1400

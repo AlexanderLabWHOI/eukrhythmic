@@ -1,0 +1,28 @@
+#configfile: "config.yaml"
+
+import io
+import os
+import pandas
+import numpy
+import pathlib
+from snakemake.exceptions import print_exception, WorkflowError
+
+rule generate_signature:
+	input:
+		"{code}_R{sample}.test.fastq"
+	output:
+		"{code}_R{sample}.100k.k51.sig"
+	shell:
+		"""
+		sourmash compute --scaled 100000 -k 51 {input} -o {output}
+		"""
+
+rule compare_signatures:
+	input:
+		"{name}.sig"
+	output:
+		"Jaccard_output"
+	shell:
+		"""
+		sourmash compare {input} -o {output}
+		"""
