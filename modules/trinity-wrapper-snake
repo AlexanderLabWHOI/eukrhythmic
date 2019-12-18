@@ -6,12 +6,33 @@ import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
 
 OUTPUTDIR = config['outputDIR']
+INPUTDIR = config["inputDIR"]
+INPUTDIRs = config["inputDIRs"]
 ASSEMBLYFILE = pd.read_csv(config["assembly"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
 
-def get_samples(assemblygroup):
-    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == int(assemblygroup)]['FastqFile']) 
-    return samplelist
+#def get_samples(assemblygroup):
+#    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == int(assemblygroup)]['FastqFile']) 
+#    return samplelist
+
+INPUTFILES = [[os.path.join(curr,f) for f in os.listdir(os.path.join(INPUTDIR, curr)) if isfile(join(os.path.join(INPUTDIR, curr), f))] for curr in INPUTDIRs.split(",")];
+INPUTFILES = [item for sublist in INPUTFILES for item in sublist]
+print(INPUTFILES)
+
+# create a dictionary that contains a list with the relevant
+# information about each sample: the barcode and the L code
+def get_file_names():
+    extensions = [] 
+    filenames = []
+    combined = []
+    for i in INPUTFILES:
+        split_i = i.split("_")
+        extensions.append(split_i[len(split_i)-1]) # sequence.fastq or sequence.fq
+        filenames.append("_".join(split_i[0:(len(split_i)-2)])) # we also want to cut out the 1 or 2
+        combined.append(filenames[len(filenames)-1] + "_" + extensions[len(extensions)-1])
+        
+    return combined
+
 
 # This module needs to grab all of the list of the 
 # individual files associated with the specified
@@ -20,10 +41,8 @@ def get_samples(assemblygroup):
 # specifications.  
 rule trinity:
 	input:
-		left = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
-		right = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
-        #right = lambda filename: os.path.join(OUTPUTDIR, "firsttrim", ASSEMBLYDICT[int(filename.assembly)], "_2.trimmed.fastq.gz")
-        #right = [os.path.join(OUTPUTDIR, "firsttrim", filename, "_2.trimmed.fastq.gz") for filename in ASSEMBLYDICT["{assembly}"]]
+		left = expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_file_names()),
+		right = expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_file_names())
 	output:
 		os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta")
 	log:

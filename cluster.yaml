@@ -2,7 +2,7 @@ __default__:
     system: 'slurm'
     account: akrinos
     time: 120 # in minutes
-    mem: 10 # in GB
+    mem: 40 # in GB
     threads: 6
     queue: compute
     nodes: 1
@@ -42,5 +42,5 @@ trimmomatic:
 trinity:
     queue: compute
     threads: 8
-    mem: 24
-    time: 720
+    mem: 100
+    time: 1000
