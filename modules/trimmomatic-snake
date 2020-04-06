@@ -7,25 +7,30 @@ from snakemake.exceptions import print_exception, WorkflowError
 
 OUTPUTDIR = config["outputDIR"]
 INPUTDIR = config["inputDIR"]
-
-#(DIRS,FILES) = glob_wildcards("{dir}/{file}.fastq.gz")
+DATADIR = config["dataDIR"]
+ADAPTER = config["adapter"]
 
 rule trimmomatic:
     input:
-        r1 = os.path.join(INPUTDIR, "{sample}_1_{oldext}"),
-        r2 = os.path.join(INPUTDIR, "{sample}_2_{oldext}")
+        r1 = os.path.join(INPUTDIR, "{sample}_R1_001.fastq.gz"),
+        r2 = os.path.join(INPUTDIR, "{sample}_R2_001.fastq.gz"),
+        adapters = ADAPTER
     output:
-        r1 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_{oldext}_1.trimmed.fastq.gz"),
-        r2 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_{oldext}_2.trimmed.fastq.gz"),
-        r1_unpaired = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_{oldext}_1.unpaired.fastq.gz"),
-        r2_unpaired = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_{oldext}_2.unpaired.fastq.gz")
+        p1 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_1.trimmed.fastq.gz"),
+        p2 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_2.trimmed.fastq.gz"),
+        s1 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_1.unpaired.fastq.gz"),
+        s2 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_2.unpaired.fastq.gz")
     log:
-        "logs/trimming/{sample}_{oldext}.log"
-    params:
-        trimmer=["TRAILING:3"],
-        extra="-phred33",
-    threads:
-        32
-    wrapper:
-        "0.36.0/bio/trimmomatic/pe"
+        "logs/trimming/{sample}.log"
+    shell:
+        '''
+        trimmomatic PE {input.r1} {input.r2} {output.p1} {output.s1} {output.p2} {output.s2} ILLUMINACLIP:{input.adapters}:2:30:7 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:2 MINLEN:50
+        '''
+    #params:
+    #    trimmer=["TRAILING:3"],
+    #    extra="-phred33",
+    #threads:
+    #    32
+    #wrapper:
+    #    "0.36.0/bio/trimmomatic/pe"
 

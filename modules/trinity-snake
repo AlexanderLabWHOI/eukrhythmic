@@ -6,12 +6,15 @@ import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
 
 OUTPUTDIR = config['outputDIR']
-ASSEMBLYFILE = pd.read_csv(config["assembly"], sep = "\t")
+ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
 
 def get_samples(assemblygroup):
-    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == int(assemblygroup)]['FastqFile']) 
+    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
     return samplelist
+    
+#Trinity --seqType fq --max_memory 50G --left {input.left} --right {input.right}
+#Trinity --CPU 8 --seqType fq --max_memory 40G --left {input.left} --right {input.right} --SS_lib_type RF
 
 # This module needs to grab all of the list of the 
 # individual files associated with the specified
@@ -19,18 +22,19 @@ def get_samples(assemblygroup):
 # script builds said assembly groups according to user
 # specifications.  
 rule trinity:
-	input:
-		left = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
-		right = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
-	output:
-		os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta")
-	log:
-		"logs/trinity/outputlog_{assembly}_trinity.log"
-	params:
-		extra = ""
-	threads: 4
-	shell:
-        """
-        Trinity --seqType fq --max_memory 50G --left {input.left} --right {input.right}          
-        """
+    input:
+        left = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
+        right = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+    output:
+        os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta")
+    log:
+        "logs/trinity/outputlog_{assembly}_trinity.log"
+    params:
+        extra = "",
+        outdir = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}")
+    threads: 4
+    shell:
+        '''
+        Trinity --seqType fq --max_memory 50G --left {input.left} --right {input.right} --output {params.outdir}
+        '''
 

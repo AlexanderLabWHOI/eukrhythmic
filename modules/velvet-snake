@@ -1,0 +1,24 @@
+configfile: "config.yaml"
+
+import io
+import os
+import pandas as pd
+from snakemake.exceptions import print_exception, WorkflowError
+
+OUTPUTDIR = config['outputDIR']
+ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
+ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+
+def get_samples(assemblygroup):
+    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
+    return samplelist
+
+rule velvet:
+    input:
+        r1 = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
+        r2 = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+    shell:
+        '''
+        velveth HN007 55 -strand_specific -shortPaired -fastq {input.r1} {input.r2}
+        velvetg HN007 -cov_cutoff auto -min_contig_lgth 100
+        '''

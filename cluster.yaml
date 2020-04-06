@@ -5,7 +5,7 @@ __default__:
     mem: 40 # in GB
     threads: 6
     queue: compute
-    nodes: 1
+    nodes: 3
     command_options:
         slurm:
             command: "sbatch --parsable --qos=unlim"
@@ -40,7 +40,9 @@ trimmomatic:
     time: 1400
 
 trinity:
-    queue: compute
+    account: akrinos
+    queue: bigmem
+    nodes: 1
     threads: 8
-    mem: 100
+    mem: 1000
     time: 1000

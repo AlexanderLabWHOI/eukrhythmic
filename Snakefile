@@ -11,50 +11,42 @@ from snakemake.exceptions import print_exception, WorkflowError
                                     
 DATAFILE = config["metaT_sample"]
 INPUTDIR = config["inputDIR"]
-INPUTDIRs = config["inputDIRs"]
 OUTPUTDIR = config["outputDIR"]
-ASSEMBLYFILE = config["assembly"]
 SCRATCHDIR = config["scratch"]
-INPUTFILES = [[os.path.join(curr,f) for f in os.listdir(os.path.join(INPUTDIR, curr)) if isfile(join(os.path.join(INPUTDIR, curr), f))] for curr in INPUTDIRs.split(",")];
-INPUTFILES = [item for sublist in INPUTFILES for item in sublist]
-#print(INPUTFILES)
+#INPUTFILES = [[os.path.join(curr,f) for f in os.listdir(os.path.join(INPUTDIR, curr)) if isfile(join(os.path.join(INPUTDIR, curr), f))] for curr in INPUTDIRs.split(",")];
+#INPUTFILES = [item for sublist in INPUTFILES for item in sublist]
 
-samplenames = list(pd.read_csv(DATAFILE, sep = "\t").SampleID);
-
-
-# create a dictionary that contains a list with the relevant
-# information about each sample: the barcode and the L code
-def get_base_names():
-    extensions = [] 
-    filenames = []
-    for i in INPUTFILES:
-        split_i = i.split("_")
-        extensions.append(split_i[len(split_i)-1]) # sequence.fastq or sequence.fq
-        filenames.append("_".join(split_i[0:(len(split_i)-2)]))  # we also want to cut out the 1 or 2
-        
-    return filenames,extensions
-    
-filenames,extensions = get_base_names()
+SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
+samplenames = list(SAMPLEINFO.SampleID);
+fastqnames = list(SAMPLEINFO.FastqFile);
+print(fastqnames)
+for currfile in fastqnames:
+    if isfile(os.path.join(INPUTDIR, currfile + "_R1_001.fastq.gz")):
+        print("yo")
+    else:
+        print(os.path.join(INPUTDIR, currfile + "_R1_001.fastq.gz"))
+filenames = [currfile for currfile in fastqnames if isfile(os.path.join(INPUTDIR, currfile + "_R1_001.fastq.gz"))]
 
 print(filenames)
 
 if config["separategroups"] == 1:
-    assemblygroups = list(set(pd.read_csv(ASSEMBLYFILE, sep = "\t").AssemblyGroup))
+    assemblygroups = list(set(SAMPLEINFO.AssemblyGroup))
 else:
     assemblygroups = [1] * len(INPUTFILES)
 
 include: "modules/fastqc-snake"
 include: "modules/trimmomatic-snake"
 include: "modules/fastqc-trimmed-snake"
-include: "modules/trinity-wrapper-snake"
+include: "modules/trinity-snake"
+include: "modules/velvet-snake"
 
 rule all:
     input:
         # FASTQC OUTPUTS
-        fastqc1 = expand(["{base}/qc/fastqc/{sample}_{oldext}.html", "{base}/qc/fastqc/{sample}_{oldext}.zip"], zip, base = OUTPUTDIR, sample = filenames, oldext = extensions),
+        fastqc1 = expand(["{base}/qc/fastqc/{sample}_{num}.html", "{base}/qc/fastqc/{sample}_{num}.zip"], zip, base = OUTPUTDIR, sample = filenames, num = [1,2]),
         # TRIMMOMATIC OUTPUTS
-        trimmed = expand(["{base}/firsttrim/{sample}_{oldext}_1.trimmed.fastq.gz", "{base}/firsttrim/{sample}_{oldext}_2.trimmed.fastq.gz"], zip, base = OUTPUTDIR, sample = filenames, oldext = extensions),
+        trimmed = expand(["{base}/firsttrim/{sample}_1.trimmed.fastq.gz", "{base}/firsttrim/{sample}_2.trimmed.fastq.gz"], zip, base = OUTPUTDIR, sample = filenames),
         # FASTQC 2 OUTPUTS (trimmed)
-        fastqc2 = expand(["{base}/qc/fastqc_trimmed/{sample}_{oldext}.trimmed.html", "{base}/qc/fastqc_trimmed/{sample}_{oldext}.trimmed.zip"], zip, base = OUTPUTDIR, sample = filenames, oldext = extensions),
+        fastqc2 = expand(["{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.html", "{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.zip"], zip, base = OUTPUTDIR, sample = filenames, num = [1,2]),
         # TRINITY OUTPUTS
         trinity = expand("{base}/trinity_results_assembly_{assembly}/Trinity.fasta", base = OUTPUTDIR, assembly = assemblygroups)

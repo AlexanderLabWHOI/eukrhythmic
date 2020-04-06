@@ -11,12 +11,12 @@ from snakemake.exceptions import print_exception, WorkflowError
 
 rule fastqc:
 	input:
-		os.path.join(INPUTDIR,"{sample}_1_{oldext}")
+		os.path.join(INPUTDIR,"{sample}_R{num}_001.fastq.gz")
 	output:
-		html = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{oldext}.html"),
-		zip = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{oldext}.zip")
+		html = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}.html"),
+		zip = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}.zip")
 	params: ""
 	log: 
-		"logs/fastqc/{sample}_{oldext}.log"
+		"logs/fastqc/{sample}_{num}.log"
 	wrapper:
 		"0.36.0/bio/fastqc"
