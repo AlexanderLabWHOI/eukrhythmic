@@ -17,8 +17,10 @@ rule velvet:
     input:
         r1 = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
         r2 = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+    output:
+        directory(os.path.join(OUTPUTDIR, "velvet", "{assembly}"))
     shell:
         '''
-        velveth HN007 55 -strand_specific -shortPaired -fastq {input.r1} {input.r2}
-        velvetg HN007 -cov_cutoff auto -min_contig_lgth 100
+        velveth {output} 55 -strand_specific -shortPaired -fastq {input.r1} {input.r2}
+        velvetg {output} -cov_cutoff auto -min_contig_lgth 100
         '''

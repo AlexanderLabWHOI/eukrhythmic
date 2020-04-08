@@ -9,3 +9,7 @@ dependencies:
         - matplotlib 
         - graphviz = 2.38.0
         - fastqc = 0.11.8
+        - trinity = 2.8.5
+        - salmon = 1.1.0
+        - megahit
+        - velvet

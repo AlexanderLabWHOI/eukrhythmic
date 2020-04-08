@@ -39,6 +39,7 @@ include: "modules/trimmomatic-snake"
 include: "modules/fastqc-trimmed-snake"
 include: "modules/trinity-snake"
 include: "modules/velvet-snake"
+include: "modules/megahit-snake"
 
 rule all:
     input:
@@ -49,4 +50,8 @@ rule all:
         # FASTQC 2 OUTPUTS (trimmed)
         fastqc2 = expand(["{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.html", "{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.zip"], zip, base = OUTPUTDIR, sample = filenames, num = [1,2]),
         # TRINITY OUTPUTS
-        trinity = expand("{base}/trinity_results_assembly_{assembly}/Trinity.fasta", base = OUTPUTDIR, assembly = assemblygroups)
+        trinity = expand(os.path.join("{base}", "trinity_results_assembly_{assembly}", "Trinity.fasta"), base = OUTPUTDIR, assembly = assemblygroups),
+        # VELVET OUTPUTS
+        velvet = expand(os.path.join("{base}", "velvet", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
+        # MEGAHIT OUTPUTS
+        megahit = expand(os.path.join("{base}", "megahit", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups)

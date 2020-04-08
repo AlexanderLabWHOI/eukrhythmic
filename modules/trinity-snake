@@ -33,6 +33,7 @@ rule trinity:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}")
     threads: 4
+    conda: '../environment.yaml'
     shell:
         '''
         Trinity --seqType fq --max_memory 50G --left {input.left} --right {input.right} --output {params.outdir}
