@@ -1,8 +1,8 @@
 __default__:
     system: 'slurm'
     account: akrinos
-    time: 120 # in minutes
-    mem: 40 # in GB
+    time: 1400 # in minutes
+    mem: 180 # in GB
     threads: 6
     queue: compute
     nodes: 3
@@ -46,3 +46,12 @@ trinity:
     threads: 8
     mem: 1000
     time: 5000
+
+velvet:
+    account: akrinos
+    queue: compute
+    nodes: 3
+    threads: 8
+    mem: 180
+    time: 1000
+

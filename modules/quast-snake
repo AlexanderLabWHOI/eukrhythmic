@@ -1,0 +1,29 @@
+configfile: "config.yaml"
+
+import io
+import os
+import pandas as pd
+from snakemake.exceptions import print_exception, WorkflowError
+
+OUTPUTDIR = config['outputDIR']
+ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
+ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+
+def get_samples(assemblygroup):
+    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
+    return samplelist
+
+rule quast:
+    input:
+        outputtrinity = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta"),
+        outputvelvet = os.path.join(OUTPUTDIR, "velvet", "{assembly}"),
+        outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}")
+    output:
+        directory(os.path.join(OUTPUTDIR, "quast", "{assembly}"))
+    params:
+        outputvelvet = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa"),
+        outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa")
+    shell:
+        '''
+        quast {input.outputtrinity} {params.outputvelvet} {params.outputmegahit} -o {output} --threads 8 --labels Trinity,Velvet,Megahit
+        '''

@@ -13,3 +13,4 @@ dependencies:
         - salmon = 1.1.0
         - megahit
         - velvet
+       # - quast
