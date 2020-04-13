@@ -21,34 +21,26 @@ else:
     LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_1.clean.fastq.gz"), samples = get_samples(filename.assembly))
     RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_2.clean.fastq.gz"), samples = get_samples(filename.assembly))
     
-    
-#Trinity --seqType fq --max_memory 50G --left {input.left} --right {input.right}
-#Trinity --CPU 8 --seqType fq --max_memory 40G --left {input.left} --right {input.right} --SS_lib_type RF
-
-# This module needs to grab all of the list of the 
-# individual files associated with the specified
-# assembly group, after the scripts/make-assembly-file.py
-# script builds said assembly groups according to user
-# specifications.  
-rule trinity:
+rule transabyss:
     input:
         left = LEFTFILE,
         right = RIGHTFILE
         #left = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
         #right = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
     output:
-        os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta")
+        os.path.join(OUTPUTDIR, "transabyss_{k}_{assembly}", "{assembly}_{k}_transabyss.fasta-final.fa")
     log:
-        "logs/trinity/outputlog_{assembly}_trinity.log"
+        "logs/transabyss/outputlog_{assembly}_{k}_transabyss.log"
     params:
         extra = "",
-        outdir = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}"),
+        kval = "{k}",
+        fastaname = "{assembly}_{k}_transabyss.fasta",
+        outdir = os.path.join(OUTPUTDIR, "transabyss_{k}_{assembly}"),
         left = LEFTFILE,
         right = RIGHTFILE
     threads: 4
     conda: '../environment.yaml'
     shell:
         '''
-        Trinity --seqType fq --max_memory 50G --left {input.left} --right {input.right} --output {params.outdir}
+        transabyss --pe {input.left} {input.right} --name {params.fastaname} --outdir {params.outdir} --kmer {params.kval} --threads 8
         '''
-
