@@ -1,9 +1,20 @@
 metaT_sample: input/metaT_cohen.txt
 inputDIR: /vortexfs1/omics/alexander/data/BATS2019-clio-metaT
 dataDIR: input
+spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
+dropspike: 1
+kmers:
+    - 20
+    - 50
+    - 110
+assemblers:
+    - trinity
+    - megahit
+    - velvet
 #path: /vortexfs1/omics/alexander/data/
 #assembly: input/assemblyfile.txt
 adapter: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/adapters/adapters_nextera.fa
 separategroups: 1
 outputDIR: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/5April2020
+assembledDIR: assembled
 scratch: /vortexfs1/scratch/akrinos/bats-metaT/6April2020/

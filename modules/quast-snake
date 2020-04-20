@@ -6,25 +6,37 @@ import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
 
 OUTPUTDIR = config['outputDIR']
+ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+ASSEMBLERS = list(config['assemblers'])
 ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
 
 def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
     return samplelist
+    
+def combineassemblers(assembly):
+    return(" ".join([os.path.join(ASSEMBLEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS]))
 
+def combineassemblerslist(assembly):
+    return([os.path.join(ASSEMBLEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS])
+ 
 rule quast:
     input:
-        outputtrinity = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta"),
-        outputvelvet = os.path.join(OUTPUTDIR, "velvet", "{assembly}"),
-        outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}"),
-        outputtransabyss = expand(os.path.join(OUTPUTDIR, "transabyss", "{assembly}_transabyss.fasta"), assembly = "{assembly}")
+        #outputtrinity = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta"),
+        #outputvelvet = os.path.join(OUTPUTDIR, "velvet", "{assembly}"),
+        #outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}"),
+        #outputtransabyss = expand(os.path.join(OUTPUTDIR, "transabyss", "{assembly}_transabyss.fasta"), assembly = "{assembly}"),
+        outputassemblies = lambda wildcards: combineassemblerslist(wildcards.assembly) 
+        # " ".join(expand(os.path.join(ASSEMBLEDDIR, "{assembly}_{assembler}.fasta"), assembly = "{assembly}", assembler = ASSEMBLERS))
     output:
         directory(os.path.join(OUTPUTDIR, "quast", "{assembly}"))
     params:
+        assemblers = ",".join(ASSEMBLERS),
         outputvelvet = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa"),
-        outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa")
+        outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa"),
+        outputassemblies = lambda wildcards: combineassemblers(wildcards.assembly) 
     shell:
         '''
-        quast {input.outputtrinity} {input.outputtransabyss} {params.outputvelvet} {params.outputmegahit} -o {output} --threads 8 --labels Trinity,Transabyss,Velvet,Megahit
+        quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assemblers}
         '''

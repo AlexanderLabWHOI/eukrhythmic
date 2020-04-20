@@ -8,6 +8,7 @@ from snakemake.exceptions import print_exception, WorkflowError
 OUTPUTDIR = config['outputDIR']
 ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
 DROPSPIKE = config['dropspike']
 
 def get_samples(assemblygroup):
@@ -50,5 +51,23 @@ rule trinity:
     shell:
         '''
         Trinity --seqType fq --max_memory 50G --left {input.left} --right {input.right} --output {params.outdir}
+        '''
+        
+rule trinity_cleanup:
+    input:
+        trinityfile = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta")
+    output:
+        os.path.join(ASSEMBLEDDIR, "{assembly}_trinity.fasta")
+    params:
+        extra = "",
+        outdir = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}"),
+        left = LEFTFILE,
+        right = RIGHTFILE
+    threads: 4
+    conda: '../environment.yaml'
+    shell:
+        '''
+        cp {input.trinityfile} {output}
+        #rm -r {params.outdir}
         '''
 

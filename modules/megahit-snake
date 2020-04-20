@@ -8,6 +8,7 @@ from snakemake.exceptions import print_exception, WorkflowError
 OUTPUTDIR = config['outputDIR']
 ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
 
 def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
@@ -18,8 +19,22 @@ rule megahit:
         r1 = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
         r2 = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
     output:
-        directory(os.path.join(OUTPUTDIR, "megahit", "{assembly}"))
+        #megadir = directory(os.path.join(OUTPUTDIR, "megahit", "{assembly}")),
+        megafile = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa")
     shell:
         '''
         megahit -m 0.9 -t 8 -o megahit -1 {input.r1} -2 {input.r2} -o {output}
+        '''
+        
+rule megahit_cleanup:
+    input:
+        megahitfile = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa")
+    output:
+        os.path.join(ASSEMBLEDDIR, "{assembly}_megahit.fasta")
+    params:
+        outdir = os.path.join(OUTPUTDIR, "megahit", "{assembly}")
+    shell:
+        '''
+        cp {input.megahitfile} {output}
+        #rm -r {params.outdir}
         '''

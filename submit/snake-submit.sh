@@ -1,7 +1,6 @@
 #!/bin/bash
 #SBATCH --qos=unlim
+#SBATCH --mem=100gb
 
 snakemake   \
-    --jobs 100 --rerun-incomplete --use-conda --rerun-incomplete --cluster-config cluster.yaml --cluster "sbatch --parsable --qos=unlim --partition={cluster.queue} --job-name=eukrhythmic.{rule}.{wildcards} --mem={cluster.mem}gb --time={cluster.time} --ntasks={cluster.threads} --nodes={cluster.nodes}"
-
-
+    --jobs 100 --rerun-incomplete --use-conda --rerun-incomplete --cluster-config cluster.yaml --cluster "sbatch --parsable --qos=unlim --partition={cluster.queue} --job-name=batseukrhythmic.{rule}.{wildcards} --mem={cluster.mem}gb --time={cluster.time} --ntasks={cluster.threads} --nodes={cluster.nodes}"

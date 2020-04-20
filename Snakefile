@@ -13,8 +13,10 @@ DATAFILE = config["metaT_sample"]
 INPUTDIR = config["inputDIR"]
 OUTPUTDIR = config["outputDIR"]
 SCRATCHDIR = config["scratch"]
-#INPUTFILES = [[os.path.join(curr,f) for f in os.listdir(os.path.join(INPUTDIR, curr)) if isfile(join(os.path.join(INPUTDIR, curr), f))] for curr in INPUTDIRs.split(",")];
-#INPUTFILES = [item for sublist in INPUTFILES for item in sublist]
+KMERVALS = list(config['kmers'])
+ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+ASSEMBLERS = list(config['assemblers'])
+print(KMERVALS)
 
 SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
 samplenames = list(SAMPLEINFO.SampleID);
@@ -36,27 +38,56 @@ else:
     
 print(assemblygroups)
 
+def combineassemblers(assembly):
+    return(" ".join([os.path.join(ASSEMBLEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS]))
+    
+print("Combined assembly for assembly = HN004: ")
+print(combineassemblers("HN004"))
+
 include: "modules/fastqc-snake"
+include: "modules/bbmap-snake"
 include: "modules/trimmomatic-snake"
 include: "modules/fastqc-trimmed-snake"
 include: "modules/trinity-snake"
 include: "modules/velvet-snake"
 include: "modules/megahit-snake"
+include: "modules/transabyss-snake"
+include: "modules/transabyss-merge-snake"
 include: "modules/quast-snake"
+include: "modules/cd-hit-snake"
+include: "modules/manipnames-snake"
+include: "modules/transdecoder-snake"
 
 rule all:
     input:
         # FASTQC OUTPUTS
         fastqc1 = expand(["{base}/qc/fastqc/{sample}_{num}.html", "{base}/qc/fastqc/{sample}_{num}.zip"], zip, base = OUTPUTDIR, sample = filenames, num = [1,2]),
+        # BBMAP OUTPUTS
+        bbmap = expand(os.path.join("{base}", "bbmap", "{sample}_{num}.clean.fastq.gz"), zip, base = OUTPUTDIR, sample = filenames, num = [1,2]),
         # TRIMMOMATIC OUTPUTS
         trimmed = expand(["{base}/firsttrim/{sample}_1.trimmed.fastq.gz", "{base}/firsttrim/{sample}_2.trimmed.fastq.gz"], zip, base = OUTPUTDIR, sample = filenames),
         # FASTQC 2 OUTPUTS (trimmed)
         fastqc2 = expand(["{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.html", "{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.zip"], zip, base = OUTPUTDIR, sample = filenames, num = [1,2]),
+        # ASSEMBLER OUTPUTS
+        assemblersout = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"), base = ASSEMBLEDDIR, assembly = assemblygroups, assembler = ASSEMBLERS), 
+        # ~ all of this is now obsolete ~
         # TRINITY OUTPUTS
         #trinity = expand(os.path.join("{base}", "trinity_results_assembly_{assembly}", "Trinity.fasta"), base = OUTPUTDIR, assembly = assemblygroups),
+        # TRANSABYSS OUTPUTS
+        #transabyss = expand(os.path.join("{base}", "transabyss_{k}_{assembly}", "{assembly}_{k}_transabyss.fasta-final.fa"), zip, base = OUTPUTDIR, assembly = assemblygroups, k = KMERVALS),
+        # TRANSABYSS-MERGE OUTPUTS
+        # transabyssmerged = expand(os.path.join("{base}", "transabyss", "{assembly}_transabyss.fasta"), zip, base = OUTPUTDIR, assembly = assemblygroups),
         # VELVET OUTPUTS
-        velvet = expand(os.path.join("{base}", "velvet", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
+        # velvet = expand(os.path.join("{base}", "velvet", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
         # MEGAHIT OUTPUTS
-        megahit = expand(os.path.join("{base}", "megahit", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
-        # QUAST OUTPUTS (fix this later..temporary since HN004 wasn't done)
-        quast = expand(os.path.join("{base}", "quast", "{assembly}"), base = OUTPUTDIR, assembly = ["HN004"])
+        # megahit = expand(os.path.join("{base}", "megahit", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
+        # QUAST OUTPUTS
+        quast = expand(os.path.join("{base}", "quast", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
+        # INDIVIDUAL CLUSTERING OUTPUTS
+        clustering1 = expand(os.path.join("{base}", "cluster1", "{assembly}_{assembler}.fasta"), zip, base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
+        # TRANSDECODER OUTPUTS - merging occurs within this step
+        transdecoder = expand(os.path.join("{base}", "transdecoder", "{assembly}.fasta.transdecoder.cds"), zip, base = OUTPUTDIR, assembly = assemblygroups),
+        # MERGED CLUSTERING OUTPUTS
+        clustering2 = expand(os.path.join("{base}", "cluster2", "{assembly}_merged.fasta"), zip, base = OUTPUTDIR, assembly = assemblygroups),
+        # TRANSDECODED CLUSTERING OUTPUTS
+        clustering3 = expand(os.path.join("{base}", "cluster3", "{assembly}_transdecoded.fasta"), zip, base = OUTPUTDIR, assembly = assemblygroups)

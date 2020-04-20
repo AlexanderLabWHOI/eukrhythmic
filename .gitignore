@@ -11,3 +11,4 @@
 *.fq
 *.sig
 *.fastq.gz
+*transdecoder*

@@ -8,6 +8,8 @@ from snakemake.exceptions import print_exception, WorkflowError
 OUTPUTDIR = config['outputDIR']
 ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+
 
 def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
@@ -18,9 +20,23 @@ rule velvet:
         r1 = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
         r2 = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
     output:
-        directory(os.path.join(OUTPUTDIR, "velvet", "{assembly}"))
+        #velvetdir = directory(os.path.join(OUTPUTDIR, "velvet", "{assembly}")),
+        velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa")
     shell:
         '''
         velveth {output} 55 -strand_specific -shortPaired -fastq {input.r1} {input.r2}
         velvetg {output} -cov_cutoff auto -min_contig_lgth 100
+        '''
+        
+rule velvet_cleanup:
+    input:
+        velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa")
+    output:
+        os.path.join(ASSEMBLEDDIR, "{assembly}_velvet.fasta")
+    params:
+        outdir = os.path.join(OUTPUTDIR, "velvet", "{assembly}")
+    shell:
+        '''
+        cp {input.velvetfile} {output}
+        #rm -r {params.outdir}
         '''
