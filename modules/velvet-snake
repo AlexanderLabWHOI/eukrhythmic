@@ -22,10 +22,12 @@ rule velvet:
     output:
         #velvetdir = directory(os.path.join(OUTPUTDIR, "velvet", "{assembly}")),
         velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa")
+    params:
+        velvetdir = directory(os.path.join(OUTPUTDIR, "velvet", "{assembly}"))
     shell:
         '''
-        velveth {output} 55 -strand_specific -shortPaired -fastq {input.r1} {input.r2}
-        velvetg {output} -cov_cutoff auto -min_contig_lgth 100
+        velveth {params.velvetdir} 55 -strand_specific -shortPaired -fastq {input.r1} {input.r2}
+        velvetg {params.velvetdir} -cov_cutoff auto -min_contig_lgth 100
         '''
         
 rule velvet_cleanup:
