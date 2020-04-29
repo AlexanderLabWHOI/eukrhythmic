@@ -15,10 +15,14 @@ def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
     return samplelist
     
-def combineassemblers(assembly):
+def combineassemblers(assembly, final=False):
+    if final:
+        return(os.path.join(OUTPUTDIR, "cluster3", assembly + "_transdecoded.fasta"))
     return(" ".join([os.path.join(ASSEMBLEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS]))
 
-def combineassemblerslist(assembly):
+def combineassemblerslist(assembly, final=False):
+    if final:
+        return(os.path.join(OUTPUTDIR, "cluster3", assembly + "_transdecoded.fasta"))
     return([os.path.join(ASSEMBLEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS])
  
 rule quast:
@@ -36,7 +40,45 @@ rule quast:
         outputvelvet = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa"),
         outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa"),
         outputassemblies = lambda wildcards: combineassemblers(wildcards.assembly) 
+    conda:
+        "../environment.yaml"
     shell:
         '''
         quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assemblers}
+        '''
+
+rule quastfinal:
+    input:
+        outputassemblies = os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta")
+    output:
+        directory(os.path.join(OUTPUTDIR, "quastfinal", "{assembly}"))
+    params:
+        assemblers = ",".join(ASSEMBLERS),
+        assembly = "{assembly}",
+        outputvelvet = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa"),
+        outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa"),
+        outputassemblies = os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta")
+    conda:
+        "../environment.yaml"
+    shell:
+        '''
+        #python rnaQUAST.py -c {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly}
+        quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly}
+        '''
+        
+rule quastmerge:
+    input:
+        outputassemblies = os.path.join(OUTPUTDIR, "cluster2", "{assembly}_merged.fasta")
+    output:
+        directory(os.path.join(OUTPUTDIR, "quastmerged", "{assembly}"))
+    params:
+        assemblers = ",".join(ASSEMBLERS),
+        assembly = "{assembly}",
+        outputassemblies = os.path.join(OUTPUTDIR, "cluster2", "{assembly}_merged.fasta")
+    conda:
+        "../environment.yaml"
+    shell:
+        '''
+        #python rnaQUAST.py -c {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly}
+        quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly}
         '''

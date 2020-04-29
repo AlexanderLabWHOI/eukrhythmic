@@ -1,5 +1,7 @@
 #!/bin/bash
 #SBATCH --qos=unlim
+#SBATCH --time=5000
+#SBATCH --partition=scavenger
 #SBATCH --mem=100gb
 
 snakemake   \

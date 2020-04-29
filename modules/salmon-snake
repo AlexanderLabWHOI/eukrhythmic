@@ -27,7 +27,27 @@ rule salmon:
         decoysfile = "decoys_{assembly}.txt",
         kval = 31
     shell:
-    '''
-    salmon index -t {input.trinityfile} -i {params.indexname} --decoys {params.decoysfile} -k {params.kval}
-    salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output}
-    '''
+        """
+        salmon index -t {input.trinityfile} -i {params.indexname} -k {params.kval}
+        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output}
+        """
+    
+rule salmon_clust3:
+    input: 
+        assemblyfile = os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta"),
+        left = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
+        right = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+    output:
+        directory(os.path.join(OUTPUTDIR, "salmon", "salmon_quant_assembly_{assembly}"))
+    params:
+        libtype = "A",
+        indexname = os.path.join(OUTPUTDIR, "salmon_index_assembly_{assembly}"),
+        decoysfile = "decoys_{assembly}.txt",
+        kval = 31
+    conda:
+        "../environment.yaml"
+    shell:
+        """
+        salmon index -t {input.assemblyfile} -i {params.indexname} -k {params.kval}
+        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output}
+        """

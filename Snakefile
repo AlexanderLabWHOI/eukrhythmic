@@ -57,6 +57,8 @@ include: "modules/quast-snake"
 include: "modules/cd-hit-snake"
 include: "modules/manipnames-snake"
 include: "modules/transdecoder-snake"
+include: "modules/busco-snake"
+include: "modules/salmon-snake"
 
 rule all:
     input:
@@ -84,10 +86,17 @@ rule all:
         # QUAST OUTPUTS
         quast = expand(os.path.join("{base}", "quast", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
         # INDIVIDUAL CLUSTERING OUTPUTS
-        clustering1 = expand(os.path.join("{base}", "cluster1", "{assembly}_{assembler}.fasta"), zip, base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
+        clustering1 = expand(os.path.join("{base}", "cluster1", "{assembly}_{assembler}.fasta"), base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
         # TRANSDECODER OUTPUTS - merging occurs within this step
-        transdecoder = expand(os.path.join("{base}", "transdecoder", "{assembly}.fasta.transdecoder.cds"), zip, base = OUTPUTDIR, assembly = assemblygroups),
+        transdecoder = expand(os.path.join("{base}", "transdecoder", "{assembly}.fasta.transdecoder.cds"),  base = OUTPUTDIR, assembly = assemblygroups),
         # MERGED CLUSTERING OUTPUTS
-        clustering2 = expand(os.path.join("{base}", "cluster2", "{assembly}_merged.fasta"), zip, base = OUTPUTDIR, assembly = assemblygroups),
+        clustering2 = expand(os.path.join("{base}", "cluster2", "{assembly}_merged.fasta"), base = OUTPUTDIR, assembly = assemblygroups),
         # TRANSDECODED CLUSTERING OUTPUTS
-        clustering3 = expand(os.path.join("{base}", "cluster3", "{assembly}_transdecoded.fasta"), zip, base = OUTPUTDIR, assembly = assemblygroups)
+        clustering3 = expand(os.path.join("{base}", "cluster3", "{assembly}_transdecoded.fasta"), base = OUTPUTDIR, assembly = assemblygroups),
+        # SALMON QUANTIFICATION OF RAW AGAINST FINAL ASSEMBLY
+        salmon = expand(os.path.join("{base}", "salmon", "salmon_quant_assembly_{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
+        # QUAST QUALITY ASSESSMENT OF FINAL ASSEMBLY
+        quastfinal = expand(os.path.join("{base}", "quastfinal", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
+        quastmerged = expand(os.path.join("{base}", "quastmerged", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
+        # BUSCO ASSESSMENT OF FINAL ASSEMBLY
+        busco = expand(os.path.join("{base}", "busco", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups)
