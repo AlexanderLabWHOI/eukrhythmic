@@ -12,3 +12,5 @@
 *.sig
 *.fastq.gz
 *transdecoder*
+input/euk*/*
+input/pro*/*

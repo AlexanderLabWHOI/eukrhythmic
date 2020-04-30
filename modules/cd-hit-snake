@@ -1,0 +1,71 @@
+configfile: "config.yaml"
+
+import io
+import os
+from snakemake.exceptions import print_exception, WorkflowError
+
+OUTPUTDIR = config["outputDIR"]
+INPUTDIR = config["inputDIR"]
+
+ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
+ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+ASSEMBLERS = list(config['assemblers'])
+
+def get_samples(assemblygroup):
+    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
+    return samplelist
+
+rule cdhit_individualclusters:
+    input: 
+        infiles = os.path.join(OUTPUTDIR, "renamed", "{assembly}_{assembler}.fasta")
+    output:
+        os.path.join(OUTPUTDIR, "cluster1", "{assembly}_{assembler}.fasta")
+    params:
+        threads = 10,
+        maxmemory = 2549, # -G o indicates local sequence identity.
+        identityparam = 1.00,
+        mincoverageshorter = 1.00,
+        mincoveragelong = 0.005
+    conda:
+        "../environment.yaml"    
+    shell:
+        '''
+        cd-hit-est -i {input.infiles} -o {output} -T {params.threads} -M {params.maxmemory} -G o -c {params.identityparam} -aS {params.mincoverageshorter} -aL {params.mincoveragelong} 
+        '''
+    
+rule cdhit_mergedclusters:
+    input: 
+        infiles = os.path.join(OUTPUTDIR, "merged", "{assembly}_merged.fasta")
+    output:
+        os.path.join(OUTPUTDIR, "cluster2", "{assembly}_merged.fasta")
+    params:
+        threads = 10,
+        maxmemory = 2549, # -G o indicates local sequence identity.
+        identityparam = 1.00,
+        mincoverageshorter = 0.98,
+        mincoveragelong = 0.005
+    conda:
+        "../environment.yaml"
+    shell:
+        '''
+        cd-hit-est -i {input.infiles} -o {output} -T {params.threads} -M {params.maxmemory} -G o -c {params.identityparam} -aS {params.mincoverageshorter} -aL {params.mincoveragelong} 
+        '''
+        
+        
+rule cdhit_transdecoded:
+    input: 
+        infiles = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.fasta.transdecoder.cds")
+    output:
+        os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta")
+    params:
+        threads = 10,
+        maxmemory = 2549, # -G o indicates local sequence identity.
+        identityparam = 1.00,
+        mincoverageshorter = 0.98,
+        mincoveragelong = 0.005
+    conda:
+        "../environment.yaml"
+    shell:
+        '''
+        cd-hit-est -i {input.infiles} -o {output} -T {params.threads} -M {params.maxmemory} -G o -c {params.identityparam} -aS {params.mincoverageshorter} -aL {params.mincoveragelong} 
+        '''

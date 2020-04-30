@@ -1,0 +1,16 @@
+INFO:__main__	***** Start a BUSCO v4.0.6 analysis, current time: 04/30/2020 09:32:52 *****
+DEBUG:busco.ConfigManager	Getting config file
+ERROR:__main__	Please specify a BUSCO config file using either (i) an environment variable by entering 'export BUSCO_CONFIG_FILE=/path/to/config.ini' or (ii) using the command line flag --config /path/to/config.ini
+DEBUG:__main__	Please specify a BUSCO config file using either (i) an environment variable by entering 'export BUSCO_CONFIG_FILE=/path/to/config.ini' or (ii) using the command line flag --config /path/to/config.ini
+Traceback (most recent call last):
+  File "./scripts/busco/src/busco/run_BUSCO.py", line 170, in run_BUSCO
+    config_manager = BuscoConfigManager(params)
+  File "/vortexfs1/home/akrinos/.local/lib/python3.5/site-packages/busco/ConfigManager.py", line 18, in __init__
+    self.get_config_file()
+  File "/vortexfs1/home/akrinos/.local/lib/python3.5/site-packages/busco/BuscoLogger.py", line 55, in wrapped_func
+    self.retval = func(*args, **kwargs)
+  File "/vortexfs1/home/akrinos/.local/lib/python3.5/site-packages/busco/ConfigManager.py", line 38, in get_config_file
+    raise SystemExit("Please specify a BUSCO config file using either "
+SystemExit: Please specify a BUSCO config file using either (i) an environment variable by entering 'export BUSCO_CONFIG_FILE=/path/to/config.ini' or (ii) using the command line flag --config /path/to/config.ini
+ERROR:__main__	BUSCO analysis failed !
+ERROR:__main__	Check the logs, read the user guide, and check the BUSCO issue board on https://gitlab.com/ezlab/busco/issues

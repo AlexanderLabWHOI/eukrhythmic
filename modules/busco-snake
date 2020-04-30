@@ -1,0 +1,35 @@
+configfile: "config.yaml"
+
+import io
+import os
+import pandas as pd
+from snakemake.exceptions import print_exception, WorkflowError
+
+OUTPUTDIR = config['outputDIR']
+ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+ASSEMBLERS = list(config['assemblers'])
+ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
+ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+
+# --auto-lineage-euk is better if you download SEPP
+rule busco:
+    input:
+        outputassemblies = os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta")
+    output:
+        directory(os.path.join(OUTPUTDIR, "busco", "{assembly}"))
+    params:
+        assemblers = ",".join(ASSEMBLERS),
+        assembly = "{assembly}"
+    conda:
+        "../envs/busco-env.yaml"
+    shell:
+        """
+        #busco --list-datasets
+        #-l eukaryota_odb10
+        #cd ./scripts/busco
+        #python3 setup.py install --user
+        #cd ../..
+        #python ./scripts/busco/src/busco/run_BUSCO.py -i {input.outputassemblies} --auto-lineage-euk -o {output} -c 8 -m transcriptome --long
+        busco -f -i {input.outputassemblies} -l ./input/eukaryota_odb10 -o {params.assembly}_busco -c 8 -m transcriptome --long
+        mv run_{params.assembly}_busco {output}
+        """
