@@ -12,6 +12,8 @@ ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.Samp
 
 def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
+    if assemblygroup == "merged":
+        samplelist = list(ASSEMBLYFILE['FastqFile'])
     return samplelist
 
 rule salmon:
