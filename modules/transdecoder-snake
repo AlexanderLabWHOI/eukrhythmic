@@ -13,7 +13,7 @@ ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.Samp
 
 rule transdecoder:
     input:
-        merged = os.path.join(OUTPUTDIR, "merged", "{assembly}_merged.fasta")
+        merged = os.path.join(OUTPUTDIR, "merged_all", "{assembly}.fasta")
     output:
         pep = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.fasta.transdecoder.pep"),
         gff = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.fasta.transdecoder.gff3"),
@@ -22,8 +22,7 @@ rule transdecoder:
     log:
         "logs/transdecoder/outputlog_{assembly}_transdecoder.log"
     params:
-        inputname = "{assembly}",
-        merged = "{assembly}_merged",
+        merged = "{assembly}",
         outputdir = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.pep"),
         size = 100
     threads: 4
