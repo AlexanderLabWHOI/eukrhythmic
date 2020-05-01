@@ -14,11 +14,15 @@ RENAMEDDIR = os.path.join(OUTPUTDIR, config['renamedDIR'])
 ASSEMBLERS = list(config['assemblers'])
 
 def getallmergedlist():
-    return([os.path.join(OUTPUTDIR, "merged", curr) for curr in os.listdir(os.path.join(OUTPUTDIR, "merged"))])
+    mergednames = [os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in ASSEMBLYFILE.AssemblyGroup]
+    return(mergednames)
+    #return([os.path.join(OUTPUTDIR, "merged", curr) for curr in os.listdir(os.path.join(OUTPUTDIR, "merged"))])
     
 def getallmerged():
-    return(" ".join([os.path.join(OUTPUTDIR, "merged", curr) for curr in os.listdir(os.path.join(OUTPUTDIR, "merged"))]))
-
+    mergednames = [os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in ASSEMBLYFILE.AssemblyGroup]
+    return(" ".join(mergednames))
+    #return(" ".join([os.path.join(OUTPUTDIR, "merged", curr) for curr in os.listdir(os.path.join(OUTPUTDIR, "merged"))]))
+    
 def combineassemblers(assembly):
     return(" ".join([os.path.join(RENAMEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS]))
   
