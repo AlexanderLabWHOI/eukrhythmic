@@ -13,9 +13,10 @@ assemblers:
     - velvet
 #path: /vortexfs1/omics/alexander/data/
 #assembly: input/assemblyfile.txt
+jobname: testbats
 adapter: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/adapters/adapters_nextera.fa
 separategroups: 1
-outputDIR: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/20Apr2020
+outputDIR: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/8May2020
 assembledDIR: assembled
 renamedDIR: renamed
 scratch: /vortexfs1/scratch/akrinos/bats-metaT/6April2020/

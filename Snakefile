@@ -72,25 +72,18 @@ rule all:
         fastqc2 = expand(["{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.html", "{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.zip"], zip, base = OUTPUTDIR, sample = filenames, num = [1,2]),
         # ASSEMBLER OUTPUTS
         assemblersout = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"), base = ASSEMBLEDDIR, assembly = assemblygroups, assembler = ASSEMBLERS), 
-        # ~ all of this is now obsolete ~
-        # TRINITY OUTPUTS
-        #trinity = expand(os.path.join("{base}", "trinity_results_assembly_{assembly}", "Trinity.fasta"), base = OUTPUTDIR, assembly = assemblygroups),
-        # TRANSABYSS OUTPUTS
-        #transabyss = expand(os.path.join("{base}", "transabyss_{k}_{assembly}", "{assembly}_{k}_transabyss.fasta-final.fa"), zip, base = OUTPUTDIR, assembly = assemblygroups, k = KMERVALS),
-        # TRANSABYSS-MERGE OUTPUTS
-        # transabyssmerged = expand(os.path.join("{base}", "transabyss", "{assembly}_transabyss.fasta"), zip, base = OUTPUTDIR, assembly = assemblygroups),
-        # VELVET OUTPUTS
-        # velvet = expand(os.path.join("{base}", "velvet", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
-        # MEGAHIT OUTPUTS
-        # megahit = expand(os.path.join("{base}", "megahit", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
         # QUAST OUTPUTS
         quast = expand(os.path.join("{base}", "quast", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
         # INDIVIDUAL CLUSTERING OUTPUTS
         clustering1 = expand(os.path.join("{base}", "cluster1", "{assembly}_{assembler}.fasta"), base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
         # MERGED CLUSTERING OUTPUTS
         clustering2 = expand(os.path.join("{base}", "cluster2", "{assembly}_merged.fasta"), base = OUTPUTDIR, assembly = assemblygroups),
+        # TRANSDECODER OUTPUTS - temporarily, run TransDecoder on the individual assemblies
+        transdecoder_temp = expand(os.path.join("{base}", "transdecoder_indiv", "{assembly}_{assembler}.fasta.transdecoder.cds"),  base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
         # TRANSDECODER OUTPUTS - second merging occurs within this step
         transdecoder = expand(os.path.join("{base}", "transdecoder", "{assembly}.fasta.transdecoder.cds"),  base = OUTPUTDIR, assembly = "merged"),
+        # SALMON QUANTIFICATION OF RAW AGAINST INDIVIDUAL ASSEMBLIES/ASSEMBLERS
+        salmon_indiv = expand(os.path.join("{base}", "salmon_indiv", "salmon_quant_assembly_{assembly}_{assembler}"), base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
         # TRANSDECODED CLUSTERING OUTPUTS
         clustering3 = expand(os.path.join("{base}", "cluster3", "{assembly}_transdecoded.fasta"), base = OUTPUTDIR, assembly = "merged"),
         # SALMON QUANTIFICATION OF RAW AGAINST FINAL ASSEMBLY

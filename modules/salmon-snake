@@ -28,9 +28,28 @@ rule salmon:
         indexname = os.path.join(OUTPUTDIR, "salmon_index_assembly_{assembly}"),
         decoysfile = "decoys_{assembly}.txt",
         kval = 31
+    conda: "../environment.yaml"
     shell:
         """
         salmon index -t {input.trinityfile} -i {params.indexname} -k {params.kval}
+        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output}
+        """
+        
+rule salmon_indiv:
+    input: 
+        fastafile = os.path.join(OUTPUTDIR, "assembled", "{assembly}_{assembler}.fasta"),
+        left = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
+        right = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+    output:
+        directory(os.path.join(OUTPUTDIR, "salmon_indiv", "salmon_quant_assembly_{assembly}_{assembler}"))
+    params:
+        libtype = "A",
+        indexname = os.path.join(OUTPUTDIR, "salmon_indiv", "salmon_index_assembly_{assembly}_{assembler}"),
+        kval = 31
+    conda: "../environment.yaml"
+    shell:
+        """
+        salmon index -t {input.fastafile} -i {params.indexname} -k {params.kval}
         salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output}
         """
     

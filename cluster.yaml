@@ -41,15 +41,15 @@ trimmomatic:
 
 trinity:
     account: akrinos
-    queue: scavenger
-    nodes: 3
-    threads: 8
+    queue: scavenger #bigmem
+    nodes: 1
+    threads: 36
     mem: 180
     time: 5000
 
 velvet:
     account: akrinos
-    queue: scavenger
+    queue: compute #scavenger
     nodes: 3
     threads: 8
     mem: 180

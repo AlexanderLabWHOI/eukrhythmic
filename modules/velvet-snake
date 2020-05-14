@@ -20,7 +20,6 @@ rule velvet:
         r1 = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
         r2 = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
     output:
-        #velvetdir = directory(os.path.join(OUTPUTDIR, "velvet", "{assembly}")),
         velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa")
     params:
         velvetdir = directory(os.path.join(OUTPUTDIR, "velvet", "{assembly}"))
