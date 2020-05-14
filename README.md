@@ -15,13 +15,17 @@ Initialize the pipeline by setting up a `conda` environment, such that all the r
 conda env create metatrans --file environment.yaml
 ```
 
+## Pipeline schematic
+
+![Schematic](input/eukrhythmic.png)
+
 ## How to use the pipeline
 
 To use the pipeline, the most important thing to do is to populate `config.yaml` with the paths to your particular input and output directories. Personalizing this will allow the pipeline to pull the relevant files when computing the results of individual rules, so this step is crucial. 
 
 All input `fastq` files must be contained in the same directory, the `inputDIR` location in the `config.yaml` file. Only these metatranscriptomic data will be included in the analysis. These files do _not_, however, need to be located inside the `eukrhythmic` directory (and it is recommended that they are located elsewhere). 
 
-The next thing that needs to be done is to produce the 
+The next thing that needs to be done is to produce the sample file, containing all of the relevant information to run the 
 
 ## The `metaT_sample` file 
 

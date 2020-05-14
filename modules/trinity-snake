@@ -10,6 +10,7 @@ ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
 ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
 DROPSPIKE = config['dropspike']
+SCRATCHDIR = config['scratch']
 
 def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
@@ -22,10 +23,6 @@ else:
     LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_1.clean.fastq.gz"), samples = get_samples(filename.assembly))
     RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_2.clean.fastq.gz"), samples = get_samples(filename.assembly))
     
-    
-#Trinity --seqType fq --max_memory 50G --left {input.left} --right {input.right}
-#Trinity --CPU 8 --seqType fq --max_memory 40G --left {input.left} --right {input.right} --SS_lib_type RF
-
 # This module needs to grab all of the list of the 
 # individual files associated with the specified
 # assembly group, after the scripts/make-assembly-file.py
@@ -55,17 +52,20 @@ rule trinity_cleanup:
     input:
         trinityfile = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta")
     output:
-        os.path.join(ASSEMBLEDDIR, "{assembly}_trinity.fasta")
+        assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_trinity.fasta"),
+        jellyfish = os.path.join(OUTPUTDIR, "jellyfish", "{assembly}_trinity.fasta")
     params:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}"),
         left = LEFTFILE,
-        right = RIGHTFILE
+        right = RIGHTFILE,
+        scratch = SCRATCHDIR
     threads: 4
     conda: '../environment.yaml'
     shell:
         '''
         cp {input.trinityfile} {output}
         #rm -r {params.outdir}
+        mv {params.outdir} {params.scratch}
         '''
 

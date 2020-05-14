@@ -9,11 +9,12 @@ OUTPUTDIR = config["outputDIR"]
 INPUTDIR = config["inputDIR"]
 DATADIR = config["dataDIR"]
 ADAPTER = config["adapter"]
+SUFFIX = config["inputsuffix"]
 
 rule trimmomatic:
     input:
-        r1 = os.path.join(INPUTDIR, "{sample}_R1_001.fastq.gz"),
-        r2 = os.path.join(INPUTDIR, "{sample}_R2_001.fastq.gz"),
+        r1 = os.path.join(INPUTDIR, "{sample}_R1" + SUFFIX),
+        r2 = os.path.join(INPUTDIR, "{sample}_R2" + SUFFIX),
         adapters = ADAPTER
     output:
         p1 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_1.trimmed.fastq.gz"),
@@ -27,11 +28,3 @@ rule trimmomatic:
         '''
         trimmomatic PE {input.r1} {input.r2} {output.p1} {output.s1} {output.p2} {output.s2} ILLUMINACLIP:{input.adapters}:2:30:7 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:2 MINLEN:50
         '''
-    #params:
-    #    trimmer=["TRAILING:3"],
-    #    extra="-phred33",
-    #threads:
-    #    32
-    #wrapper:
-    #    "0.36.0/bio/trimmomatic/pe"
-

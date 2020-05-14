@@ -3,6 +3,7 @@ configfile: "config.yaml"
 OUTPUTDIR = config["outputDIR"]
 SCRATCHDIR = config["scratch"]
 INPUTDIR = config["inputDIR"]
+SUFFIX = config["inputsuffix"]
 
 import io
 import os
@@ -11,7 +12,7 @@ from snakemake.exceptions import print_exception, WorkflowError
 
 rule fastqc:
 	input:
-		os.path.join(INPUTDIR,"{sample}_R{num}_001.fastq.gz")
+		os.path.join(INPUTDIR,"{sample}_R{num}" + SUFFIX)
 	output:
 		html = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}.html"),
 		zip = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}.zip")

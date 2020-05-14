@@ -9,6 +9,7 @@ OUTPUTDIR = config['outputDIR']
 ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
 ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+SCRATCHDIR = config['scratch']
 
 def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
@@ -34,9 +35,11 @@ rule megahit_cleanup:
     output:
         os.path.join(ASSEMBLEDDIR, "{assembly}_megahit.fasta")
     params:
-        outdir = os.path.join(OUTPUTDIR, "megahit", "{assembly}")
+        outdir = os.path.join(OUTPUTDIR, "megahit", "{assembly}"),
+        scratch = SCRATCHDIR
     shell:
         '''
         cp {input.megahitfile} {output}
+        mv {params.outdir} {params.scratch}
         #rm -r {params.outdir}
         '''

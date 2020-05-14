@@ -1,5 +1,7 @@
 metaT_sample: input/metaT_cohen.txt
 inputDIR: /vortexfs1/omics/alexander/data/BATS2019-clio-metaT
+inputsuffix: _001.fastq.gz
+checkqual: 1 # flag to be used to decide whether QUAST/salmon quantification performed
 dataDIR: input
 spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
 dropspike: 1
@@ -19,4 +21,4 @@ separategroups: 1
 outputDIR: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/8May2020
 assembledDIR: assembled
 renamedDIR: renamed
-scratch: /vortexfs1/scratch/akrinos/bats-metaT/6April2020/
+scratch: /vortexfs1/scratch/akrinos/bats-metaT/8May2020 # this is where all the intermediate outputs will go.
