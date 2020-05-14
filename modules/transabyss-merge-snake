@@ -1,0 +1,36 @@
+configfile: "config.yaml"
+
+import io
+import os
+import pandas as pd
+from snakemake.exceptions import print_exception, WorkflowError
+
+OUTPUTDIR = config['outputDIR']
+ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
+ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+DROPSPIKE = config['dropspike']
+KMERVALS = list(config['kmers'])
+print(KMERVALS)
+MINKVAL = int(min(KMERVALS))
+MAXKVAL = int(max(KMERVALS))
+print(MINKVAL)
+PREFIXKS = " ".join([".k" + str(curr) for curr in KMERVALS])
+    
+rule transabyssmerge:
+    input:
+        files = [os.path.join(OUTPUTDIR, "transabyss_" + str(curr) + "_{assembly}", "{assembly}_" + str(curr) + "_transabyss.fasta-final.fa") for curr in KMERVALS]
+    output:
+        os.path.join(OUTPUTDIR, "transabyss", "{assembly}_transabyss.fasta")
+    log:
+        "logs/transabyss/outputlog_{assembly}_transabyssmerge.log"
+    params:
+        extra = "",
+        minkval = MINKVAL,
+        maxkval = MAXKVAL,
+        prefixks = PREFIXKS
+    threads: 4
+    conda: '../environment.yaml'
+    shell:
+        '''
+        transabyss-merge {input.files} --mink {params.minkval} --maxk {params.maxkval} --prefix {params.prefixks} --out {output}
+        '''

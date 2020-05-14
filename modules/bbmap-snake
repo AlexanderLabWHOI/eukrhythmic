@@ -1,0 +1,30 @@
+configfile: "config.yaml"
+
+import io
+import os
+import pandas as pd
+from snakemake.exceptions import print_exception, WorkflowError
+
+OUTPUTDIR = config['outputDIR']
+ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
+ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+SPIKEFILE = config['spikefile']
+
+rule bbmap:
+    input:
+        p1 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_1.trimmed.fastq.gz"),
+        p2 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_2.trimmed.fastq.gz")
+    output:
+        r1 = os.path.join(OUTPUTDIR, "bbmap", "{sample}_1.clean.fastq.gz"),
+        r2 = os.path.join(OUTPUTDIR, "bbmap", "{sample}_2.clean.fastq.gz")
+    log:
+        "logs/trinity/outputlog_{sample}_bbmap.log"
+    params:
+        spikefile = SPIKEFILE
+    threads: 4
+    conda: '../environment.yaml'
+    shell:
+        '''
+        bbmap.sh in1={input.p1} in2={input.p2} ref={params.spikefile} outu1={output.r1} outu2={output.r2}
+        '''
+

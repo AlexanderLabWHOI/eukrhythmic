@@ -1,0 +1,76 @@
+configfile: "config.yaml"
+
+import io
+import os
+from snakemake.exceptions import print_exception, WorkflowError
+
+OUTPUTDIR = config["outputDIR"]
+INPUTDIR = config["inputDIR"]
+
+ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
+ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+RENAMEDDIR = os.path.join(OUTPUTDIR, config['renamedDIR'])
+ASSEMBLERS = list(config['assemblers'])
+
+def getallmergedlist():
+    mergednames = [os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in ASSEMBLYFILE.AssemblyGroup]
+    return(mergednames)
+    #return([os.path.join(OUTPUTDIR, "merged", curr) for curr in os.listdir(os.path.join(OUTPUTDIR, "merged"))])
+    
+def getallmerged():
+    mergednames = [os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in ASSEMBLYFILE.AssemblyGroup]
+    return(" ".join(mergednames))
+    #return(" ".join([os.path.join(OUTPUTDIR, "merged", curr) for curr in os.listdir(os.path.join(OUTPUTDIR, "merged"))]))
+    
+def combineassemblers(assembly):
+    return(" ".join([os.path.join(RENAMEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS]))
+  
+def combineassemblerslist(assembly):
+    return([os.path.join(RENAMEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS])
+ 
+print("Combined assembly for assembly = HN004: ")
+combineassemblers("HN004")
+
+# this rule is meant to change the name of the headers for the FASTA files for 
+# each of the assemblies so that we can track where each of the headers originally
+# came from
+
+rule rename:
+    input:
+        assemblyfiles = os.path.join(ASSEMBLEDDIR, "{assembly}_{assembler}.fasta")
+    output:
+        os.path.join(OUTPUTDIR, "renamed", "{assembly}_{assembler}.fasta")
+    params:
+        assemblername = "{assembler}"
+    shell:
+        '''
+        sed 's/>/>{params.assemblername}_/' {input.assemblyfiles} > {output}
+        '''
+
+
+# this rule merges the output of the first cd-hit-est clustering step
+rule merge:
+    input:
+        assemblyfiles = lambda wildcards: combineassemblerslist(wildcards.assembly)
+    output:
+        os.path.join(OUTPUTDIR, "merged", "{assembly}_merged.fasta")
+    params:
+        assemblyfiles = lambda wildcards: combineassemblers(wildcards.assembly)
+    shell:
+        '''
+        cat {params.assemblyfiles} > {output}
+        '''
+        
+# this rule merges all of the different assemblies of samples
+rule merge_all:
+    input:
+        assemblyfiles = getallmergedlist()
+    output:
+        os.path.join(OUTPUTDIR, "merged_all", "{assembly}.fasta")
+    params:
+        assemblyfiles = getallmerged()
+    shell:
+        '''
+        cat {params.assemblyfiles} > {output}
+        '''

@@ -7,7 +7,68 @@ from snakemake.exceptions import print_exception, WorkflowError
 OUTPUTDIR = config["outputDIR"]
 INPUTDIR = config["inputDIR"]
 
+ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
+ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+
+def get_samples(assemblygroup):
+    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
+    if assemblygroup == "merged":
+        samplelist = list(ASSEMBLYFILE['FastqFile'])
+    return samplelist
+
 rule salmon:
     input: 
+        trinityfile = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta"),
+        left = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
+        right = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+    output:
+        directory(os.path.join(OUTPUTDIR, "salmon_quant_assembly_{assembly}"))
+    params:
+        libtype = "A",
+        indexname = os.path.join(OUTPUTDIR, "salmon_index_assembly_{assembly}"),
+        decoysfile = "decoys_{assembly}.txt",
+        kval = 31
+    conda: "../environment.yaml"
+    shell:
+        """
+        salmon index -t {input.trinityfile} -i {params.indexname} -k {params.kval}
+        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output}
+        """
         
-
+rule salmon_indiv:
+    input: 
+        fastafile = os.path.join(OUTPUTDIR, "assembled", "{assembly}_{assembler}.fasta"),
+        left = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
+        right = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+    output:
+        directory(os.path.join(OUTPUTDIR, "salmon_indiv", "salmon_quant_assembly_{assembly}_{assembler}"))
+    params:
+        libtype = "A",
+        indexname = os.path.join(OUTPUTDIR, "salmon_indiv", "salmon_index_assembly_{assembly}_{assembler}"),
+        kval = 31
+    conda: "../environment.yaml"
+    shell:
+        """
+        salmon index -t {input.fastafile} -i {params.indexname} -k {params.kval}
+        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output}
+        """
+    
+rule salmon_clust3:
+    input: 
+        assemblyfile = os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta"),
+        left = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
+        right = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+    output:
+        directory(os.path.join(OUTPUTDIR, "salmon", "salmon_quant_assembly_{assembly}"))
+    params:
+        libtype = "A",
+        indexname = os.path.join(OUTPUTDIR, "salmon_index_assembly_{assembly}"),
+        decoysfile = "decoys_{assembly}.txt",
+        kval = 31
+    conda:
+        "../environment.yaml"
+    shell:
+        """
+        salmon index -t {input.assemblyfile} -i {params.indexname} -k {params.kval}
+        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output}
+        """

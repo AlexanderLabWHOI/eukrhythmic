@@ -11,3 +11,12 @@
 *.fq
 *.sig
 *.fastq.gz
+*transdecoder*
+input/euk*/*
+input/pro*/*
+slur*
+log/*
+*/log/*
+tmp*
+.ipynb_checkpoints/
+ref/

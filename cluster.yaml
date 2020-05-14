@@ -1,11 +1,11 @@
 __default__:
     system: 'slurm'
     account: akrinos
-    time: 120 # in minutes
-    mem: 40 # in GB
+    time: 1400 # in minutes
+    mem: 180 # in GB
     threads: 6
     queue: compute
-    nodes: 1
+    nodes: 3
     command_options:
         slurm:
             command: "sbatch --parsable --qos=unlim"
@@ -40,7 +40,25 @@ trimmomatic:
     time: 1400
 
 trinity:
-    queue: compute
+    account: akrinos
+    queue: scavenger #bigmem
+    nodes: 1
+    threads: 36
+    mem: 180
+    time: 5000
+
+velvet:
+    account: akrinos
+    queue: compute #scavenger
+    nodes: 3
     threads: 8
-    mem: 100
-    time: 1000
+    mem: 180
+    time: 10000
+
+transabyssmerge:
+    account: akrinos
+    queue: scavenger
+    nodes: 3
+    threads: 8
+    mem: 180
+    time: 10000

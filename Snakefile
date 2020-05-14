@@ -11,50 +11,85 @@ from snakemake.exceptions import print_exception, WorkflowError
                                     
 DATAFILE = config["metaT_sample"]
 INPUTDIR = config["inputDIR"]
-INPUTDIRs = config["inputDIRs"]
 OUTPUTDIR = config["outputDIR"]
-ASSEMBLYFILE = config["assembly"]
 SCRATCHDIR = config["scratch"]
-INPUTFILES = [[os.path.join(curr,f) for f in os.listdir(os.path.join(INPUTDIR, curr)) if isfile(join(os.path.join(INPUTDIR, curr), f))] for curr in INPUTDIRs.split(",")];
-INPUTFILES = [item for sublist in INPUTFILES for item in sublist]
-#print(INPUTFILES)
+KMERVALS = list(config['kmers'])
+ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+ASSEMBLERS = list(config['assemblers'])
+print(KMERVALS)
 
-samplenames = list(pd.read_csv(DATAFILE, sep = "\t").SampleID);
-
-
-# create a dictionary that contains a list with the relevant
-# information about each sample: the barcode and the L code
-def get_base_names():
-    extensions = [] 
-    filenames = []
-    for i in INPUTFILES:
-        split_i = i.split("_")
-        extensions.append(split_i[len(split_i)-1]) # sequence.fastq or sequence.fq
-        filenames.append("_".join(split_i[0:(len(split_i)-2)]))  # we also want to cut out the 1 or 2
-        
-    return filenames,extensions
-    
-filenames,extensions = get_base_names()
+SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
+samplenames = list(SAMPLEINFO.SampleID);
+fastqnames = list(SAMPLEINFO.FastqFile);
+print(fastqnames)
+for currfile in fastqnames:
+    if isfile(os.path.join(INPUTDIR, currfile + "_R1_001.fastq.gz")):
+        print("yo")
+    else:
+        print(os.path.join(INPUTDIR, currfile + "_R1_001.fastq.gz"))
+filenames = [currfile for currfile in fastqnames if isfile(os.path.join(INPUTDIR, currfile + "_R1_001.fastq.gz"))]
 
 print(filenames)
 
 if config["separategroups"] == 1:
-    assemblygroups = list(set(pd.read_csv(ASSEMBLYFILE, sep = "\t").AssemblyGroup))
+    assemblygroups = list(set(SAMPLEINFO.AssemblyGroup))
 else:
     assemblygroups = [1] * len(INPUTFILES)
+    
+print(assemblygroups)
+
+def combineassemblers(assembly):
+    return(" ".join([os.path.join(ASSEMBLEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS]))
+    
+print("Combined assembly for assembly = HN004: ")
+print(combineassemblers("HN004"))
 
 include: "modules/fastqc-snake"
+include: "modules/bbmap-snake"
 include: "modules/trimmomatic-snake"
 include: "modules/fastqc-trimmed-snake"
-include: "modules/trinity-wrapper-snake"
+include: "modules/trinity-snake"
+include: "modules/velvet-snake"
+include: "modules/megahit-snake"
+include: "modules/transabyss-snake"
+include: "modules/transabyss-merge-snake"
+include: "modules/quast-snake"
+include: "modules/cd-hit-snake"
+include: "modules/manipnames-snake"
+include: "modules/transdecoder-snake"
+include: "modules/busco-snake"
+include: "modules/salmon-snake"
 
 rule all:
     input:
         # FASTQC OUTPUTS
-        fastqc1 = expand(["{base}/qc/fastqc/{sample}_{oldext}.html", "{base}/qc/fastqc/{sample}_{oldext}.zip"], zip, base = OUTPUTDIR, sample = filenames, oldext = extensions),
+        fastqc1 = expand(["{base}/qc/fastqc/{sample}_{num}.html", "{base}/qc/fastqc/{sample}_{num}.zip"], zip, base = OUTPUTDIR, sample = filenames, num = [1,2]),
+        # BBMAP OUTPUTS
+        bbmap = expand(os.path.join("{base}", "bbmap", "{sample}_{num}.clean.fastq.gz"), zip, base = OUTPUTDIR, sample = filenames, num = [1,2]),
         # TRIMMOMATIC OUTPUTS
-        trimmed = expand(["{base}/firsttrim/{sample}_{oldext}_1.trimmed.fastq.gz", "{base}/firsttrim/{sample}_{oldext}_2.trimmed.fastq.gz"], zip, base = OUTPUTDIR, sample = filenames, oldext = extensions),
+        trimmed = expand(["{base}/firsttrim/{sample}_1.trimmed.fastq.gz", "{base}/firsttrim/{sample}_2.trimmed.fastq.gz"], zip, base = OUTPUTDIR, sample = filenames),
         # FASTQC 2 OUTPUTS (trimmed)
-        fastqc2 = expand(["{base}/qc/fastqc_trimmed/{sample}_{oldext}.trimmed.html", "{base}/qc/fastqc_trimmed/{sample}_{oldext}.trimmed.zip"], zip, base = OUTPUTDIR, sample = filenames, oldext = extensions),
-        # TRINITY OUTPUTS
-        trinity = expand("{base}/trinity_results_assembly_{assembly}/Trinity.fasta", base = OUTPUTDIR, assembly = assemblygroups)
+        fastqc2 = expand(["{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.html", "{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.zip"], zip, base = OUTPUTDIR, sample = filenames, num = [1,2]),
+        # ASSEMBLER OUTPUTS
+        assemblersout = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"), base = ASSEMBLEDDIR, assembly = assemblygroups, assembler = ASSEMBLERS), 
+        # QUAST OUTPUTS
+        quast = expand(os.path.join("{base}", "quast", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
+        # INDIVIDUAL CLUSTERING OUTPUTS
+        clustering1 = expand(os.path.join("{base}", "cluster1", "{assembly}_{assembler}.fasta"), base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
+        # MERGED CLUSTERING OUTPUTS
+        clustering2 = expand(os.path.join("{base}", "cluster2", "{assembly}_merged.fasta"), base = OUTPUTDIR, assembly = assemblygroups),
+        # TRANSDECODER OUTPUTS - temporarily, run TransDecoder on the individual assemblies
+        transdecoder_temp = expand(os.path.join("{base}", "transdecoder_indiv", "{assembly}_{assembler}.fasta.transdecoder.cds"),  base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
+        # TRANSDECODER OUTPUTS - second merging occurs within this step
+        transdecoder = expand(os.path.join("{base}", "transdecoder", "{assembly}.fasta.transdecoder.cds"),  base = OUTPUTDIR, assembly = "merged"),
+        # SALMON QUANTIFICATION OF RAW AGAINST INDIVIDUAL ASSEMBLIES/ASSEMBLERS
+        salmon_indiv = expand(os.path.join("{base}", "salmon_indiv", "salmon_quant_assembly_{assembly}_{assembler}"), base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
+        # TRANSDECODED CLUSTERING OUTPUTS
+        clustering3 = expand(os.path.join("{base}", "cluster3", "{assembly}_transdecoded.fasta"), base = OUTPUTDIR, assembly = "merged"),
+        # SALMON QUANTIFICATION OF RAW AGAINST FINAL ASSEMBLY
+        salmon = expand(os.path.join("{base}", "salmon", "salmon_quant_assembly_{assembly}"), base = OUTPUTDIR, assembly = "merged"),
+        # QUAST QUALITY ASSESSMENT OF FINAL ASSEMBLY
+        quastfinal = expand(os.path.join("{base}", "quastfinal", "{assembly}"), base = OUTPUTDIR, assembly = "merged"),
+        quastmerged = expand(os.path.join("{base}", "quastmerged", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
+        # BUSCO ASSESSMENT OF FINAL ASSEMBLY
+        busco = expand(os.path.join("{base}", "busco", "{assembly}"), base = OUTPUTDIR, assembly = "merged")

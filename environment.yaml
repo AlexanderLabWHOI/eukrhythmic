@@ -1,11 +1,25 @@
+name: eukrhythmic
 channels:
         - bioconda
         - conda-forge
 dependencies:
-        - snakemake = 5.3.0
-        - python = 3.6
-        - jinja2 = 2.10
-        - networkx = 2.1
-        - matplotlib 
-        - graphviz = 2.38.0
-        - fastqc = 0.11.8
+        - snakemake #= 5.3.0
+        - python #= 3.6
+        #- jinja2 #= 2.10
+        #- networkx #= 2.1
+        #- matplotlib 
+        #- graphviz #= 2.38.0
+        - fastqc #= 0.11.8
+        - trinity #= 2.8.5
+        - salmon #= 1.1.0
+        - zstd #= 1.4.0
+        - megahit
+        - velvet
+        - bbmap
+        - transabyss
+        - cd-hit
+        - transdecoder
+        - quast
+        #- SEPP
+        #- rnaquast
+        - busco

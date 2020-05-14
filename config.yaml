@@ -1,11 +1,24 @@
-metaT_sample: input/smallscale_notes.txt
-inputDIR: /vortexfs1/omics/alexander/data/scRNAseq/mike_alex_transcriptomes/ha-tmp-share
-inputDIRsfull: 38-3,ATSPF7,GTM253,Host,PW06,SPE10-03
-inputDIRs: ATSPF7
-assembly: input/assemblyfile.txt
-separategroups: 0
-outputDIR: /vortexfs1/omics/alexander/data/single-cell/trinity-MikeTranscriptomesAcat-12182019
-scratch: /vortexfs1/scratch/akrinos/scrna-17-all
-
-
-
+metaT_sample: input/metaT_cohen.txt
+inputDIR: /vortexfs1/omics/alexander/data/BATS2019-clio-metaT
+inputsuffix: _001.fastq.gz
+checkqual: 1 # flag to be used to decide whether QUAST/salmon quantification performed
+dataDIR: input
+spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
+dropspike: 1
+kmers:
+    - 20
+    - 50
+    - 110
+assemblers:
+    - trinity
+    - megahit
+    - velvet
+#path: /vortexfs1/omics/alexander/data/
+#assembly: input/assemblyfile.txt
+jobname: testbats
+adapter: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/adapters/adapters_nextera.fa
+separategroups: 1
+outputDIR: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/8May2020
+assembledDIR: assembled
+renamedDIR: renamed
+scratch: /vortexfs1/scratch/akrinos/bats-metaT/8May2020 # this is where all the intermediate outputs will go.

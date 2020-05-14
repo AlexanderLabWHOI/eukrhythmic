@@ -1,0 +1,69 @@
+configfile: "config.yaml"
+
+import io
+import os
+import pandas as pd
+from snakemake.exceptions import print_exception, WorkflowError
+
+OUTPUTDIR = config['outputDIR']
+ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+ASSEMBLERS = list(config['assemblers'])
+ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
+ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+
+rule transdecoder:
+    input:
+        merged = os.path.join(OUTPUTDIR, "merged_all", "{assembly}.fasta")
+    output:
+        pep = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.fasta.transdecoder.pep"),
+        gff = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.fasta.transdecoder.gff3"),
+        cds = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.fasta.transdecoder.cds"),
+        bed = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.fasta.transdecoder.bed")
+    log:
+        "logs/transdecoder/outputlog_{assembly}_transdecoder.log"
+    params:
+        merged = "{assembly}",
+        outputdir = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.pep"),
+        size = 100
+    threads: 4
+    conda: 
+        "../environment.yaml"
+    shell:
+        """
+        TransDecoder.LongOrfs -t {input.merged} -m {params.size}
+        TransDecoder.Predict -t {input.merged} --no_refine_starts 
+        mv {params.merged}.fasta.transdecoder.pep {output.pep}
+        mv {params.merged}.fasta.transdecoder.cds {output.cds}
+        mv {params.merged}.fasta.transdecoder.gff3 {output.gff}
+        mv {params.merged}.fasta.transdecoder.bed {output.bed}
+        rm -rf {params.merged}.fasta.transdecoder_dir*
+        rm -rf pipeliner.*.cmds
+        """
+        
+rule transdecoder_indiv:
+    input:
+        merged = os.path.join(OUTPUTDIR, "assembled", "{assembly}_{assembler}.fasta")
+    output:
+        pep = os.path.join(OUTPUTDIR, "transdecoder_indiv", "{assembly}_{assembler}.fasta.transdecoder.pep"),
+        gff = os.path.join(OUTPUTDIR, "transdecoder_indiv", "{assembly}_{assembler}.fasta.transdecoder.gff3"),
+        cds = os.path.join(OUTPUTDIR, "transdecoder_indiv", "{assembly}_{assembler}.fasta.transdecoder.cds"),
+        bed = os.path.join(OUTPUTDIR, "transdecoder_indiv", "{assembly}_{assembler}}.fasta.transdecoder.bed")
+    log:
+        "logs/transdecoder/outputlog_{assembly}_{assembler}_transdecoder.log"
+    params:
+        merged = "{assembly}_{assembler}",
+        size = 100
+    threads: 4
+    conda: 
+        "../environment.yaml"
+    shell:
+        """
+        TransDecoder.LongOrfs -t {input.merged} -m {params.size}
+        TransDecoder.Predict -t {input.merged} --no_refine_starts 
+        mv {params.merged}.fasta.transdecoder.pep {output.pep}
+        mv {params.merged}.fasta.transdecoder.cds {output.cds}
+        mv {params.merged}.fasta.transdecoder.gff3 {output.gff}
+        mv {params.merged}.fasta.transdecoder.bed {output.bed}
+        rm -rf {params.merged}.fasta.transdecoder_dir*
+        rm -rf pipeliner.*.cmds
+        """
