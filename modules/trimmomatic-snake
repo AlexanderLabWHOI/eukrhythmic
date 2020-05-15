@@ -13,8 +13,8 @@ SUFFIX = config["inputsuffix"]
 
 rule trimmomatic:
     input:
-        r1 = os.path.join(INPUTDIR, "{sample}_R1" + SUFFIX),
-        r2 = os.path.join(INPUTDIR, "{sample}_R2" + SUFFIX),
+        r1 = os.path.join(INPUTDIR, "{sample}" + SUFFIX),
+        r2 = os.path.join(INPUTDIR, "{sample}" + SUFFIX),
         adapters = ADAPTER
     output:
         p1 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_1.trimmed.fastq.gz"),
