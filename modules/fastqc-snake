@@ -10,14 +10,34 @@ import os
 import pathlib
 from snakemake.exceptions import print_exception, WorkflowError
 
+DATAFILE = config["metaT_sample"]
+SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
+samplenames = list(SAMPLEINFO.SampleID);
+fastqnames = list(SAMPLEINFO.FastqFile);
+
+def get_filenames(sample, leftorright):
+    filenames = os.listdir(INPUTDIR)
+    matchednames = []
+    indexsample = [ind for ind in range(0,len(samplenames)) if sample == samplenames[ind]][0]
+    sample_fastq = fastqnames[indexsample]
+    for fcurr in filenames: 
+        if sample_fastq in fcurr:
+            matchednames.append(fcurr)
+    matchednames = sorted(matchednames)
+    if leftorright == 1:
+        return matchednames[0]
+    else:
+        return matchednames[1]
+
 rule fastqc:
-	input:
-		os.path.join(INPUTDIR,"{sample}_R{num}" + SUFFIX)
-	output:
-		html = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}.html"),
-		zip = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}.zip")
-	params: ""
-	log: 
-		"logs/fastqc/{sample}_{num}.log"
-	wrapper:
-		"0.36.0/bio/fastqc"
+    input:
+        (lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"), sampnames = get_filenames(filename.sample, filename.num)))
+        #os.path.join(INPUTDIR,"{sample}_R{num}" + SUFFIX)
+    output:
+        html = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}.html"),
+        zip = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}.zip")
+    params: ""
+    log: 
+        "logs/fastqc/{sample}_{num}.log"
+    wrapper:
+        "0.36.0/bio/fastqc"

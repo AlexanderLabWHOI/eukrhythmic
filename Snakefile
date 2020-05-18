@@ -77,7 +77,20 @@ SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
 samplenames = list(SAMPLEINFO.SampleID);
 fastqnames = list(SAMPLEINFO.FastqFile);
 
-filenames = [currfile for currfile in fastqnames if os.path.isfile(os.path.join(INPUTDIR, currfile + "_R1_001.fastq.gz"))]
+inputfiles = "|".join(os.listdir(INPUTDIR))
+filenames = []
+for currfile_ind in range(0, len(fastqnames)):
+    currfile = fastqnames[currfile_ind]
+    occurrences = inputfiles.count(currfile)
+    if occurrences > 2:
+        try:
+            raise ValueError
+        except ValueError:
+            print("There are too many occurrences of fastq file " + currfile + " in input directory.")
+            sys.exit(1)
+    else:
+        filenames.append(samplenames[currfile_ind])
+#filenames = [currfile for currfile in fastqnames if currfile in inputfiles]
 
 if config["separategroups"] == 1:
     assemblygroups = list(set(SAMPLEINFO.AssemblyGroup))
@@ -102,6 +115,8 @@ include: "modules/manipnames-snake"
 include: "modules/transdecoder-snake"
 include: "modules/busco-snake"
 include: "modules/salmon-snake"
+
+print(filenames)
 
 rule all:
     input:

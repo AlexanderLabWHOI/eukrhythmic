@@ -4,7 +4,7 @@ __default__:
     time: 1400 # in minutes
     mem: 180 # in GB
     threads: 6
-    queue: compute
+    queue: scavenger
     nodes: 3
     command_options:
         slurm:
@@ -20,21 +20,21 @@ __default__:
 
 fastqc:
     account: akrinos
-    queue: compute
+    queue: scavenger
     threads: 1
     mem: 1
     time: 720
 
 fastqc_trimmed:
     account: akrinos
-    queue: compute
+    queue: scavenger
     threads: 1
     mem: 1
     time: 720
 
 trimmomatic:
     account: akrinos
-    queue: compute
+    queue: scavenger
     threads: 8
     mem: 48
     time: 1400
@@ -49,7 +49,7 @@ trinity:
 
 velvet:
     account: akrinos
-    queue: compute #scavenger
+    queue: scavenger
     nodes: 3
     threads: 8
     mem: 180
