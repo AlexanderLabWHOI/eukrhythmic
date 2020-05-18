@@ -42,8 +42,8 @@ trimmomatic:
 trinity:
     account: akrinos
     queue: scavenger #bigmem
-    nodes: 1
-    threads: 36
+    nodes: 3
+    threads: 60
     mem: 180
     time: 5000
 

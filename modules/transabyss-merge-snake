@@ -10,10 +10,8 @@ ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
 DROPSPIKE = config['dropspike']
 KMERVALS = list(config['kmers'])
-print(KMERVALS)
 MINKVAL = int(min(KMERVALS))
 MAXKVAL = int(max(KMERVALS))
-print(MINKVAL)
 PREFIXKS = " ".join([".k" + str(curr) for curr in KMERVALS])
     
 rule transabyssmerge:

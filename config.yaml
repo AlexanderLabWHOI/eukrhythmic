@@ -13,8 +13,6 @@ assemblers:
     - trinity
     - megahit
     - velvet
-#path: /vortexfs1/omics/alexander/data/
-#assembly: input/assemblyfile.txt
 jobname: testbats
 adapter: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/adapters/adapters_nextera.fa
 separategroups: 1

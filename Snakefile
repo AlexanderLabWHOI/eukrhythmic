@@ -8,41 +8,32 @@ import pandas as pd
 import numpy as np
 import pathlib
 from snakemake.exceptions import print_exception, WorkflowError                 
-                                    
-DATAFILE = config["metaT_sample"]
+
+if "metaT_sample" in config:
+    DATAFILE = config["metaT_sample"]
+else:
+    DATAFILE = os.path.join("input", "sampledata.txt")
+    
 INPUTDIR = config["inputDIR"]
 OUTPUTDIR = config["outputDIR"]
 SCRATCHDIR = config["scratch"]
 KMERVALS = list(config['kmers'])
 ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
 ASSEMBLERS = list(config['assemblers'])
-print(KMERVALS)
 
 SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
 samplenames = list(SAMPLEINFO.SampleID);
 fastqnames = list(SAMPLEINFO.FastqFile);
-print(fastqnames)
-for currfile in fastqnames:
-    if isfile(os.path.join(INPUTDIR, currfile + "_R1_001.fastq.gz")):
-        print("yo")
-    else:
-        print(os.path.join(INPUTDIR, currfile + "_R1_001.fastq.gz"))
-filenames = [currfile for currfile in fastqnames if isfile(os.path.join(INPUTDIR, currfile + "_R1_001.fastq.gz"))]
 
-print(filenames)
+filenames = [currfile for currfile in fastqnames if isfile(os.path.join(INPUTDIR, currfile + "_R1_001.fastq.gz"))]
 
 if config["separategroups"] == 1:
     assemblygroups = list(set(SAMPLEINFO.AssemblyGroup))
 else:
     assemblygroups = [1] * len(INPUTFILES)
-    
-print(assemblygroups)
 
 def combineassemblers(assembly):
     return(" ".join([os.path.join(ASSEMBLEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS]))
-    
-print("Combined assembly for assembly = HN004: ")
-print(combineassemblers("HN004"))
 
 include: "modules/fastqc-snake"
 include: "modules/bbmap-snake"

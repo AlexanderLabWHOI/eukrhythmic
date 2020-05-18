@@ -20,3 +20,9 @@ log/*
 tmp*
 .ipynb_checkpoints/
 ref/
+*busco_*
+old_practice/*
+old_practice/
+input/metadata/
+*.log
+modules/trinity-wrapper-snake

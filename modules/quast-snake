@@ -27,12 +27,7 @@ def combineassemblerslist(assembly, final=False):
  
 rule quast:
     input:
-        #outputtrinity = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta"),
-        #outputvelvet = os.path.join(OUTPUTDIR, "velvet", "{assembly}"),
-        #outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}"),
-        #outputtransabyss = expand(os.path.join(OUTPUTDIR, "transabyss", "{assembly}_transabyss.fasta"), assembly = "{assembly}"),
         outputassemblies = lambda wildcards: combineassemblerslist(wildcards.assembly) 
-        # " ".join(expand(os.path.join(ASSEMBLEDDIR, "{assembly}_{assembler}.fasta"), assembly = "{assembly}", assembler = ASSEMBLERS))
     output:
         directory(os.path.join(OUTPUTDIR, "quast", "{assembly}"))
     params:
@@ -62,7 +57,6 @@ rule quastfinal:
         "../environment.yaml"
     shell:
         '''
-        #python rnaQUAST.py -c {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly}
         quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly}
         '''
         
@@ -79,6 +73,5 @@ rule quastmerge:
         "../environment.yaml"
     shell:
         '''
-        #python rnaQUAST.py -c {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly}
         quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly}
         '''

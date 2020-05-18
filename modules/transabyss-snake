@@ -25,8 +25,6 @@ rule transabyss:
     input:
         left = LEFTFILE,
         right = RIGHTFILE
-        #left = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
-        #right = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
     output:
         os.path.join(OUTPUTDIR, "transabyss_{k}_{assembly}", "{assembly}_{k}_transabyss.fasta-final.fa")
     log:
