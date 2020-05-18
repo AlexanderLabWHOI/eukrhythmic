@@ -7,7 +7,6 @@ from snakemake.exceptions import print_exception, WorkflowError
 
 OUTPUTDIR = config["outputDIR"]
 INPUTDIR = config["inputDIR"]
-DATADIR = config["dataDIR"]
 ADAPTER = config["adapter"]
 SUFFIX = config["inputsuffix"]
 

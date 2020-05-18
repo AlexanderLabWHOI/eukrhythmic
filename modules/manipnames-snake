@@ -11,7 +11,7 @@ ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
 ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
 RENAMEDDIR = os.path.join(OUTPUTDIR, config['renamedDIR'])
-ASSEMBLERS = list(config['assemblers'])
+ASSEMBLERS = [curr.lower() for curr in list(config['assemblers'])]
 
 def getallmergedlist():
     mergednames = [os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in ASSEMBLYFILE.AssemblyGroup]
@@ -26,9 +26,6 @@ def combineassemblers(assembly):
   
 def combineassemblerslist(assembly):
     return([os.path.join(RENAMEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS])
- 
-print("Combined assembly for assembly = HN004: ")
-combineassemblers("HN004")
 
 # this rule is meant to change the name of the headers for the FASTA files for 
 # each of the assemblies so that we can track where each of the headers originally

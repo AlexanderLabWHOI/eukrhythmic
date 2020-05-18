@@ -2,7 +2,6 @@ metaT_sample: input/metaT_cohen.txt
 inputDIR: /vortexfs1/omics/alexander/data/BATS2019-clio-metaT
 inputsuffix: _001.fastq.gz
 checkqual: 1 # flag to be used to decide whether QUAST/salmon quantification performed
-dataDIR: input
 spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
 dropspike: 1
 kmers:
@@ -10,7 +9,7 @@ kmers:
     - 50
     - 110
 assemblers:
-    - trinity
+    - Trinity
     - megahit
     - velvet
 jobname: testbats

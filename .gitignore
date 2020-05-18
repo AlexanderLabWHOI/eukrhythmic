@@ -26,3 +26,4 @@ old_practice/
 input/metadata/
 *.log
 modules/trinity-wrapper-snake
+submit/*.txt

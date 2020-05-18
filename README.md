@@ -17,7 +17,7 @@ conda env create metatrans --file environment.yaml
 
 ## Pipeline schematic
 
-![Schematic](/input/eukrhythmic.png)
+![Schematic](/.infrastructure/eukrhythmic.png)
 
 ## How to use the pipeline
 

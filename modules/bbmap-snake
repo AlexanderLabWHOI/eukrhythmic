@@ -2,6 +2,7 @@ configfile: "config.yaml"
 
 import io
 import os
+from os.path import isfile, join
 import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
 
@@ -9,6 +10,10 @@ OUTPUTDIR = config['outputDIR']
 ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
 SPIKEFILE = config['spikefile']
+if os.path.isfile(SPIKEFILE):
+    ISFILESPIKE = 1
+else:
+    ISFILESPIKE = 0
 
 rule bbmap:
     input:
@@ -20,11 +25,17 @@ rule bbmap:
     log:
         "logs/trinity/outputlog_{sample}_bbmap.log"
     params:
-        spikefile = SPIKEFILE
+        spikefile = SPIKEFILE,
+        isspike = ISFILESPIKE
     threads: 4
     conda: '../environment.yaml'
     shell:
         '''
-        bbmap.sh in1={input.p1} in2={input.p2} ref={params.spikefile} outu1={output.r1} outu2={output.r2}
+        if {params.isspike}  ; then
+            bbmap.sh in1={input.p1} in2={input.p2} ref={params.spikefile} outu1={output.r1} outu2={output.r2}
+        else
+            cp {input.p1} {output.r1}
+            cp {input.p2} {output.r2}
+        fi
         '''
 
