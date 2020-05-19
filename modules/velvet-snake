@@ -40,6 +40,20 @@ rule velvet:
         velvetg {params.velvetdir} -cov_cutoff auto -min_contig_lgth 100
         '''
         
+rule velvet_SE:
+    input:
+        r1 = LEFTFILE
+    output:
+        velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa")
+    params:
+        velvetdir = directory(os.path.join(OUTPUTDIR, "velvet", "{assembly}"))
+    conda: "../envs/velvet-env.yaml"
+    shell:
+        '''
+        velveth {params.velvetdir} 55 -strand_specific -short -fastq {input.r1}
+        velvetg {params.velvetdir} -cov_cutoff auto -min_contig_lgth 100
+        '''
+        
 rule velvet_cleanup:
     input:
         velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa")

@@ -50,3 +50,18 @@ rule trimmomatic:
         '''
         trimmomatic PE {input.r1} {input.r2} {output.p1} {output.s1} {output.p2} {output.s2} ILLUMINACLIP:{input.adapters}:2:30:7 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:2 MINLEN:50
         '''
+        
+rule trimmomatic_SE:
+    input:
+        r1 = lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"), sampnames = get_filenames(filename.sample, "left")),
+        adapters = ADAPTER
+    output:
+        p1 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_1.trimmed.fastq.gz"),
+        s1 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_1.unpaired.fastq.gz")
+    log:
+        "logs/trimming/{sample}.log"
+    conda: "../envs/trimmomatic-env.yaml"
+    shell:
+        '''
+        trimmomatic SE {input.r1} {output.p1} {output.s1} ILLUMINACLIP:{input.adapters}:2:30:7 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:2 MINLEN:50
+        '''

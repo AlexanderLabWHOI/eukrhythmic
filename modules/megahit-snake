@@ -39,6 +39,19 @@ rule megahit:
         megahit -m 0.9 -t 8 -o megahit -1 {input.r1} -2 {input.r2} -f -o {params.megadir}
         '''
         
+rule megahit_SE:
+    input:
+        r1 = LEFTFILE
+    output:
+        megafile = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa")
+    params:
+        megadir = directory(os.path.join(OUTPUTDIR, "megahit", "{assembly}"))
+    conda: "../envs/megahit-env.yaml"
+    shell:
+        '''
+        megahit -m 0.9 -t 8 -o megahit -r {input.r1} -f -o {params.megadir}
+        '''
+        
 rule megahit_cleanup:
     input:
         megahitfile = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa")

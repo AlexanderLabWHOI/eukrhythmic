@@ -79,6 +79,7 @@ fastqnames = list(SAMPLEINFO.FastqFile);
 
 inputfiles = "|".join(os.listdir(INPUTDIR))
 filenames = []
+singleorpaired = []
 for currfile_ind in range(0, len(fastqnames)):
     currfile = fastqnames[currfile_ind]
     occurrences = inputfiles.count(currfile)
@@ -88,9 +89,12 @@ for currfile_ind in range(0, len(fastqnames)):
         except ValueError:
             print("There are too many occurrences of fastq file " + currfile + " in input directory.")
             sys.exit(1)
+    elif occurrences == 2:
+        singleorpaired.extend([1,2])
+        filenames.extend([samplenames[currfile_ind]] * 2)
     else:
+        singleorpaired.append(1)
         filenames.append(samplenames[currfile_ind])
-#filenames = [currfile for currfile in fastqnames if currfile in inputfiles]
 
 if config["separategroups"] == 1:
     assemblygroups = list(set(SAMPLEINFO.AssemblyGroup))
@@ -117,17 +121,21 @@ include: "modules/busco-snake"
 include: "modules/salmon-snake"
 
 print(filenames)
-
+ruleorder: trimmomatic > trimmomatic_SE
+ruleorder: trinity > trinity_SE
+ruleorder: megahit > megahit_SE
+ruleorder: velvet > velvet_SE
+    
 rule all:
     input:
         # FASTQC OUTPUTS
-        fastqc1 = expand(["{base}/qc/fastqc/{sample}_{num}.html", "{base}/qc/fastqc/{sample}_{num}.zip"], zip, base = OUTPUTDIR, sample = filenames, num = [1,2]),
+        fastqc1 = expand(["{base}/qc/fastqc/{sample}_{num}.html", "{base}/qc/fastqc/{sample}_{num}.zip"], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # BBMAP OUTPUTS
-        bbmap = expand(os.path.join("{base}", "bbmap", "{sample}_{num}.clean.fastq.gz"), zip, base = OUTPUTDIR, sample = filenames, num = [1,2]),
+        bbmap = expand(os.path.join("{base}", "bbmap", "{sample}_{num}.clean.fastq.gz"), zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # TRIMMOMATIC OUTPUTS
         trimmed = expand(["{base}/firsttrim/{sample}_1.trimmed.fastq.gz", "{base}/firsttrim/{sample}_2.trimmed.fastq.gz"], zip, base = OUTPUTDIR, sample = filenames),
         # FASTQC 2 OUTPUTS (trimmed)
-        fastqc2 = expand(["{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.html", "{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.zip"], zip, base = OUTPUTDIR, sample = filenames, num = [1,2]),
+        fastqc2 = expand(["{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.html", "{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.zip"], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # ASSEMBLER OUTPUTS
         assemblersout = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"), base = ASSEMBLEDDIR, assembly = assemblygroups, assembler = ASSEMBLERS), 
         # QUAST OUTPUTS
