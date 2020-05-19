@@ -1,0 +1,7 @@
+name: cdhit
+channels:
+    - bioconda
+    - conda-forge
+dependencies:
+    - cd-hit
+    - python

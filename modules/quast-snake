@@ -36,7 +36,7 @@ rule quast:
         outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa"),
         outputassemblies = lambda wildcards: combineassemblers(wildcards.assembly) 
     conda:
-        "../environment.yaml"
+        "../envs/quast-env.yaml"
     shell:
         '''
         quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assemblers}
@@ -54,7 +54,7 @@ rule quastfinal:
         outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa"),
         outputassemblies = os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta")
     conda:
-        "../environment.yaml"
+        "../envs/quast-env.yaml"
     shell:
         '''
         quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly}
@@ -70,7 +70,7 @@ rule quastmerge:
         assembly = "{assembly}",
         outputassemblies = os.path.join(OUTPUTDIR, "cluster2", "{assembly}_merged.fasta")
     conda:
-        "../environment.yaml"
+        "../envs/quast-env.yaml"
     shell:
         '''
         quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly}

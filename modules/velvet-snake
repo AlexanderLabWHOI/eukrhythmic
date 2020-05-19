@@ -30,6 +30,7 @@ rule velvet:
         velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa")
     params:
         velvetdir = directory(os.path.join(OUTPUTDIR, "velvet", "{assembly}"))
+    conda: "../envs/velvet-env.yaml"
     shell:
         '''
         velveth {params.velvetdir} 55 -strand_specific -shortPaired -fastq {input.r1} {input.r2}

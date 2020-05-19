@@ -27,7 +27,7 @@ rule transdecoder:
         size = 100
     threads: 4
     conda: 
-        "../environment.yaml"
+        "../envs/transdecoder-env.yaml"
     shell:
         """
         TransDecoder.LongOrfs -t {input.merged} -m {params.size}
@@ -55,7 +55,7 @@ rule transdecoder_indiv:
         size = 100
     threads: 4
     conda: 
-        "../environment.yaml"
+        "../envs/transdecoder-env.yaml"
     shell:
         """
         TransDecoder.LongOrfs -t {input.merged} -m {params.size}

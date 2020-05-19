@@ -28,7 +28,7 @@ rule bbmap:
         spikefile = SPIKEFILE,
         isspike = ISFILESPIKE
     threads: 4
-    conda: '../environment.yaml'
+    conda: '../envs/bbmap-env.yaml'
     shell:
         '''
         if {params.isspike}  ; then

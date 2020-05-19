@@ -45,7 +45,7 @@ rule trimmomatic:
         s2 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_2.unpaired.fastq.gz")
     log:
         "logs/trimming/{sample}.log"
-    conda: "../environment.yaml"
+    conda: "../envs/trimmomatic-env.yaml"
     shell:
         '''
         trimmomatic PE {input.r1} {input.r2} {output.p1} {output.s1} {output.p2} {output.s2} ILLUMINACLIP:{input.adapters}:2:30:7 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:2 MINLEN:50

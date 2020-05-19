@@ -1,0 +1,7 @@
+name: salmon
+channels:
+    - bioconda
+    - conda-forge
+dependencies:
+    - salmon
+    - python

@@ -42,7 +42,7 @@ rule trinity:
         left = LEFTFILE,
         right = RIGHTFILE
     threads: 4
-    conda: '../environment.yaml'
+    conda: '../envs/trinity-env.yaml'
     shell:
         '''
         Trinity --seqType fq --max_memory 50G --left {input.left} --right {input.right} --output {params.outdir}

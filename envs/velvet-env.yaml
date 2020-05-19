@@ -1,0 +1,7 @@
+name: velvet
+channels:
+    - bioconda
+    - conda-forge
+dependencies:
+    - velvet
+    - python
