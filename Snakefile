@@ -12,7 +12,7 @@ from snakemake.exceptions import print_exception, WorkflowError
 
 # Check to make sure the configuration file contains all the required entries
 required_entries = ["metaT_sample","inputDIR","inputsuffix","checkqual","spikefile","dropspike",\
-                    "kmers","assemblers","jobname","adapter","separategroups","outputDIR","assembledDIR","renamedDIR",\
+                    "kmers","assemblers","jobname","adapter","separategroups","outputDIR","renamedDIR",\
                     "scratch"]
 for r in required_entries:
     try:

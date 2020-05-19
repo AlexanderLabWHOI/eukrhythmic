@@ -45,6 +45,27 @@ In the event that you want more control over how your samples are named, use `sc
 
 Once you have generated the `metaT_sample` file containing the information about your samples, and have populated `config.yaml` with the relevant directories, including, importantly, `outputDIR`, which will be the location of your results, you are ready to run the pipeline.
 
+## Configuration file entries
+
+Below is a listing of each supported entry in the configuration file (`config.yaml` in the base directory) and how to specify each flag when using the pipeline.
+
+| Flag in file 	| Meaning & how to specify 	|
+|------------------	|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
+| `metaT_sample` 	| The name of the sample file containing<br>sample ids to be used as unique identifiers<br>in the pipeline, descriptive sample names,<br>and input FASTA file names. 	|
+| `inputDIR` 	| The file directory where the input data<br>is found. Currently, should be specified<br>with "/" separators, but no trailing "/".<br>Should begin with "/" only if you are going<br>to the root of your file system (not a <br>relative path). 	|
+| `spikefile` 	| A path to a FASTA file containing the<br>sequence of any spiking that might affect<br>reads. This will depend on experimental<br>setup. If the file is not valid (e.g., if<br>this flag is set to 0), nothing is done. 	|
+| `dropspike` 	| A boolean flag to specify whether to use a<br>spike file to drop spiked reads, according<br>to what was done in your experiment. If 1, <br>the spikefile is used; otherwise, this <br>filtering is either not performed or is<br>not used downstream in the pipeline <br>(depending on whether a spike file exists). 	|
+| `kmers` 	| A list of $k$-mer sizes to use, where<br>applicable, in assembly. These should all<br>be integer values (default: 20, 50, 110). 	|
+| `assemblers` 	| The assemblers to be used to assemble the<br>metatranscriptomes (which will later be <br>merged). All of the specified assemblers in<br>this list should have matching Snakemake<br>rules in the `modules` folder of the main<br>pipeline directory (named identically), as<br>well as "clean" rules (explained below). 	|
+| `jobname` 	| A descriptive name to be used to name jobs<br>on your high-performance computing system,<br>such that you can track the progress of<br>your workflow. 	|
+| `adapter` 	| Path to a FASTA file containing the adapter<br>used during sequencing. Defaults to a <br>static adapter file in the `static`<br>directory. 	|
+| `separategroups` 	| A boolean flag. If 1, specified assembly <br>groups in the `metaT_sample` file are used<br>to co-assemble raw files. Otherwise, each<br>raw file is assembled separately regardless<br>of what is specified in the "AssemblyGroup"<br>column of the input file. 	|
+| `outputDIR` 	| The path to a directory where all program<br>output will be stored. 	|
+| `assembledDIR` 	| The directory to move assembled files to,<br>relative to the output directory. Defaults<br>to "assembled"; not necessary to specify. 	|
+| `renamedDIR` 	| The directory to move "renamed" files to <br>(which are files with the name of the <br>assembler added to each FASTA header),<br>relative to the output directory. Defaults<br>to "assembled"; not necessary to specify. 	|
+| `scratch` 	| The location to move unnecessary<br>intermediate files to after computation. 	|
+|------------------	|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
+
 ## Running the pipeline
 
 Once the pieces are in place, and you have either activated an environment using `environment.yaml` or otherwise installed `snakemake`, you can run the pipeline using:

@@ -9,8 +9,15 @@ INPUTDIR = config["inputDIR"]
 
 ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
-ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
-RENAMEDDIR = os.path.join(OUTPUTDIR, config['renamedDIR'])
+if 'assembledDIR' in config:
+    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+else:
+    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, "assembled")
+    
+if 'renamedDIR' in config:
+    RENAMEDDIR = os.path.join(OUTPUTDIR, config['renamedDIR'])
+else:
+    RENAMEDDIR = os.path.join(OUTPUTDIR, "renamed")
 ASSEMBLERS = [curr.lower() for curr in list(config['assemblers'])]
 
 def getallmergedlist():
