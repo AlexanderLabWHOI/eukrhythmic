@@ -13,7 +13,7 @@ DROPSPIKE = config['dropspike']
 SCRATCHDIR = config['scratch']
 
 def get_samples(assemblygroup):
-    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) # change to SampleID
+    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID'])
     return samplelist
     
 if DROPSPIKE == 0:

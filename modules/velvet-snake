@@ -12,7 +12,7 @@ ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
 SCRATCHDIR = config['scratch']
 
 def get_samples(assemblygroup):
-    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
+    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID']) 
     return samplelist
 
 if DROPSPIKE == 0:
