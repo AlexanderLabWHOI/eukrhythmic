@@ -8,12 +8,15 @@ from snakemake.exceptions import print_exception, WorkflowError
 OUTPUTDIR = config['outputDIR']
 ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
-ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+if 'assembledDIR' in config:
+    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+else:
+    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, "assembled")
 DROPSPIKE = config['dropspike']
 SCRATCHDIR = config['scratch']
 
 def get_samples(assemblygroup):
-    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
+    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID'])
     return samplelist
     
 if DROPSPIKE == 0:
@@ -42,10 +45,29 @@ rule trinity:
         left = LEFTFILE,
         right = RIGHTFILE
     threads: 4
-    conda: '../environment.yaml'
+    conda: '../envs/trinity-env.yaml'
     shell:
         '''
         Trinity --seqType fq --max_memory 50G --left {input.left} --right {input.right} --output {params.outdir}
+        '''
+        
+rule trinity_SE:
+    input:
+        single = LEFTFILE
+    output:
+        os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta")
+    log:
+        "logs/trinity/outputlog_{assembly}_trinity.log"
+    params:
+        extra = "",
+        outdir = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}"),
+        left = LEFTFILE,
+        right = RIGHTFILE
+    threads: 4
+    conda: '../envs/trinity-env.yaml'
+    shell:
+        '''
+        Trinity --seqType fq --max_memory 50G --single {input.single} --output {params.outdir}
         '''
         
 rule trinity_cleanup:
@@ -53,7 +75,8 @@ rule trinity_cleanup:
         trinityfile = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta")
     output:
         assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_trinity.fasta"),
-        jellyfish = os.path.join(OUTPUTDIR, "jellyfish", "{assembly}_jellyfish_25.fasta")
+        jellyfish = os.path.join(OUTPUTDIR, "jellyfish", "{assembly}_jellyfish_25.fasta"),
+        scratchout = os.path.join(SCRATCHDIR, "{assembly}")
     params:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}"),
@@ -65,7 +88,7 @@ rule trinity_cleanup:
     conda: '../environment.yaml'
     shell:
         '''
-        cp {input.trinityfile} {output}
+        cp {input.trinityfile} {output.assembled}
         #rm -r {params.outdir}
         mv {params.jellyfile} {output.jellyfish}
         mv {params.outdir} {params.scratch}

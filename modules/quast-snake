@@ -6,13 +6,16 @@ import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
 
 OUTPUTDIR = config['outputDIR']
-ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
-ASSEMBLERS = list(config['assemblers'])
+if 'assembledDIR' in config:
+    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+else:
+    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, "assembled")
+ASSEMBLERS = [curr.lower() for curr in list(config['assemblers'])]
 ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
 
 def get_samples(assemblygroup):
-    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
+    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID']) 
     return samplelist
     
 def combineassemblers(assembly, final=False):
@@ -27,12 +30,7 @@ def combineassemblerslist(assembly, final=False):
  
 rule quast:
     input:
-        #outputtrinity = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta"),
-        #outputvelvet = os.path.join(OUTPUTDIR, "velvet", "{assembly}"),
-        #outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}"),
-        #outputtransabyss = expand(os.path.join(OUTPUTDIR, "transabyss", "{assembly}_transabyss.fasta"), assembly = "{assembly}"),
         outputassemblies = lambda wildcards: combineassemblerslist(wildcards.assembly) 
-        # " ".join(expand(os.path.join(ASSEMBLEDDIR, "{assembly}_{assembler}.fasta"), assembly = "{assembly}", assembler = ASSEMBLERS))
     output:
         directory(os.path.join(OUTPUTDIR, "quast", "{assembly}"))
     params:
@@ -41,7 +39,7 @@ rule quast:
         outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa"),
         outputassemblies = lambda wildcards: combineassemblers(wildcards.assembly) 
     conda:
-        "../environment.yaml"
+        "../envs/quast-env.yaml"
     shell:
         '''
         quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assemblers}
@@ -59,10 +57,9 @@ rule quastfinal:
         outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa"),
         outputassemblies = os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta")
     conda:
-        "../environment.yaml"
+        "../envs/quast-env.yaml"
     shell:
         '''
-        #python rnaQUAST.py -c {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly}
         quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly}
         '''
         
@@ -76,9 +73,8 @@ rule quastmerge:
         assembly = "{assembly}",
         outputassemblies = os.path.join(OUTPUTDIR, "cluster2", "{assembly}_merged.fasta")
     conda:
-        "../environment.yaml"
+        "../envs/quast-env.yaml"
     shell:
         '''
-        #python rnaQUAST.py -c {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly}
         quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly}
         '''

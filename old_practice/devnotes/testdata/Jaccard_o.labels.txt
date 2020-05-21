@@ -1,6 +1,0 @@
-SH401_R1.test.fastq
-SH401_R1.test.fastq
-SH401_R2.test.fastq
-SH402_R1.test.fastq
-SH402_R2.test.fastq
-SH401_R1.test.fastq

@@ -9,28 +9,30 @@ INPUTDIR = config["inputDIR"]
 
 ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
-ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
-RENAMEDDIR = os.path.join(OUTPUTDIR, config['renamedDIR'])
-ASSEMBLERS = list(config['assemblers'])
+if 'assembledDIR' in config:
+    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+else:
+    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, "assembled")
+    
+if 'renamedDIR' in config:
+    RENAMEDDIR = os.path.join(OUTPUTDIR, config['renamedDIR'])
+else:
+    RENAMEDDIR = os.path.join(OUTPUTDIR, "renamed")
+ASSEMBLERS = [curr.lower() for curr in list(config['assemblers'])]
 
 def getallmergedlist():
     mergednames = [os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in ASSEMBLYFILE.AssemblyGroup]
     return(mergednames)
-    #return([os.path.join(OUTPUTDIR, "merged", curr) for curr in os.listdir(os.path.join(OUTPUTDIR, "merged"))])
     
 def getallmerged():
     mergednames = [os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in ASSEMBLYFILE.AssemblyGroup]
     return(" ".join(mergednames))
-    #return(" ".join([os.path.join(OUTPUTDIR, "merged", curr) for curr in os.listdir(os.path.join(OUTPUTDIR, "merged"))]))
     
 def combineassemblers(assembly):
     return(" ".join([os.path.join(RENAMEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS]))
   
 def combineassemblerslist(assembly):
     return([os.path.join(RENAMEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS])
- 
-print("Combined assembly for assembly = HN004: ")
-combineassemblers("HN004")
 
 # this rule is meant to change the name of the headers for the FASTA files for 
 # each of the assemblies so that we can track where each of the headers originally

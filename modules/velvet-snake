@@ -8,25 +8,49 @@ from snakemake.exceptions import print_exception, WorkflowError
 OUTPUTDIR = config['outputDIR']
 ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
-ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+if 'assembledDIR' in config:
+    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+else:
+    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, "assembled")
 SCRATCHDIR = config['scratch']
 
-
 def get_samples(assemblygroup):
-    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
+    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID']) 
     return samplelist
+
+if DROPSPIKE == 0:
+    LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+    RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+else:
+    LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_1.clean.fastq.gz"), samples = get_samples(filename.assembly))
+    RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_2.clean.fastq.gz"), samples = get_samples(filename.assembly))
 
 rule velvet:
     input:
-        r1 = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
-        r2 = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+        r1 = LEFTFILE,
+        r2 = RIGHTFILE
     output:
         velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa")
     params:
         velvetdir = directory(os.path.join(OUTPUTDIR, "velvet", "{assembly}"))
+    conda: "../envs/velvet-env.yaml"
     shell:
         '''
         velveth {params.velvetdir} 55 -strand_specific -shortPaired -fastq {input.r1} {input.r2}
+        velvetg {params.velvetdir} -cov_cutoff auto -min_contig_lgth 100
+        '''
+        
+rule velvet_SE:
+    input:
+        r1 = LEFTFILE
+    output:
+        velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa")
+    params:
+        velvetdir = directory(os.path.join(OUTPUTDIR, "velvet", "{assembly}"))
+    conda: "../envs/velvet-env.yaml"
+    shell:
+        '''
+        velveth {params.velvetdir} 55 -strand_specific -short -fastq {input.r1}
         velvetg {params.velvetdir} -cov_cutoff auto -min_contig_lgth 100
         '''
         
@@ -34,13 +58,14 @@ rule velvet_cleanup:
     input:
         velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa")
     output:
-        os.path.join(ASSEMBLEDDIR, "{assembly}_velvet.fasta")
+        assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_velvet.fasta"),
+        scratchout = os.path.join(SCRATCHDIR, "{assembly}")
     params:
         outdir = os.path.join(OUTPUTDIR, "velvet", "{assembly}"),
         scratch = SCRATCHDIR
     shell:
         '''
-        cp {input.velvetfile} {output}
+        cp {input.velvetfile} {output.assembled}
         mv {params.outdir} {params.scratch}
         #rm -r {params.outdir}
         '''

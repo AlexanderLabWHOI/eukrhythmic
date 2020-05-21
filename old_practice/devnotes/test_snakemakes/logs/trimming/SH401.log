@@ -1,4 +1,0 @@
-TrimmomaticPE: Started with arguments:
- -threads 1 -phred33 ../testdata/gzips/SH401_R1.test.fastq.gz ../testdata/gzips/SH401_R2.test.fastq.gz firsttrim/SH401_1.trimmed.fastq.gz firsttrim/SH4011.unpaired.fastq.gz firsttrim/SH401_2.trimmed.fastq.gz firsttrim/SH4012.unpaired.fastq.gz TRAILING:3
-Input Read Pairs: 0 Both Surviving: 0 (NaN%) Forward Only Surviving: 0 (NaN%) Reverse Only Surviving: 0 (NaN%) Dropped: 0 (NaN%)
-TrimmomaticPE: Completed successfully

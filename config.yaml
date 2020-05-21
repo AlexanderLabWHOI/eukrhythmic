@@ -1,24 +1,23 @@
-metaT_sample: input/metaT_cohen.txt
-inputDIR: /vortexfs1/omics/alexander/data/BATS2019-clio-metaT
-inputsuffix: _001.fastq.gz
-checkqual: 1 # flag to be used to decide whether QUAST/salmon quantification performed
-dataDIR: input
+## INPUT DATA AND FORMATTING ##
+jobname: wapproject # formatted input file; described in README
+metaT_sample: input/metaT_wap.txt
 spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
-dropspike: 1
+adapter: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/adapters/adapters_nextera.fa
+## DIRECTORIES DURING PROCESSING ##
+inputDIR: /vortexfs1/omics/alexander/data/WAP 
+outputDIR: /vortexfs1/omics/alexander/akrinos/wap-project/19May2020
+assembledDIR: assembled
+renamedDIR: renamed
+scratch: /vortexfs1/scratch/akrinos/wap/8May2020 # this is where all the intermediate outputs will go.
+## ANALYSIS OPTIONS ##
+dropspike: 0 # 1 indicates that "spikefile" is used to clean reads
+checkqual: 1 # flag to be used to decide whether QUAST/salmon quantification performed
 kmers:
     - 20
     - 50
     - 110
 assemblers:
-    - trinity
+    - Trinity
     - megahit
     - velvet
-#path: /vortexfs1/omics/alexander/data/
-#assembly: input/assemblyfile.txt
-jobname: testbats
-adapter: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/adapters/adapters_nextera.fa
 separategroups: 1
-outputDIR: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/8May2020
-assembledDIR: assembled
-renamedDIR: renamed
-scratch: /vortexfs1/scratch/akrinos/bats-metaT/8May2020 # this is where all the intermediate outputs will go.

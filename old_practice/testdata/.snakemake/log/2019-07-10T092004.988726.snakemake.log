@@ -1,3 +1,0 @@
-NameError in line 16 of /vortexfs1/home/akrinos/Summer2019/testsequences_9July19_sourmash/Snakefile:
-name 'sourmash' is not defined
-  File "/vortexfs1/home/akrinos/Summer2019/testsequences_9July19_sourmash/Snakefile", line 16, in <module>

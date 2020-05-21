@@ -2,19 +2,41 @@ configfile: "config.yaml"
 
 import io
 import os
+from os import listdir
 import glob
 from snakemake.exceptions import print_exception, WorkflowError
 
 OUTPUTDIR = config["outputDIR"]
 INPUTDIR = config["inputDIR"]
-DATADIR = config["dataDIR"]
 ADAPTER = config["adapter"]
 SUFFIX = config["inputsuffix"]
 
+DATAFILE = config["metaT_sample"]
+SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
+samplenames = list(SAMPLEINFO.SampleID);
+fastqnames = list(SAMPLEINFO.FastqFile);
+
+def get_filenames(sample, leftorright):
+    filenames = os.listdir(INPUTDIR)
+    matchednames = []
+    indexsample = [ind for ind in range(0,len(samplenames)) if sample == samplenames[ind]][0]
+    sample_fastq = fastqnames[indexsample]
+    print(sample_fastq)
+    for fcurr in filenames: 
+        if sample_fastq in fcurr:
+            matchednames.append(fcurr)
+    matchednames = sorted(matchednames)
+    if leftorright == "left":
+        return matchednames[0]
+    else:
+        return matchednames[1]   
+
 rule trimmomatic:
     input:
-        r1 = os.path.join(INPUTDIR, "{sample}_R1" + SUFFIX),
-        r2 = os.path.join(INPUTDIR, "{sample}_R2" + SUFFIX),
+        r1 = lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"), sampnames = get_filenames(filename.sample, "left")),
+        #os.path.join(INPUTDIR, "{sample}_R1" + SUFFIX),
+        r2 = lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"), sampnames = get_filenames(filename.sample, "right")),
+        #os.path.join(INPUTDIR, "{sample}_R2" + SUFFIX),
         adapters = ADAPTER
     output:
         p1 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_1.trimmed.fastq.gz"),
@@ -23,8 +45,23 @@ rule trimmomatic:
         s2 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_2.unpaired.fastq.gz")
     log:
         "logs/trimming/{sample}.log"
-    conda: "../environment.yaml"
+    conda: "../envs/trimmomatic-env.yaml"
     shell:
         '''
         trimmomatic PE {input.r1} {input.r2} {output.p1} {output.s1} {output.p2} {output.s2} ILLUMINACLIP:{input.adapters}:2:30:7 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:2 MINLEN:50
+        '''
+        
+rule trimmomatic_SE:
+    input:
+        r1 = lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"), sampnames = get_filenames(filename.sample, "left")),
+        adapters = ADAPTER
+    output:
+        p1 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_1.trimmed.fastq.gz"),
+        s1 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_1.unpaired.fastq.gz")
+    log:
+        "logs/trimming/{sample}.log"
+    conda: "../envs/trimmomatic-env.yaml"
+    shell:
+        '''
+        trimmomatic SE {input.r1} {output.p1} {output.s1} ILLUMINACLIP:{input.adapters}:2:30:7 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:2 MINLEN:50
         '''

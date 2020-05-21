@@ -1,5 +1,0 @@
-Workflow to be defined in *all* rule in the ultimate Snakemake file: 
-
-- fastqc is applied to assess the quality of the reads, and then we store this information 
-- trimmomatic is used to trim and quality control the reads in this way 
-- fastqc is then applied again to evaluate the quality of the reads subsequent to trimming.

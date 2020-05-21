@@ -12,7 +12,7 @@ ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.Samp
 ASSEMBLERS = list(config['assemblers'])
 
 def get_samples(assemblygroup):
-    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
+    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID']) 
     return samplelist
 
 rule cdhit_individualclusters:
@@ -27,7 +27,7 @@ rule cdhit_individualclusters:
         mincoverageshorter = 1.00,
         mincoveragelong = 0.005
     conda:
-        "../environment.yaml"    
+        "../envs/cd-hit-env.yaml"    
     shell:
         '''
         cd-hit-est -i {input.infiles} -o {output} -T {params.threads} -M {params.maxmemory} -G o -c {params.identityparam} -aS {params.mincoverageshorter} -aL {params.mincoveragelong} 
@@ -45,7 +45,7 @@ rule cdhit_mergedclusters:
         mincoverageshorter = 0.98,
         mincoveragelong = 0.005
     conda:
-        "../environment.yaml"
+        "../envs/cd-hit-env.yaml"
     shell:
         '''
         cd-hit-est -i {input.infiles} -o {output} -T {params.threads} -M {params.maxmemory} -G o -c {params.identityparam} -aS {params.mincoverageshorter} -aL {params.mincoveragelong} 
@@ -64,7 +64,7 @@ rule cdhit_transdecoded:
         mincoverageshorter = 0.98,
         mincoveragelong = 0.005
     conda:
-        "../environment.yaml"
+        "../envs/cd-hit-env.yaml"
     shell:
         '''
         cd-hit-est -i {input.infiles} -o {output} -T {params.threads} -M {params.maxmemory} -G o -c {params.identityparam} -aS {params.mincoverageshorter} -aL {params.mincoveragelong} 

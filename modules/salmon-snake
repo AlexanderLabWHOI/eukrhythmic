@@ -11,9 +11,9 @@ ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
 
 def get_samples(assemblygroup):
-    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['FastqFile']) 
+    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID']) 
     if assemblygroup == "merged":
-        samplelist = list(ASSEMBLYFILE['FastqFile'])
+        samplelist = list(ASSEMBLYFILE['SampleID'])
     return samplelist
 
 rule salmon:
@@ -28,7 +28,7 @@ rule salmon:
         indexname = os.path.join(OUTPUTDIR, "salmon_index_assembly_{assembly}"),
         decoysfile = "decoys_{assembly}.txt",
         kval = 31
-    conda: "../environment.yaml"
+    conda: "../envs/salmon-env.yaml"
     shell:
         """
         salmon index -t {input.trinityfile} -i {params.indexname} -k {params.kval}
@@ -46,7 +46,7 @@ rule salmon_indiv:
         libtype = "A",
         indexname = os.path.join(OUTPUTDIR, "salmon_indiv", "salmon_index_assembly_{assembly}_{assembler}"),
         kval = 31
-    conda: "../environment.yaml"
+    conda: "../envs/salmon-env.yaml"
     shell:
         """
         salmon index -t {input.fastafile} -i {params.indexname} -k {params.kval}
@@ -66,7 +66,7 @@ rule salmon_clust3:
         decoysfile = "decoys_{assembly}.txt",
         kval = 31
     conda:
-        "../environment.yaml"
+        "../envs/salmon-env.yaml"
     shell:
         """
         salmon index -t {input.assemblyfile} -i {params.indexname} -k {params.kval}
