@@ -48,8 +48,15 @@ else:
     except ValueError:
         print("Please specify your k-mer values as a list. See examples for details.")
         sys.exit(1)
-        
-ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+
+if 'renamedDIR' in config:
+    RENAMEDDIR = os.path.join(OUTPUTDIR, config['renamedDIR'])
+else:
+    RENAMEDDIR = os.path.join(OUTPUTDIR, "renamed")
+if 'assembledDIR' in config:
+    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
+else:
+    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, "assembled")
 ASSEMBLERS = list(config['assemblers'])
 
 # Check to make sure a valid list of assemblers is supplied.
@@ -71,6 +78,16 @@ else:
         raise ValueError
     except ValueError:
         print("Please specify your assemblers as a list. See examples for details.")
+        sys.exit(1)
+        
+# Check to make sure the user hasn't added trailing /.
+directories = [ASSEMBLEDDIR,INPUTDIR,OUTPUTDIR,SCRATCHDIR,RENAMEDDIR]
+for dir_curr in directories:
+    try:
+        if (dir_curr[len(dir_curr)-1] == "/") | (dir_curr[len(dir_curr)-1] == "\"):
+            raise ValueError
+    except ValueError:
+        print("Please do not add trailing slashes to input, output, scratch, assembled, or renamed directories.")
         sys.exit(1)
 
 SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
