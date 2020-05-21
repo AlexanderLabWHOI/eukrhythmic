@@ -58,13 +58,14 @@ rule velvet_cleanup:
     input:
         velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa")
     output:
-        os.path.join(ASSEMBLEDDIR, "{assembly}_velvet.fasta")
+        assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_velvet.fasta"),
+        scratchout = os.path.join(SCRATCHDIR, "{assembly}")
     params:
         outdir = os.path.join(OUTPUTDIR, "velvet", "{assembly}"),
         scratch = SCRATCHDIR
     shell:
         '''
-        cp {input.velvetfile} {output}
+        cp {input.velvetfile} {output.assembled}
         mv {params.outdir} {params.scratch}
         #rm -r {params.outdir}
         '''

@@ -75,7 +75,8 @@ rule trinity_cleanup:
         trinityfile = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta")
     output:
         assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_trinity.fasta"),
-        jellyfish = os.path.join(OUTPUTDIR, "jellyfish", "{assembly}_jellyfish_25.fasta")
+        jellyfish = os.path.join(OUTPUTDIR, "jellyfish", "{assembly}_jellyfish_25.fasta"),
+        scratchout = os.path.join(SCRATCHDIR, "{assembly}")
     params:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}"),
@@ -87,7 +88,7 @@ rule trinity_cleanup:
     conda: '../environment.yaml'
     shell:
         '''
-        cp {input.trinityfile} {output}
+        cp {input.trinityfile} {output.assembled}
         #rm -r {params.outdir}
         mv {params.jellyfile} {output.jellyfish}
         mv {params.outdir} {params.scratch}
