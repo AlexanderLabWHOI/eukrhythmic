@@ -34,7 +34,6 @@ KMERVALS = list(config['kmers'])
 
 # Check to make sure a list of integer k-mer values is supplied.
 if isinstance(KMERVALS, list):
-    print(type(KMERVALS[0] + 1))
     for kmer in KMERVALS:
         try:
             if not isinstance(kmer + 1, int):
@@ -84,7 +83,7 @@ else:
 directories = [ASSEMBLEDDIR,INPUTDIR,OUTPUTDIR,SCRATCHDIR,RENAMEDDIR]
 for dir_curr in directories:
     try:
-        if (dir_curr[len(dir_curr)-1] == "/") | (dir_curr[len(dir_curr)-1] == "\"):
+        if ((dir_curr[len(dir_curr)-1] == '/') | (dir_curr[len(dir_curr)-1] == '\\')):
             raise ValueError
     except ValueError:
         print("Please do not add trailing slashes to input, output, scratch, assembled, or renamed directories.")
@@ -137,7 +136,6 @@ include: "modules/transdecoder-snake"
 include: "modules/busco-snake"
 include: "modules/salmon-snake"
 
-print(filenames)
 ruleorder: trimmomatic > trimmomatic_SE
 ruleorder: trinity > trinity_SE
 ruleorder: megahit > megahit_SE
