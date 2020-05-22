@@ -30,5 +30,5 @@ rule transabyssmerge:
     conda: '../environment.yaml'
     shell:
         '''
-        transabyss-merge {input.files} --mink {params.minkval} --maxk {params.maxkval} --prefix {params.prefixks} --out {output}
+        transabyss-merge {input.files} --mink {params.minkval} --maxk {params.maxkval} --prefixes {params.prefixks} --out {output}
         '''
