@@ -1,0 +1,6 @@
+SampleName	SampleID	AssemblyGroup	FastqFile
+HN003	HN003_subsampled.fastq.gz	HN003	HN003_subsampled.fastq.gz
+HN006	HN006_subsampled.fastq.gz	HN006	HN006_subsampled.fastq.gz
+HN031	HN031_subsampled.fastq.gz	HN031	HN031_subsampled.fastq.gz
+HN037	HN037_subsampled.fastq.gz	HN037	HN037_subsampled.fastq.gz
+HN040	HN040_subsampled.fastq.gz	HN040	HN040_subsampled.fastq.gz

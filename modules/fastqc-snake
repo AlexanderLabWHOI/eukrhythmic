@@ -1,13 +1,14 @@
 configfile: "config.yaml"
 
-OUTPUTDIR = config["outputDIR"]
-SCRATCHDIR = config["scratch"]
-INPUTDIR = config["inputDIR"]
-
 import io
 import os
 import pathlib
+import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
+
+OUTPUTDIR = config["outputDIR"]
+SCRATCHDIR = config["scratch"]
+INPUTDIR = config["inputDIR"]
 
 DATAFILE = config["metaT_sample"]
 SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
@@ -28,15 +29,36 @@ def get_filenames(sample, leftorright):
     else:
         return matchednames[1]
 
+def getalloutputs():
+    listqc = []
+    for s in SAMPLEINFO.SampleID:
+        listqc.extend([os.path.join(OUTPUTDIR, "qc", "fastqc", s + "_1_fastqc.html"), os.path.join(OUTPUTDIR, "qc", "fastqc", s + "_2_fastqc.html")])
+    return listqc
+    
 rule fastqc:
     input:
         (lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"), sampnames = get_filenames(filename.sample, filename.num)))
         #os.path.join(INPUTDIR,"{sample}_R{num}" + SUFFIX)
     output:
-        html = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}.html"),
-        zip = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}.zip")
+        html = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}_fastqc.html"),
+        zip = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}_fastqc.zip")
     params: ""
     log: 
         "logs/fastqc/{sample}_{num}.log"
     wrapper:
         "0.36.0/bio/fastqc"
+        
+rule multiqc:
+    input:
+        fastqcfiles = getalloutputs()
+    output:
+        htmlreport = os.path.join(OUTPUTDIR, "qc", "multiqc", "firstqcreport", "multiqc_report.html")
+    params:
+        fastqcdir = os.path.join(OUTPUTDIR, "qc", "fastqc"),
+        multiqc = os.path.join(OUTPUTDIR, "qc", "multiqc", "firstqcreport")
+    log: 
+        "logs/fastqc/{sample}_{num}.log"
+    shell:
+        '''
+        multiqc -o {params.multiqc} {params.fastqcdir}
+        '''

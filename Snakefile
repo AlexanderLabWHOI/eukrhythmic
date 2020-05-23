@@ -147,13 +147,17 @@ ruleorder: velvet > velvet_SE
 rule all:
     input:
         # FASTQC OUTPUTS
-        fastqc1 = expand(["{base}/qc/fastqc/{sample}_{num}.html", "{base}/qc/fastqc/{sample}_{num}.zip"], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        fastqc1 = expand(["{base}/qc/fastqc/{sample}_{num}_fastqc.html", "{base}/qc/fastqc/{sample}_{num}_fastqc.zip"], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        # MULTIQC OUTPUTS
+        multiqc1 = expand("{base}/qc/multiqc/firstqcreport/multiqc_report.html", zip, base = OUTPUTDIR),
         # BBMAP OUTPUTS
         bbmap = expand(os.path.join("{base}", "bbmap", "{sample}_{num}.clean.fastq.gz"), zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # TRIMMOMATIC OUTPUTS
         trimmed = expand(["{base}/firsttrim/{sample}_1.trimmed.fastq.gz", "{base}/firsttrim/{sample}_2.trimmed.fastq.gz"], zip, base = OUTPUTDIR, sample = filenames),
         # FASTQC 2 OUTPUTS (trimmed)
-        fastqc2 = expand(["{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.html", "{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.zip"], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        fastqc2 = expand(["{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed_fastqc.html", "{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed_fastqcs.zip"], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        # MULTIQC 2 OUTPUTS
+        multiqc2 = expand("{base}/qc/multiqc/trimmedqcreport/multiqc_report.html", zip, base = OUTPUTDIR),
         # ASSEMBLER OUTPUTS
         assemblersout = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"), base = ASSEMBLEDDIR, assembly = assemblygroups, assembler = ASSEMBLERS), 
         # QUAST OUTPUTS
