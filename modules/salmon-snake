@@ -6,6 +6,7 @@ from snakemake.exceptions import print_exception, WorkflowError
 
 OUTPUTDIR = config["outputDIR"]
 INPUTDIR = config["inputDIR"]
+DROPSPIKE = config['dropspike']
 
 ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
@@ -15,6 +16,13 @@ def get_samples(assemblygroup):
     if assemblygroup == "merged":
         samplelist = list(ASSEMBLYFILE['SampleID'])
     return samplelist
+
+if DROPSPIKE == 0:
+    LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+    RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+else:
+    LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_1.clean.fastq.gz"), samples = get_samples(filename.assembly))
+    RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_2.clean.fastq.gz"), samples = get_samples(filename.assembly))
 
 rule salmon:
     input: 
@@ -38,8 +46,8 @@ rule salmon:
 rule salmon_indiv:
     input: 
         fastafile = os.path.join(OUTPUTDIR, "assembled", "{assembly}_{assembler}.fasta"),
-        left = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
-        right = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+        left = LEFTFILE,
+        right = RIGHTFILE
     output:
         directory(os.path.join(OUTPUTDIR, "salmon_indiv", "salmon_quant_assembly_{assembly}_{assembler}"))
     params:
@@ -56,8 +64,8 @@ rule salmon_indiv:
 rule salmon_clust3:
     input: 
         assemblyfile = os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta"),
-        left = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
-        right = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+        left = LEFTFILE,
+        right = RIGHTFILE
     output:
         directory(os.path.join(OUTPUTDIR, "salmon", "salmon_quant_assembly_{assembly}"))
     params:
