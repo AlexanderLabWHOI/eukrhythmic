@@ -38,7 +38,8 @@ rule multiqc_trimmed:
     params:
         fastqcdir = os.path.join(OUTPUTDIR, "qc", "fastqc"),
         multiqc = os.path.join(OUTPUTDIR, "qc", "multiqc", "firstqcreport")
+    conda: '../envs/fastqc-env.yaml'
     shell:
         '''
-        multiqc -o {output.multiqc} {params.fastqcdir}
+        multiqc -o {params.multiqc} {params.fastqcdir}
         '''
