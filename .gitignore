@@ -28,3 +28,4 @@ input/metadata/
 modules/trinity-wrapper-snake
 submit/*.txt
 testdata/
+scripts/make_assembly_file.py
