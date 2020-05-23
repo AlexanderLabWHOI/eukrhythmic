@@ -5,7 +5,7 @@ spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
 adapter: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/adapters/adapters_nextera.fa
 ## DIRECTORIES DURING PROCESSING ##
 inputDIR: input/testdata #/vortexfs1/omics/alexander/data/BATS2019-clio-metaT 
-outputDIR: ~/testoutput #/vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/22May_stolen
+outputDIR: /vortexfs1/omics/alexander/akrinos/testoutput #/vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/22May_stolen
 #/vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/22May_stolen
 assembledDIR: assembled
 renamedDIR: renamed

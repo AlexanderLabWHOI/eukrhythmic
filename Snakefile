@@ -155,7 +155,7 @@ rule all:
         # TRIMMOMATIC OUTPUTS
         trimmed = expand(["{base}/firsttrim/{sample}_1.trimmed.fastq.gz", "{base}/firsttrim/{sample}_2.trimmed.fastq.gz"], zip, base = OUTPUTDIR, sample = filenames),
         # FASTQC 2 OUTPUTS (trimmed)
-        fastqc2 = expand(["{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed_fastqc.html", "{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed_fastqcs.zip"], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        fastqc2 = expand(["{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed_fastqc.html", "{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed_fastqc.zip"], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # MULTIQC 2 OUTPUTS
         multiqc2 = expand("{base}/qc/multiqc/trimmedqcreport/multiqc_report.html", zip, base = OUTPUTDIR),
         # ASSEMBLER OUTPUTS

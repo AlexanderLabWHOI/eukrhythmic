@@ -30,7 +30,7 @@ rule fastqc_trimmed:
 	wrapper:
 		"0.36.0/bio/fastqc"
         
-rule multiqc:
+rule multiqc_trimmed:
     input:
         fastqcfiles = getalloutputs()
     output:
@@ -38,8 +38,6 @@ rule multiqc:
     params:
         fastqcdir = os.path.join(OUTPUTDIR, "qc", "fastqc"),
         multiqc = os.path.join(OUTPUTDIR, "qc", "multiqc", "firstqcreport")
-    log: 
-        "logs/fastqc/{sample}_{num}.log"
     shell:
         '''
         multiqc -o {output.multiqc} {params.fastqcdir}

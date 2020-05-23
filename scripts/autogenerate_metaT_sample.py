@@ -61,8 +61,8 @@ samplelist = [curr.split("_")[0] for curr in fastalist] # try taking first token
 if len(set(samplelist)) != len(set(fastalist)):
     samplelist = fastalist # otherwise just set sample list to fasta names
     
-metaT = pd.DataFrame({"SampleName": samplelist, \
-              "SampleID": fastalist, \
+metaT = pd.DataFrame({"SampleName": fastalist, \
+              "SampleID": samplelist, \
               "AssemblyGroup": samplelist, \
               "FastqFile": fastalist,})
 

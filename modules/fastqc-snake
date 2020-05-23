@@ -18,7 +18,7 @@ fastqnames = list(SAMPLEINFO.FastqFile);
 def get_filenames(sample, leftorright):
     filenames = os.listdir(INPUTDIR)
     matchednames = []
-    indexsample = [ind for ind in range(0,len(samplenames)) if sample == samplenames[ind]][0]
+    indexsample = [ind for ind in range(0,len(samplenames)) if strip(sample) == samplenames[ind]][0]
     sample_fastq = fastqnames[indexsample]
     for fcurr in filenames: 
         if sample_fastq in fcurr:
@@ -56,8 +56,6 @@ rule multiqc:
     params:
         fastqcdir = os.path.join(OUTPUTDIR, "qc", "fastqc"),
         multiqc = os.path.join(OUTPUTDIR, "qc", "multiqc", "firstqcreport")
-    log: 
-        "logs/fastqc/{sample}_{num}.log"
     shell:
         '''
         multiqc -o {params.multiqc} {params.fastqcdir}
