@@ -30,41 +30,46 @@ rule velvet:
         r1 = LEFTFILE,
         r2 = RIGHTFILE
     output:
-        velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa")
+        velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa"),
+        metavelvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "meta-velvetg.contigs.fa")
     params:
         velvetdir = directory(os.path.join(OUTPUTDIR, "velvet", "{assembly}"))
     conda: "../envs/velvet-env.yaml"
     shell:
         '''
         velveth {params.velvetdir} 55 -strand_specific -shortPaired -fastq {input.r1} {input.r2}
-        velvetg {params.velvetdir} -cov_cutoff auto -min_contig_lgth 100
+        velvetg {params.velvetdir} -cov_cutoff auto -min_contig_lgth 100 -exp_cov auto 
+        meta-velvetg {params.velvetdir}
         '''
         
 rule velvet_SE:
     input:
         r1 = LEFTFILE
     output:
-        velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa")
+        velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa"),
+        metavelvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "meta-velvetg.contigs.fa")
     params:
         velvetdir = directory(os.path.join(OUTPUTDIR, "velvet", "{assembly}"))
     conda: "../envs/velvet-env.yaml"
     shell:
         '''
         velveth {params.velvetdir} 55 -strand_specific -short -fastq {input.r1}
-        velvetg {params.velvetdir} -cov_cutoff auto -min_contig_lgth 100
+        velvetg {params.velvetdir} -cov_cutoff auto -min_contig_lgth 100 -exp_cov auto 
+        meta-velvetg {params.velvetdir}
         '''
         
 rule velvet_cleanup:
     input:
-        velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa")
+        velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "meta-velvetg.contigs.fa")
     output:
         assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_velvet.fasta"),
-        scratchout = os.path.join(SCRATCHDIR, "{assembly}")
+        scratchout = directory(os.path.join(SCRATCHDIR, "velvet", "{assembly}"))
     params:
         outdir = os.path.join(OUTPUTDIR, "velvet", "{assembly}"),
-        scratch = SCRATCHDIR
+        scratch = os.path.join(SCRATCHDIR, "velvet")
     shell:
         '''
+        mkdir -p {params.scratch}
         cp {input.velvetfile} {output.assembled}
         mv {params.outdir} {params.scratch}
         #rm -r {params.outdir}

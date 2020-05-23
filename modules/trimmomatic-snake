@@ -9,7 +9,6 @@ from snakemake.exceptions import print_exception, WorkflowError
 OUTPUTDIR = config["outputDIR"]
 INPUTDIR = config["inputDIR"]
 ADAPTER = config["adapter"]
-SUFFIX = config["inputsuffix"]
 
 DATAFILE = config["metaT_sample"]
 SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")

@@ -3,7 +3,6 @@ configfile: "config.yaml"
 OUTPUTDIR = config["outputDIR"]
 SCRATCHDIR = config["scratch"]
 INPUTDIR = config["inputDIR"]
-SUFFIX = config["inputsuffix"]
 
 import io
 import os

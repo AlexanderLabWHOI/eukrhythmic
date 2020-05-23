@@ -35,8 +35,6 @@ rule quast:
         directory(os.path.join(OUTPUTDIR, "quast", "{assembly}"))
     params:
         assemblers = ",".join(ASSEMBLERS),
-        outputvelvet = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa"),
-        outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa"),
         outputassemblies = lambda wildcards: combineassemblers(wildcards.assembly) 
     conda:
         "../envs/quast-env.yaml"
@@ -53,8 +51,6 @@ rule quastfinal:
     params:
         assemblers = ",".join(ASSEMBLERS),
         assembly = "{assembly}",
-        outputvelvet = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa"),
-        outputmegahit = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa"),
         outputassemblies = os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta")
     conda:
         "../envs/quast-env.yaml"

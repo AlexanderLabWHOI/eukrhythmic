@@ -11,7 +11,7 @@ import pathlib
 from snakemake.exceptions import print_exception, WorkflowError                 
 
 # Check to make sure the configuration file contains all the required entries
-required_entries = ["metaT_sample","inputDIR","inputsuffix","checkqual","spikefile","dropspike",\
+required_entries = ["metaT_sample","inputDIR","checkqual","spikefile","dropspike",\
                     "kmers","assemblers","jobname","adapter","separategroups","outputDIR","renamedDIR",\
                     "scratch"]
 for r in required_entries:
@@ -31,6 +31,9 @@ INPUTDIR = config["inputDIR"]
 OUTPUTDIR = config["outputDIR"]
 SCRATCHDIR = config["scratch"]
 KMERVALS = list(config['kmers'])
+
+# Check to make sure the scratch directory exists; otherwise, create it.
+os.system("mkdir -p " + SCRATCHDIR)
 
 # Check to make sure a list of integer k-mer values is supplied.
 if isinstance(KMERVALS, list):

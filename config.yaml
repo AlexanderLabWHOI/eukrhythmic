@@ -1,16 +1,17 @@
 ## INPUT DATA AND FORMATTING ##
-jobname: wapproject # formatted input file; described in README
-metaT_sample: input/metaT_wap.txt
+jobname: stolen # formatted input file; described in README
+metaT_sample: input/metaT_cohen.txt
 spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
 adapter: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/adapters/adapters_nextera.fa
 ## DIRECTORIES DURING PROCESSING ##
-inputDIR: /vortexfs1/omics/alexander/data/WAP 
-outputDIR: /vortexfs1/omics/alexander/akrinos/wap-project/19May2020
+inputDIR: /vortexfs1/omics/alexander/data/BATS2019-clio-metaT 
+outputDIR: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/22May_stolen
+#/vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/22May_stolen
 assembledDIR: assembled
 renamedDIR: renamed
-scratch: /vortexfs1/scratch/akrinos/wap/8May2020 # this is where all the intermediate outputs will go.
+scratch: /vortexfs1/scratch/akrinos/bats/22May2020 # this is where all the intermediate outputs will go.
 ## ANALYSIS OPTIONS ##
-dropspike: 0 # 1 indicates that "spikefile" is used to clean reads
+dropspike: 1 # 1 indicates that "spikefile" is used to clean reads
 checkqual: 1 # flag to be used to decide whether QUAST/salmon quantification performed
 kmers:
     - 20
