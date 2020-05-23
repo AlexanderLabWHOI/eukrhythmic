@@ -57,12 +57,13 @@ rule megahit_cleanup:
         megahitfile = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa")
     output:
         assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_megahit.fasta"),
-        scratchout = os.path.join(SCRATCHDIR, "{assembly}")
+        scratchout = directory(os.path.join(SCRATCHDIR, "megahit", "{assembly}"))
     params:
         outdir = os.path.join(OUTPUTDIR, "megahit", "{assembly}"),
-        scratch = SCRATCHDIR
+        scratch = os.path.join(SCRATCHDIR, "megahit")
     shell:
         '''
+        mkdir -p {params.scratch}
         cp {input.megahitfile} {output.assembled}
         mv {params.outdir} {params.scratch}
         #rm -r {params.outdir}

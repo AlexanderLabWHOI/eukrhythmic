@@ -11,7 +11,7 @@ import pathlib
 from snakemake.exceptions import print_exception, WorkflowError                 
 
 # Check to make sure the configuration file contains all the required entries
-required_entries = ["metaT_sample","inputDIR","inputsuffix","checkqual","spikefile","dropspike",\
+required_entries = ["metaT_sample","inputDIR","checkqual","spikefile","dropspike",\
                     "kmers","assemblers","jobname","adapter","separategroups","outputDIR","renamedDIR",\
                     "scratch"]
 for r in required_entries:
@@ -32,9 +32,11 @@ OUTPUTDIR = config["outputDIR"]
 SCRATCHDIR = config["scratch"]
 KMERVALS = list(config['kmers'])
 
+# Check to make sure the scratch directory exists; otherwise, create it.
+os.system("mkdir -p " + SCRATCHDIR)
+
 # Check to make sure a list of integer k-mer values is supplied.
 if isinstance(KMERVALS, list):
-    print(type(KMERVALS[0] + 1))
     for kmer in KMERVALS:
         try:
             if not isinstance(kmer + 1, int):
@@ -84,7 +86,7 @@ else:
 directories = [ASSEMBLEDDIR,INPUTDIR,OUTPUTDIR,SCRATCHDIR,RENAMEDDIR]
 for dir_curr in directories:
     try:
-        if (dir_curr[len(dir_curr)-1] == "/") | (dir_curr[len(dir_curr)-1] == "\"):
+        if ((dir_curr[len(dir_curr)-1] == '/') | (dir_curr[len(dir_curr)-1] == '\\')):
             raise ValueError
     except ValueError:
         print("Please do not add trailing slashes to input, output, scratch, assembled, or renamed directories.")
@@ -137,7 +139,6 @@ include: "modules/transdecoder-snake"
 include: "modules/busco-snake"
 include: "modules/salmon-snake"
 
-print(filenames)
 ruleorder: trimmomatic > trimmomatic_SE
 ruleorder: trinity > trinity_SE
 ruleorder: megahit > megahit_SE
@@ -146,13 +147,17 @@ ruleorder: velvet > velvet_SE
 rule all:
     input:
         # FASTQC OUTPUTS
-        fastqc1 = expand(["{base}/qc/fastqc/{sample}_{num}.html", "{base}/qc/fastqc/{sample}_{num}.zip"], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        fastqc1 = expand(["{base}/qc/fastqc/{sample}_{num}_fastqc.html", "{base}/qc/fastqc/{sample}_{num}_fastqc.zip"], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        # MULTIQC OUTPUTS
+        multiqc1 = expand("{base}/qc/multiqc/firstqcreport/multiqc_report.html", zip, base = OUTPUTDIR),
         # BBMAP OUTPUTS
         bbmap = expand(os.path.join("{base}", "bbmap", "{sample}_{num}.clean.fastq.gz"), zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # TRIMMOMATIC OUTPUTS
         trimmed = expand(["{base}/firsttrim/{sample}_1.trimmed.fastq.gz", "{base}/firsttrim/{sample}_2.trimmed.fastq.gz"], zip, base = OUTPUTDIR, sample = filenames),
         # FASTQC 2 OUTPUTS (trimmed)
-        fastqc2 = expand(["{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.html", "{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed.zip"], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        fastqc2 = expand(["{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed_fastqc.html", "{base}/qc/fastqc_trimmed/{sample}_{num}.trimmed_fastqc.zip"], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        # MULTIQC 2 OUTPUTS
+        multiqc2 = expand("{base}/qc/multiqc/trimmedqcreport/multiqc_report.html", zip, base = OUTPUTDIR),
         # ASSEMBLER OUTPUTS
         assemblersout = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"), base = ASSEMBLEDDIR, assembly = assemblygroups, assembler = ASSEMBLERS), 
         # QUAST OUTPUTS

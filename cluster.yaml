@@ -4,7 +4,7 @@ __default__:
     time: 1400 # in minutes
     mem: 180 # in GB
     threads: 6
-    queue: scavenger
+    queue: compute
     nodes: 3
     command_options:
         slurm:

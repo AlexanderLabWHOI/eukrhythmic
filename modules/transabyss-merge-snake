@@ -9,6 +9,7 @@ OUTPUTDIR = config['outputDIR']
 ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
 ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
 DROPSPIKE = config['dropspike']
+SCRATCHDIR = config['scratch']
 KMERVALS = list(config['kmers'])
 MINKVAL = int(min(KMERVALS))
 MAXKVAL = int(max(KMERVALS))
@@ -30,5 +31,25 @@ rule transabyssmerge:
     conda: '../environment.yaml'
     shell:
         '''
-        transabyss-merge {input.files} --mink {params.minkval} --maxk {params.maxkval} --prefix {params.prefixks} --out {output}
+        transabyss-merge {input.files} --mink {params.minkval} --maxk {params.maxkval} --prefixes {params.prefixks} --out {output}
+        '''
+
+rule transabyssmerge_cleanup:
+    input:
+        transabyssfile = os.path.join(OUTPUTDIR, "transabyss", "{assembly}_transabyss.fasta")
+    output:
+        assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_transabyss.fasta")
+    params:
+        mergefile = os.path.join(OUTPUTDIR, "transabyss", "{assembly}_transabyss.fasta"),
+        outdir = os.path.join(OUTPUTDIR, "transabyss_*_{assembly}"),
+        scratch = os.path.join(SCRATCHDIR, "transabyss")
+    threads: 4
+    conda: '../environment.yaml'
+    shell:
+        '''
+        mkdir -p {params.scratch}
+        cp {input.transabyssfile} {output.assembled}
+        mv {params.mergefile} {params.scratch}
+        mv {params.outdir} {params.scratch}
+        #rm -r {params.outdir}
         '''
