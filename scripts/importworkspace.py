@@ -9,6 +9,7 @@ import pathlib
 import yaml
 from snakemake.exceptions import print_exception, WorkflowError   
 
+print("\033[1;35m Reading in variables from configuration file...  \n")
 with open('config.yaml') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
     
@@ -52,6 +53,7 @@ else:
 
 directories = [ASSEMBLEDDIR,INPUTDIR,OUTPUTDIR,SCRATCHDIR,RENAMEDDIR]
         
+print("\033[1;35m Checking directory formatting...  \n")
 # Check to make sure the user hasn't added trailing /.
 for dir_curr in directories:
     try:
@@ -61,6 +63,8 @@ for dir_curr in directories:
         print("Please do not add trailing slashes to input, output, scratch, assembled, or renamed directories.")
         sys.exit(1)
 
+        
+print("\033[1;35m Checking that appropriate input files exist...  \n")
 inputfiles = "|".join(os.listdir(INPUTDIR))
 filenames = []
 singleorpaired = []

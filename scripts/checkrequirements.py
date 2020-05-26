@@ -34,6 +34,7 @@ directories = [ASSEMBLEDDIR,INPUTDIR,OUTPUTDIR,SCRATCHDIR,RENAMEDDIR]
 ## END SECTION TO BE DELETED ##
 
 def checkrequirementsfct(): 
+    print("\033[1;35m Checking that configuration file entries are valid...  \n")
     # Check to make sure a list of integer k-mer values is supplied.
     if isinstance(KMERVALS, list):
         for kmer in KMERVALS:
@@ -87,3 +88,6 @@ def checkrequirementsfct():
             except ValueError:
                 print("There are too many occurrences of fastq file " + currfile + " in input directory.")
                 sys.exit(1)
+               
+    
+    print("\033[1;32m All initial checks complete.  \n")
