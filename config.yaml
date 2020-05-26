@@ -18,7 +18,6 @@ kmers:
     - 50
     - 110
 assemblers:
-    - Trinity
     - megahit
     - velvet
 separategroups: 1

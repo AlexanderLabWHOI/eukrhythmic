@@ -38,8 +38,11 @@ rule transabyss:
         left = LEFTFILE,
         right = RIGHTFILE
     threads: 4
+    log:
+        err = os.path.join("logs","transabyss","outputlog_{assembly}_err.log"),
+        out = os.path.join("logs","transabyss","outputlog_{assembly}_err.log")
     conda: '../environment.yaml'
     shell:
         '''
-        transabyss --pe {input.left} {input.right} --name {params.fastaname} --outdir {params.outdir} --kmer {params.kval} --threads 8
+        transabyss --pe {input.left} {input.right} --name {params.fastaname} --outdir {params.outdir} --kmer {params.kval} --threads 8 2> {log.err} 1> {log.out}
         '''
