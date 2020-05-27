@@ -5,12 +5,9 @@ import os
 import pandas as pd
 import pathlib
 from snakemake.exceptions import print_exception, WorkflowError
-
-OUTPUTDIR = config["outputDIR"]
-SCRATCHDIR = config["scratch"]
-INPUTDIR = config["inputDIR"]
-DATAFILE = config["metaT_sample"]
-SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
 
 def getalloutputs():
     listqc = []

@@ -14,7 +14,8 @@ with open('config.yaml') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
     
 required_entries = ["metaT_sample","inputDIR","checkqual","spikefile","dropspike",\
-                    "kmers","assemblers","jobname","adapter","separategroups","outputDIR","scratch"]
+                    "kmers","assemblers","jobname","adapter","separategroups","outputDIR","scratch",\
+                   "transdecodercutoff","secondclustercutoff"]
 for r in required_entries:
     try:
         if r not in config:
@@ -34,8 +35,18 @@ INPUTDIR = config["inputDIR"]
 OUTPUTDIR = config["outputDIR"]
 SCRATCHDIR = config["scratch"]
 KMERVALS = list(config['kmers'])
-ASSEMBLERS = list(config['assemblers'])
+SPIKEFILE = config['spikefile']
+DROPSPIKE = config['dropspike']
+TRANSDECODERORFSIZE = config["transdecodercutoff"]
+MINCOVERAGECLUST2 = config["transdecodercutoff"]
+ADAPTER = config["adapter"]
+if os.path.isfile(SPIKEFILE):
+    ISFILESPIKE = 1
+else:
+    ISFILESPIKE = 0
+ASSEMBLERS = [curr.lower() for curr in list(config['assemblers'])]
 SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
+ASSEMBLYDICT = dict(zip(list(SAMPLEINFO.AssemblyGroup), list(SAMPLEINFO.SampleName)))
 samplenames = list(SAMPLEINFO.SampleID);
 fastqnames = list(SAMPLEINFO.FastqFile);
 
@@ -50,6 +61,13 @@ if 'assembledDIR' in config:
     ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
 else:
     ASSEMBLEDDIR = os.path.join(OUTPUTDIR, "assembled")
+    
+if DROPSPIKE == 0:
+    LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+    RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
+else:
+    LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_1.clean.fastq.gz"), samples = get_samples(filename.assembly))
+    RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_2.clean.fastq.gz"), samples = get_samples(filename.assembly))
 
 directories = [ASSEMBLEDDIR,INPUTDIR,OUTPUTDIR,SCRATCHDIR,RENAMEDDIR]
         

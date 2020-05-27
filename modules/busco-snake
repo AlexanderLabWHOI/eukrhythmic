@@ -4,15 +4,9 @@ import io
 import os
 import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
-
-OUTPUTDIR = config['outputDIR']
-if 'assembledDIR' in config:
-    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
-else:
-    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, "assembled")
-ASSEMBLERS = [curr.lower() for curr in list(config['assemblers'])]
-ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
-ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
 
 # --auto-lineage-euk is better if you download SEPP
 rule busco:
@@ -21,7 +15,6 @@ rule busco:
     output:
         directory(os.path.join(OUTPUTDIR, "busco", "{assembly}"))
     params:
-        assemblers = ",".join(ASSEMBLERS),
         assembly = "{assembly}"
     conda:
         "../envs/busco-env.yaml"

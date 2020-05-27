@@ -4,12 +4,10 @@ import io
 import os
 import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
 
-OUTPUTDIR = config['outputDIR']
-ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
-ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
-DROPSPIKE = config['dropspike']
-SCRATCHDIR = config['scratch']
 KMERVALS = list(config['kmers'])
 MINKVAL = int(min(KMERVALS))
 MAXKVAL = int(max(KMERVALS))

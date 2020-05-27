@@ -3,29 +3,16 @@ configfile: "config.yaml"
 import io
 import os
 from snakemake.exceptions import print_exception, WorkflowError
-
-OUTPUTDIR = config["outputDIR"]
-INPUTDIR = config["inputDIR"]
-
-ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
-ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
-if 'assembledDIR' in config:
-    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
-else:
-    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, "assembled")
-    
-if 'renamedDIR' in config:
-    RENAMEDDIR = os.path.join(OUTPUTDIR, config['renamedDIR'])
-else:
-    RENAMEDDIR = os.path.join(OUTPUTDIR, "renamed")
-ASSEMBLERS = [curr.lower() for curr in list(config['assemblers'])]
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
 
 def getallmergedlist():
-    mergednames = [os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in ASSEMBLYFILE.AssemblyGroup]
+    mergednames = [os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in SAMPLEINFO.AssemblyGroup]
     return(mergednames)
     
 def getallmerged():
-    mergednames = [os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in ASSEMBLYFILE.AssemblyGroup]
+    mergednames = [os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in SAMPLEINFO.AssemblyGroup]
     return(" ".join(mergednames))
     
 def combineassemblers(assembly):

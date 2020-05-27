@@ -4,15 +4,9 @@ import io
 import os
 import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
-
-OUTPUTDIR = config['outputDIR']
-if 'assembledDIR' in config:
-    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
-else:
-    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, "assembled")
-ASSEMBLERS = [curr.lower() for curr in list(config['assemblers'])]
-ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
-ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
 
 def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID']) 

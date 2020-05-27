@@ -4,15 +4,9 @@ import io
 import os
 import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
-
-OUTPUTDIR = config['outputDIR']
-if 'assembledDIR' in config:
-    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
-else:
-    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, "assembled")
-ASSEMBLERS = [curr.lower() for curr in list(config['assemblers'])]
-ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
-ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
 
 rule transdecoder:
     input:
@@ -27,7 +21,7 @@ rule transdecoder:
     params:
         merged = "{assembly}",
         outputdir = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.pep"),
-        size = 100
+        size = TRANSDECODERORFSIZE
     threads: 4
     conda: 
         "../envs/transdecoder-env.yaml"
@@ -55,7 +49,7 @@ rule transdecoder_indiv:
         "logs/transdecoder/outputlog_{assembly}_{assembler}_transdecoder.log"
     params:
         merged = "{assembly}_{assembler}",
-        size = 100
+        size = TRANSDECODERORFSIZE
     threads: 4
     conda: 
         "../envs/transdecoder-env.yaml"

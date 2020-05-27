@@ -5,15 +5,9 @@ import os
 import pathlib
 import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
-
-OUTPUTDIR = config["outputDIR"]
-SCRATCHDIR = config["scratch"]
-INPUTDIR = config["inputDIR"]
-
-DATAFILE = config["metaT_sample"]
-SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
-samplenames = list(SAMPLEINFO.SampleID);
-fastqnames = list(SAMPLEINFO.FastqFile);
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
 
 def get_filenames(sample, leftorright):
     filenames = os.listdir(INPUTDIR)
@@ -38,7 +32,6 @@ def getalloutputs():
 rule fastqc:
     input:
         (lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"), sampnames = get_filenames(filename.sample, filename.num)))
-        #os.path.join(INPUTDIR,"{sample}_R{num}" + SUFFIX)
     output:
         html = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}_fastqc.html"),
         zip = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}_fastqc.zip")
