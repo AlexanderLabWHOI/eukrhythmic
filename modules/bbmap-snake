@@ -5,15 +5,9 @@ import os
 from os.path import isfile, join
 import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
-
-OUTPUTDIR = config['outputDIR']
-ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
-ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
-SPIKEFILE = config['spikefile']
-if os.path.isfile(SPIKEFILE):
-    ISFILESPIKE = 1
-else:
-    ISFILESPIKE = 0
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
 
 rule bbmap:
     input:

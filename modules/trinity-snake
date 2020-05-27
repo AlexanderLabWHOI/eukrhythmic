@@ -4,16 +4,9 @@ import io
 import os
 import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
-
-OUTPUTDIR = config['outputDIR']
-ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
-ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
-if 'assembledDIR' in config:
-    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
-else:
-    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, "assembled")
-DROPSPIKE = config['dropspike']
-SCRATCHDIR = config['scratch']
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
 
 def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID'])
@@ -26,29 +19,28 @@ else:
     LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_1.clean.fastq.gz"), samples = get_samples(filename.assembly))
     RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_2.clean.fastq.gz"), samples = get_samples(filename.assembly))
     
-# This module needs to grab all of the list of the 
-# individual files associated with the specified
-# assembly group, after the scripts/make-assembly-file.py
-# script builds said assembly groups according to user
-# specifications.  
+# This module needs to grab all of the list of the individual files associated with the specified
+# assembly group, after the scripts/make-assembly-file.py script builds said assembly groups 
+# according to user specifications.  
 rule trinity:
     input:
         left = LEFTFILE,
         right = RIGHTFILE
     output:
         os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta")
-    log:
-        "logs/trinity/outputlog_{assembly}_trinity.log"
     params:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}"),
         left = LEFTFILE,
         right = RIGHTFILE
     threads: 4
+    log:
+        err = os.path.join("logs","trinity","outputlog_{assembly}_err.log"),
+        out = os.path.join("logs","trinity","outputlog_{assembly}_err.log")
     conda: '../envs/trinity-env.yaml'
     shell:
         '''
-        Trinity --seqType fq --max_memory 50G --left {input.left} --right {input.right} --output {params.outdir}
+        Trinity --seqType fq --max_memory 50G --left {input.left} --right {input.right} --output {params.outdir} 2> {log.err} 1> {log.out}
         '''
         
 rule trinity_SE:
@@ -64,10 +56,13 @@ rule trinity_SE:
         left = LEFTFILE,
         right = RIGHTFILE
     threads: 4
+    log:
+        err = os.path.join("logs","trinity","outputlog_{assembly}_err.log"),
+        out = os.path.join("logs","trinity","outputlog_{assembly}_err.log")
     conda: '../envs/trinity-env.yaml'
     shell:
         '''
-        Trinity --seqType fq --max_memory 100G --single {input.single} --output {params.outdir}
+        Trinity --seqType fq --max_memory 100G --single {input.single} --output {params.outdir} 2> {log.err} 1> {log.out}
         '''
    
 rule trinity_cleanup:
@@ -90,8 +85,10 @@ rule trinity_cleanup:
         '''
         mkdir -p {params.scratch}
         cp {input.trinityfile} {output.assembled}
-        #rm -r {params.outdir}
         mv {params.jellyfile} {output.jellyfish}
-        mv {params.outdir} {params.scratch}
+        if [ {params.outdir} != {params.scratch} ]
+        then
+            mv {params.outdir} {params.scratch}
+        fi
         '''
 

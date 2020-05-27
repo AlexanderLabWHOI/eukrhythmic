@@ -4,17 +4,14 @@ import io
 import os
 import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
-
-OUTPUTDIR = config['outputDIR']
-ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
-ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
-DROPSPIKE = config['dropspike']
-SCRATCHDIR = config['scratch']
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
 
 def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID']) 
     return samplelist
-    
+
 if DROPSPIKE == 0:
     LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
     RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
@@ -38,8 +35,11 @@ rule transabyss:
         left = LEFTFILE,
         right = RIGHTFILE
     threads: 4
+    log:
+        err = os.path.join("logs","transabyss","outputlog_{assembly}_err.log"),
+        out = os.path.join("logs","transabyss","outputlog_{assembly}_err.log")
     conda: '../environment.yaml'
     shell:
         '''
-        transabyss --pe {input.left} {input.right} --name {params.fastaname} --outdir {params.outdir} --kmer {params.kval} --threads 8
+        transabyss --pe {input.left} {input.right} --name {params.fastaname} --outdir {params.outdir} --kmer {params.kval} --threads 8 2> {log.err} 1> {log.out}
         '''

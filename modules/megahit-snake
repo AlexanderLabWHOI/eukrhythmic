@@ -4,20 +4,14 @@ import io
 import os
 import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
-
-OUTPUTDIR = config['outputDIR']
-ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
-ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
-if 'assembledDIR' in config:
-    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
-else:
-    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, "assembled")
-SCRATCHDIR = config['scratch']
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
     
 def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID']) 
     return samplelist
-    
+
 if DROPSPIKE == 0:
     LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
     RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
@@ -33,10 +27,13 @@ rule megahit:
         megafile = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa")
     params:
         megadir = directory(os.path.join(OUTPUTDIR, "megahit", "{assembly}"))
+    log:
+        err = os.path.join("logs","megahit","outputlog_{assembly}_err.log"),
+        out = os.path.join("logs","megahit","outputlog_{assembly}_err.log")
     conda: "../envs/megahit-env.yaml"
     shell:
         '''
-        megahit -m 0.9 -t 8 -o megahit -1 {input.r1} -2 {input.r2} -f -o {params.megadir}
+        megahit -m 0.9 -t 8 -o megahit -1 {input.r1} -2 {input.r2} -f -o {params.megadir} 2> {log.err} 1> {log.out}
         '''
         
 rule megahit_SE:
@@ -46,10 +43,18 @@ rule megahit_SE:
         megafile = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa")
     params:
         megadir = directory(os.path.join(OUTPUTDIR, "megahit", "{assembly}"))
+    log:
+        err = os.path.join("logs","megahit","outputlog_{assembly}_err.log"),
+        out = os.path.join("logs","megahit","outputlog_{assembly}_err.log")
     conda: "../envs/megahit-env.yaml"
     shell:
         '''
-        megahit -m 0.9 -t 8 -o megahit -r {input.r1} -f -o {params.megadir}
+        if [ -d {params.megadir} ]
+        then
+            megahit --continue -m 0.9 -t 8 -o megahit -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
+        else
+            megahit -m 0.9 -t 8 -o megahit -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
+        fi
         '''
         
 rule megahit_cleanup:
@@ -65,6 +70,8 @@ rule megahit_cleanup:
         '''
         mkdir -p {params.scratch}
         cp {input.megahitfile} {output.assembled}
-        mv {params.outdir} {params.scratch}
-        #rm -r {params.outdir}
+        if [ {params.outdir} != {params.scratch} ]
+        then
+            mv {params.outdir} {params.scratch}
+        fi
         '''

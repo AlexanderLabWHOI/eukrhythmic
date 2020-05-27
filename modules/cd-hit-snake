@@ -3,13 +3,9 @@ configfile: "config.yaml"
 import io
 import os
 from snakemake.exceptions import print_exception, WorkflowError
-
-OUTPUTDIR = config["outputDIR"]
-INPUTDIR = config["inputDIR"]
-
-ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
-ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
-ASSEMBLERS = list(config['assemblers'])
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
 
 def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID']) 
@@ -42,7 +38,7 @@ rule cdhit_mergedclusters:
         threads = 10,
         maxmemory = 2549, # -G o indicates local sequence identity.
         identityparam = 1.00,
-        mincoverageshorter = 0.98,
+        mincoverageshorter = MINCOVERAGECLUST2,
         mincoveragelong = 0.005
     conda:
         "../envs/cd-hit-env.yaml"
@@ -61,7 +57,7 @@ rule cdhit_transdecoded:
         threads = 10,
         maxmemory = 2549, # -G o indicates local sequence identity.
         identityparam = 1.00,
-        mincoverageshorter = 0.98,
+        mincoverageshorter = MINCOVERAGECLUST2,
         mincoveragelong = 0.005
     conda:
         "../envs/cd-hit-env.yaml"

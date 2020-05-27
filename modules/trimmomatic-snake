@@ -5,15 +5,9 @@ import os
 from os import listdir
 import glob
 from snakemake.exceptions import print_exception, WorkflowError
-
-OUTPUTDIR = config["outputDIR"]
-INPUTDIR = config["inputDIR"]
-ADAPTER = config["adapter"]
-
-DATAFILE = config["metaT_sample"]
-SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
-samplenames = list(SAMPLEINFO.SampleID);
-fastqnames = list(SAMPLEINFO.FastqFile);
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
 
 def get_filenames(sample, leftorright):
     filenames = os.listdir(INPUTDIR)

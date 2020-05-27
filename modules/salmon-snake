@@ -2,28 +2,26 @@ configfile: "config.yaml"
 
 import io
 import os
+import sys
 from snakemake.exceptions import print_exception, WorkflowError
-
-OUTPUTDIR = config["outputDIR"]
-INPUTDIR = config["inputDIR"]
-DROPSPIKE = config['dropspike']
-
-ASSEMBLYFILE = pd.read_csv(config["metaT_sample"], sep = "\t")
-ASSEMBLYDICT = dict(zip(list(ASSEMBLYFILE.AssemblyGroup), list(ASSEMBLYFILE.SampleName)))
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
 
 def get_samples(assemblygroup):
-    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID']) 
+    samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
     if assemblygroup == "merged":
-        samplelist = list(ASSEMBLYFILE['SampleID'])
+        samplelist = list(SAMPLEINFO['SampleID'])
     return samplelist
-
+    
+    
 if DROPSPIKE == 0:
     LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
     RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
 else:
     LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_1.clean.fastq.gz"), samples = get_samples(filename.assembly))
     RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_2.clean.fastq.gz"), samples = get_samples(filename.assembly))
-
+    
 rule salmon:
     input: 
         trinityfile = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta"),
