@@ -37,7 +37,8 @@ And then invoke:
 eukrhythmic <arguments>
 ```
 
-To run `eukrhythmic` on the provided sample data, simply invoke `eukrhythmic` on a clean install of the program without arguments. The exception is if you are running on an HPC system that uses the `SLURM` scheduler, invoke `eukrhythmic` with one argument: `-l` or `--slurm` to leverage your computing resources. In that case, you will also want to invoke `sbatch eukrhythmic --slurm`, to avoid running any steps on your current remote machine. A list of additional arguments required commonly by users is given below: 
+To run `eukrhythmic` on the provided sample data, simply invoke `eukrhythmic` on a clean install of the program without arguments. You can also run the sample data by using the argument `--use-sample`, which will copy the relevant configuration entries. The exception is if you are running on an HPC system that uses the `SLURM` scheduler, invoke `eukrhythmic` with one argument: `-l` or `--slurm` to leverage your computing resources. In that case, you will also want to invoke `sbatch eukrhythmic --slurm`, to avoid running any steps on your current remote machine. A list of additional arguments required commonly by users is given below: 
+
 
 | Flag 	| `config.yaml` entry 	| Meaning 	|
 |-------------------------	|---------------------	|-----------------------------------------------------------------------------------------------------------	|
@@ -49,6 +50,8 @@ To run `eukrhythmic` on the provided sample data, simply invoke `eukrhythmic` on
 | -b / --run-bbmap 	| runbbmap; spikefile 	| If your data contains spiked reads, you can list this flag and specify a FASTA file containing the spike. 	|
 | -l / --slurm 	| - 	| If provided, run `snakemake` on SLURM. 	|
 | -g / --generate-file 	| -  	| If provided, create the sample file automatically from the files present in the input directory. 	|
+| --use-sample 	| - 	| If provided, override all other parameters and run the sample file. 	|
+| -c / --scratch-dir 	| scratch 	| Takes argument of the directory to be used as scratch space. 	|
 
 
 ### Running the pipeline with Snakemake
