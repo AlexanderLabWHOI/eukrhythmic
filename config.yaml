@@ -1,8 +1,8 @@
 ### Parameters expected to be changed under normal use ###
 ## INPUT DATA AND FORMATTING ##
 # formatted input file; described in README
-jobname: testered
-metaT_sample: input/sampledata.txt
+jobname: hello
+metaT_sample: input/metasample.txt
 spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
 adapter: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/adapters/adapters_nextera.fa
 ## DIRECTORIES DURING PROCESSING ##
