@@ -48,7 +48,9 @@ rule merge:
         assemblyfiles = lambda wildcards: combineassemblers(wildcards.assembly)
     shell:
         '''
-        cat {params.assemblyfiles} > {output}
+        if [ ! -f {output} ]; then
+            cat {params.assemblyfiles} > {output}
+        end
         '''
         
 # this rule merges all of the different assemblies of samples
