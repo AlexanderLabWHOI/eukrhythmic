@@ -16,10 +16,22 @@ with open('config.yaml') as f:
 print("\033[1;35m Reading in variables from cluster configuration file...  \n")
 with open('cluster.yaml') as f:
     cluster = yaml.load(f, Loader=yaml.FullLoader)
+    
+required_entries = ["maxmemory","maxthreads","maxcores"]
+for r in required_entries:
+    try:
+        if r not in cluster["required"]:
+            offender = r
+            raise ValueError
+    except ValueError:
+        print("Check that you have specified values in the cluster configuration file file. The missing entry that triggered this error was "  + str(offender) + ".")
+        sys.exit(1)
 
-MAXMEMORY = cluster["maxmemory"]
-MAXTHREADS = cluster["maxthreads"]
-MAXCORES = cluster["maxcores"]
+DEFAULTQUEUE = cluster["required"]["defaultqueue"]
+DEFAULTUSER = cluster["required"]["accountname"]
+MAXMEMORY = cluster["required"]["maxmemory"]
+MAXTHREADS = cluster["required"]["maxthreads"]
+MAXCORES = cluster["required"]["maxcores"]
     
 required_entries = ["metaT_sample","inputDIR","checkqual","spikefile","runbbmap",\
                     "kmers","assemblers","jobname","adapter","separategroups","outputDIR","scratch",\
@@ -32,6 +44,12 @@ for r in required_entries:
     except ValueError:
         print("Check that you have specified values in the configuration file. The missing entry that triggered this error was "  + str(offender) + ".")
         sys.exit(1)
+
+## READ IN WHETHER THE USER DOES NOT WANT US TO REWRITE THE CLUSTER CONFIGURATION FILE ##
+WRITECLUSTER = 1
+if "rewritecluster" in config:
+    if config["rewritecluster"] == 0:
+        WRITECLUSTER = 0
         
 ## READ ALL RELEVANT DATA IN FROM CONFIGURATION FILE ##
 if "metaT_sample" in config:
@@ -91,7 +109,24 @@ for dir_curr in directories:
         print("Please do not add trailing slashes to input, output, scratch, assembled, or renamed directories.")
         sys.exit(1)
 
-        
+print("\033[1;35m Setting appropriate cluster.yaml entries...  \n")
+for r in cluster.keys():
+    if "account" in cluster[r].keys():
+        cluster[r]["account"] = DEFAULTUSER
+    
+    if WRITECLUSTER == 1:
+        if "queue" in cluster[r].keys():
+            cluster[r]["queue"] = DEFAULTQUEUE
+        if ("nodes" in cluster[r].keys()) & (r == "trinity"):
+            cluster[r]["nodes"] = MAXCORES
+        if ("mem" in cluster[r].keys()) & (r == "trinity"):
+            cluster[r]["mem"] = MAXMEMORY
+        if ("threads" in cluster[r].keys()) & (r == "trinity"):
+            cluster[r]["threads"] = MAXTHREADS
+            
+with open('cluster.yaml', 'w') as f:
+    yaml.dump(cluster, f)
+
 print("\033[1;35m Checking that appropriate input files exist...  \n")
 inputfiles = "|".join(os.listdir(INPUTDIR))
 filenames = []

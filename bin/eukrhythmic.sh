@@ -139,6 +139,8 @@ then
     cp static/config.yaml .
 fi
 
+python scripts/importworkspace.py
+
 if [[ DRYRUNFLAG -eq 1 ]]
 then
     echo "Running a dry run."

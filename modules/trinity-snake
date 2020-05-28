@@ -8,7 +8,6 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
 
-print(str(MAXTHREADS * MAXCORES) + " CPUs are available")
 def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID'])
     return samplelist

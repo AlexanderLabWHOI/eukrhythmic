@@ -1,78 +1,64 @@
-accountname: akrinos
-defaultqueue: compute
-maxcores: 4
-maxthreads: 60
-maxmemory: 180
-
 __default__:
-    system: 'slurm'
-    account: "{{accountname}}"
-    time: 1400 # in minutes
-    mem: 180 # in GB
-    threads: 6
-    queue: "{{defaultqueue}}"
-    nodes: 3
-    command_options:
-        slurm:
-            command: "sbatch --parsable --qos=unlim"
-            key_mapping:
-            name: "--job-name={}"
-            threads: "-n {}"
-            mem: "--mem={}g"
-            account: "--account={}"
-            queue: "--partition={}"
-            time: "--time={}"
-            nodes: "-N {}"  # number of tasks
-
-velvet:
-    account: "{{accountname}}"
-    queue: "{{defaultqueue}}"
-    nodes: 3
-    threads: 8
-    mem: 180
-    time: 10000
-
+  account: akrinos
+  command_options:
+    slurm:
+      account: --account={}
+      command: sbatch --parsable --qos=unlim
+      key_mapping: null
+      mem: --mem={}g
+      name: --job-name={}
+      nodes: -N {}
+      queue: --partition={}
+      threads: -n {}
+      time: --time={}
+  mem: 180
+  nodes: 3
+  queue: scavenger
+  system: slurm
+  threads: 6
+  time: 1400
 fastqc:
-    account: "{{accountname}}"
-    queue: scavenger
-    threads: 1
-    mem: 1
-    time: 720
-
+  account: akrinos
+  mem: 1
+  queue: scavenger
+  threads: 1
+  time: 720
 fastqc_trimmed:
-    account: "{{accountname}}"
-    queue: "{{defaultqueue}}"
-    threads: 1
-    mem: 1
-    time: 720
-
-trimmomatic:
-    account: "{{accountname}}"
-    queue: "{{defaultqueue}}"
-    threads: 8
-    mem: 48
-    time: 1400
-
-trinity:
-    account: "{{accountname}}"
-    queue: "{{defaultqueue}}" #bigmem
-    nodes: "{{maxcores}}"
-    threads: "{{maxthreads}}"
-    mem: "{{maxmemory}}"
-    time: 5000
-
-velvet:
-    account: "{{accountname}}"
-    queue: "{{defaultqueue}}"
-    nodes: 3
-    threads: 8
-    mem: 180
-    time: 10000
-
+  account: akrinos
+  mem: 1
+  queue: scavenger
+  threads: 1
+  time: 720
+required:
+  accountname: akrinos
+  defaultqueue: scavenger
+  maxcores: 4
+  maxmemory: 180
+  maxthreads: 60
 transabyssmerge:
-    account: "{{accountname}}"
-    queue: "{{defaultqueue}}"
-    nodes: 3
-    threads: 8
-    mem: 180
-    time: 10000
+  account: akrinos
+  mem: 180
+  nodes: 3
+  queue: scavenger
+  threads: 8
+  time: 10000
+trimmomatic:
+  account: akrinos
+  mem: 48
+  queue: scavenger
+  threads: 8
+  time: 1400
+trinity:
+  account: akrinos
+  mem: 180
+  nodes: 4
+  queue: scavenger
+  threads: 60
+  time: 5000
+velvet:
+  account: akrinos
+  mem: 180
+  nodes: 3
+  queue: scavenger
+  threads: 8
+  time: 10000
