@@ -1,6 +1,7 @@
 ### Parameters expected to be changed under normal use ###
 ## INPUT DATA AND FORMATTING ##
-jobname: stolen # formatted input file; described in README
+# formatted input file; described in README
+jobname: testered
 metaT_sample: input/sampledata.txt
 spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
 adapter: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/adapters/adapters_nextera.fa
@@ -9,10 +10,13 @@ inputDIR: input/testdata
 outputDIR: /vortexfs1/omics/alexander/akrinos/testoutput
 assembledDIR: assembled
 renamedDIR: renamed
-scratch: /vortexfs1/scratch/akrinos/testscratch # this is where all the intermediate outputs will go.
+# this is where all the intermediate outputs will go.
+scratch: /vortexfs1/scratch/akrinos/testscratch 
 ## ANALYSIS OPTIONS ##
-dropspike: 1 # 1 indicates that "spikefile" is used to clean reads
-checkqual: 1 # flag to be used to decide whether QUAST/salmon quantification performed
+# 1 indicates that "spikefile" is used to clean reads
+runbbmap: 1
+# flag to be used to decide whether QUAST/salmon quantification performed
+checkqual: 1
 kmers:
     - 20
     - 50

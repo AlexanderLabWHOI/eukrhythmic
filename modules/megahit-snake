@@ -33,7 +33,12 @@ rule megahit:
     conda: "../envs/megahit-env.yaml"
     shell:
         '''
-        megahit -m 0.9 -t 8 -o megahit -1 {input.r1} -2 {input.r2} -f -o {params.megadir} 2> {log.err} 1> {log.out}
+        if [ -d {params.megadir} ]
+        then
+            megahit --continue -m 0.9 -t 8 -o megahit -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
+        else
+            megahit -m 0.9 -t 8 -o megahit -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
+        fi
         '''
         
 rule megahit_SE:

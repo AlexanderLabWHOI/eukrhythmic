@@ -21,11 +21,17 @@ conda env create metatrans --file environment.yaml
 
 ## How to use the pipeline
 
+### Running the pipeline from the command line
+
+
+
+### Running the pipeline with Snakemake
+
 To use the pipeline, the most important thing to do is to populate `config.yaml` with the paths to your particular input and output directories. Personalizing this will allow the pipeline to pull the relevant files when computing the results of individual rules, so this step is crucial. 
 
 All input `fastq` files must be contained in the same directory, the `inputDIR` location in the `config.yaml` file. Only these metatranscriptomic data will be included in the analysis. These files do _not_, however, need to be located inside the `eukrhythmic` directory (and it is recommended that they are located elsewhere). 
 
-The next thing that needs to be done is to produce the sample file, containing all of the relevant information to run the 
+The next thing that needs to be done is to produce the sample file, containing all of the relevant information to run the pipeline.
 
 ## File naming
 
@@ -73,7 +79,7 @@ Below is a listing of each supported entry in the configuration file (`config.ya
 | `inputDIR` 	| The file directory where the input data is found. Currently, should be specified with "/" separators, but no trailing "/". Should begin with "/" only if you are going to the root of your file system (not a  relative path). 	|
 | `checkqual` 	| Boolean flag for whether to run quality checking with `salmon`, `QUAST`, `BUSCO`, etc. on assemblies. If 1, these quality checks are performed. 	|
 | `spikefile` 	| A path to a FASTA file containing the sequence of any spiking that might affect reads. This will depend on experimental setup. If the file is not valid (e.g., if this flag is set to 0), nothing is done. 	|
-| `dropspike` 	| A boolean flag to specify whether to use a spike file to drop spiked reads, according to what was done in your experiment. If 1,  the spikefile is used; otherwise, this  filtering is either not performed or is not used downstream in the pipeline  (depending on whether a spike file exists). 	|
+| `runbbmap` 	| A boolean flag to specify whether to use a spike file to drop spiked reads, according to what was done in your experiment. If 1,  the spikefile is used; otherwise, this  filtering is either not performed or is not used downstream in the pipeline  (depending on whether a spike file exists). 	|
 | `kmers` 	| A list of *k*-mer sizes to use, where applicable, in assembly. These should all be integer values (default: 20, 50, 110). 	|
 | `assemblers` 	| The assemblers to be used to assemble the metatranscriptomes (which will later be  merged). All of the specified assemblers in this list should have matching Snakemake rules in the `modules` folder of the main pipeline directory (named identically), as well as "clean" rules (explained below). 	|
 | `jobname` 	| A descriptive name to be used to name jobs on your high-performance computing system, such that you can track the progress of your workflow. 	|
