@@ -1,10 +1,16 @@
+accountname: akrinos
+defaultqueue: compute
+maxcores: 4
+maxthreads: 60
+maxmemory: 180
+
 __default__:
     system: 'slurm'
-    account: akrinos
+    account: "{{accountname}}"
     time: 1400 # in minutes
     mem: 180 # in GB
     threads: 6
-    queue: compute
+    queue: "{{defaultqueue}}"
     nodes: 3
     command_options:
         slurm:
@@ -18,46 +24,54 @@ __default__:
             time: "--time={}"
             nodes: "-N {}"  # number of tasks
 
+velvet:
+    account: "{{accountname}}"
+    queue: "{{defaultqueue}}"
+    nodes: 3
+    threads: 8
+    mem: 180
+    time: 10000
+
 fastqc:
-    account: akrinos
+    account: "{{accountname}}"
     queue: scavenger
     threads: 1
     mem: 1
     time: 720
 
 fastqc_trimmed:
-    account: akrinos
-    queue: scavenger
+    account: "{{accountname}}"
+    queue: "{{defaultqueue}}"
     threads: 1
     mem: 1
     time: 720
 
 trimmomatic:
-    account: akrinos
-    queue: scavenger
+    account: "{{accountname}}"
+    queue: "{{defaultqueue}}"
     threads: 8
     mem: 48
     time: 1400
 
 trinity:
-    account: akrinos
-    queue: scavenger #bigmem
-    nodes: 3
-    threads: 60
-    mem: 180
+    account: "{{accountname}}"
+    queue: "{{defaultqueue}}" #bigmem
+    nodes: "{{maxcores}}"
+    threads: "{{maxthreads}}"
+    mem: "{{maxmemory}}"
     time: 5000
 
 velvet:
-    account: akrinos
-    queue: scavenger
+    account: "{{accountname}}"
+    queue: "{{defaultqueue}}"
     nodes: 3
     threads: 8
     mem: 180
     time: 10000
 
 transabyssmerge:
-    account: akrinos
-    queue: scavenger
+    account: "{{accountname}}"
+    queue: "{{defaultqueue}}"
     nodes: 3
     threads: 8
     mem: 180

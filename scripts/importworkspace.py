@@ -13,9 +13,17 @@ print("\033[1;35m Reading in variables from configuration file...  \n")
 with open('config.yaml') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
     
-required_entries = ["metaT_sample","inputDIR","checkqual","spikefile","dropspike",\
+print("\033[1;35m Reading in variables from cluster configuration file...  \n")
+with open('cluster.yaml') as f:
+    cluster = yaml.load(f, Loader=yaml.FullLoader)
+
+MAXMEMORY = cluster["maxmemory"]
+MAXTHREADS = cluster["maxthreads"]
+MAXCORES = cluster["maxcores"]
+    
+required_entries = ["metaT_sample","inputDIR","checkqual","spikefile","runbbmap",\
                     "kmers","assemblers","jobname","adapter","separategroups","outputDIR","scratch",\
-                   "transdecodercutoff","secondclustercutoff"]
+                   "transdecodercutoff","secondclustercutoff","defaultkmer"]
 for r in required_entries:
     try:
         if r not in config:
@@ -35,6 +43,8 @@ INPUTDIR = config["inputDIR"]
 OUTPUTDIR = config["outputDIR"]
 SCRATCHDIR = config["scratch"]
 KMERVALS = list(config['kmers'])
+KMERVAL = config['defaultkmer']
+MINCONTIGLENGTH = config["mincontig"]
 SPIKEFILE = config['spikefile']
 DROPSPIKE = config['runbbmap']
 TRANSDECODERORFSIZE = config["transdecodercutoff"]

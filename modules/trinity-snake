@@ -8,6 +8,7 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
 
+print(str(MAXTHREADS * MAXCORES) + " CPUs are available")
 def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID'])
     return samplelist
@@ -32,7 +33,9 @@ rule trinity:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}"),
         left = LEFTFILE,
-        right = RIGHTFILE
+        right = RIGHTFILE,
+        maxmem = MAXMEMORY,
+        CPUs = MAXTHREADS * MAXCORES
     threads: 4
     log:
         err = os.path.join("logs","trinity","outputlog_{assembly}_err.log"),
@@ -40,7 +43,7 @@ rule trinity:
     conda: '../envs/trinity-env.yaml'
     shell:
         '''
-        Trinity --seqType fq --max_memory 50G --left {input.left} --right {input.right} --output {params.outdir} 2> {log.err} 1> {log.out}
+        Trinity --seqType fq --max_memory {params.maxmem}G --CPU {params.CPUs} --left {input.left} --right {input.right} --output {params.outdir} 2> {log.err} 1> {log.out}
         '''
         
 rule trinity_SE:
@@ -54,7 +57,9 @@ rule trinity_SE:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}"),
         left = LEFTFILE,
-        right = RIGHTFILE
+        right = RIGHTFILE,
+        maxmem = MAXMEMORY,
+        CPUs = MAXTHREADS * MAXCORES
     threads: 4
     log:
         err = os.path.join("logs","trinity","outputlog_{assembly}_err.log"),
@@ -62,7 +67,7 @@ rule trinity_SE:
     conda: '../envs/trinity-env.yaml'
     shell:
         '''
-        Trinity --seqType fq --max_memory 100G --single {input.single} --output {params.outdir} 2> {log.err} 1> {log.out}
+        Trinity --seqType fq --max_memory {params.maxmem}G --CPU {params.CPUs} --single {input.single} --output {params.outdir} 2> {log.err} 1> {log.out}
         '''
    
 rule trinity_cleanup:

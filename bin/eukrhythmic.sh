@@ -16,6 +16,7 @@ RUNBBMAPARG="" # -b / --run-bbmap (Boolean; set at the same time as spikefile)
 SLURMFLAG=0 # -l / --slurm (Boolean)
 GENFILEFLAG=0 # -g / --generate-file (Boolean)
 USESAMPFLAG=0 # --use-sample (Boolean)
+DRYRUNFLAG=0 # --dry-run (Boolean)
 
 # If they are not present in the config file presently, they will be empty strings.
 if [[ "$(cat config.yaml | grep jobname | cut -d ":" -f 2 | cut -d " " -f 2 )" != "" ]]; then export JOBNAME="$(cat config.yaml | grep jobname | cut -d ":" -f 2 | cut -d " " -f 2)"; fi 2> err.log
@@ -42,6 +43,10 @@ while (( "$#" )); do
       ;;
     --use-sample)
       USESAMPFLAG=1
+      shift
+      ;;
+    --dry-run)
+      DRYRUNFLAG=1
       shift
       ;;
     -l|--slurm)
@@ -134,15 +139,20 @@ then
     cp static/config.yaml .
 fi
 
-if [[ SLURMFLAG -eq 1 ]]
+if [[ DRYRUNFLAG -eq 1 ]]
 then
-    echo "Running on SLURM."
-    #snakemake  \
-    #    --rerun-incomplete --jobs 100 --use-conda \
-    #    --cluster-config cluster.yaml --cluster \
-    #    "sbatch --parsable --qos=unlim --partition={cluster.queue} --job-name=${jobname}.{rule}.{wildcards} --mem={cluster.mem}gb --time={cluster.time} --ntasks={cluster.threads} --nodes={cluster.nodes}"
+    echo "Running a dry run."
+    snakemake -np --rerun-incomplete --jobs 100 --use-conda
 else
-    echo "Running locally."
-    # snakemake  \
-    #    --rerun-incomplete --jobs 100 --use-conda
+    if [[ SLURMFLAG -eq 1 ]]
+    then
+        echo "Running on SLURM."
+        snakemake \
+            --rerun-incomplete --jobs 100 --use-conda \
+            --cluster-config cluster.yaml --cluster \
+            "sbatch --parsable --qos=unlim --partition={cluster.queue} --job-name=${jobname}.{rule}.{wildcards} --mem={cluster.mem}gb --time={cluster.time} --ntasks={cluster.threads} --nodes={cluster.nodes}"
+    else
+        echo "Running locally."
+        snakemake --rerun-incomplete --jobs 100 --use-conda
+    fi
 fi

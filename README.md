@@ -148,3 +148,13 @@ snakemake hardclean --cores 1
 ```
 
 To safely remove the scratch directory, if you don't need the intermediate files generated in individual pipeline steps.
+
+## Running the pipeline with `SLURM`
+
+In order to run the pipeline with `SLURM` or any other similar scheduling platform on an HPC system, the file `cluster.yaml` in the base directory needs to be populated. Specifications for individual rules can be added or removed as needed; the default configuration is what must absolutely be specified for the pipeline to run properly. Make sure that you include the following:
+
+- Your account name
+- Any flags that you typically use when running commands on the system, in the `__default__`->`slurm`->`command` string
+- The partition of your system that you plan to use, as `queue`. By default, this might be `compute` or `normal`.
+
+If you set your account name at the top of the `cluster.yaml` file, as well as setting the default partition just once, you won't need to change these values for the specifications for all of the individual rules, unless you have specific computational needs or usage requirements.
