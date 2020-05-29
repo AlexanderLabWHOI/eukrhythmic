@@ -16,16 +16,17 @@ with open('config.yaml') as f:
 print("\033[1;35m Reading in variables from cluster configuration file...  \n")
 with open('cluster.yaml') as f:
     cluster = yaml.load(f, Loader=yaml.FullLoader)
-    
+
 required_entries = ["maxmemory","maxthreads","maxcores"]
-for r in required_entries:
-    try:
-        if r not in cluster["required"]:
-            offender = r
-            raise ValueError
-    except ValueError:
-        print("Check that you have specified values in the cluster configuration file file. The missing entry that triggered this error was "  + str(offender) + ".")
-        sys.exit(1)
+if (cluster != None) & ("required" in cluster):
+    for r in required_entries:
+        try:
+            if r not in cluster["required"].keys():
+                offender = r
+                raise ValueError
+        except ValueError:
+            print("Check that you have specified values in the cluster configuration file file. The missing entry that triggered this error was "  + str(offender) + ".")
+            sys.exit(1)
 
 DEFAULTQUEUE = cluster["required"]["defaultqueue"]
 DEFAULTUSER = cluster["required"]["accountname"]

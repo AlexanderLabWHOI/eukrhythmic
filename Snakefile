@@ -14,6 +14,7 @@ sys.path.insert(1, 'scripts')
 # Import relevant variable from config; exit if not supplied
 import importworkspace
 from importworkspace import *
+os.system("python " + os.path.join("scripts", "importworkspace.py"))
 
 # Contains function to check that variables are present and formatted correctly beyond provided values in config file
 import checkrequirements
