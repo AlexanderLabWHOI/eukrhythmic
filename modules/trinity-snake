@@ -83,7 +83,6 @@ rule trinity_cleanup:
         right = RIGHTFILE,
         scratch = os.path.join(SCRATCHDIR),
         jellyfile = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "jellyfish.kmers.25.asm.fa")
-    threads: 4
     conda: '../environment.yaml'
     shell:
         '''
