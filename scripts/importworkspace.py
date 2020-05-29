@@ -110,12 +110,11 @@ for dir_curr in directories:
         print("Please do not add trailing slashes to input, output, scratch, assembled, or renamed directories.")
         sys.exit(1)
 
-print("\033[1;35m Setting appropriate cluster.yaml entries...  \n")
+print("\033[1;35m Setting appropriate cluster.yaml entries if specified...  \n")
 for r in cluster.keys():
-    if "account" in cluster[r].keys():
-        cluster[r]["account"] = DEFAULTUSER
-    
     if WRITECLUSTER == 1:
+        if "account" in cluster[r].keys():
+            cluster[r]["account"] = DEFAULTUSER
         if "queue" in cluster[r].keys():
             cluster[r]["queue"] = DEFAULTQUEUE
         if ("nodes" in cluster[r].keys()) & (r == "trinity"):
@@ -125,8 +124,9 @@ for r in cluster.keys():
         if ("threads" in cluster[r].keys()) & (r == "trinity"):
             cluster[r]["threads"] = MAXTHREADS
             
-with open('cluster.yaml', 'w') as f:
-    yaml.dump(cluster, f)
+if WRITECLUSTER == 1:
+    with open('cluster.yaml', 'w') as f:
+        yaml.dump(cluster, f)
 
 print("\033[1;35m Checking that appropriate input files exist...  \n")
 inputfiles = "|".join(os.listdir(INPUTDIR))
