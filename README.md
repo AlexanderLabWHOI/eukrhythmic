@@ -73,6 +73,8 @@ To run `eukrhythmic` on the provided sample data, simply invoke `eukrhythmic` on
 
 ### <a name="snake"></a> Running the pipeline directly with Snakemake
 
+You can use the command-line arguments described above if you run the pipeline from `submit/eukrhythmic.sh`. Submitting this, customized with whatever arguments you prefer, to a scheduler (from the home directory) will run the pipeline in full. 
+
 To use the pipeline, the most important thing to do is to populate `config.yaml` with the paths to your particular input and output directories. Personalizing this will allow the pipeline to pull the relevant files when computing the results of individual rules, so this step is crucial. 
 
 All input `fastq` files must be contained in the same directory, the `inputDIR` location in the `config.yaml` file. Only these metatranscriptomic data will be included in the analysis. These files do _not_, however, need to be located inside the `eukrhythmic` directory (and it is recommended that they are located elsewhere). 
