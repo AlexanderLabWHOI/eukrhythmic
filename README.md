@@ -128,7 +128,7 @@ Below is a listing of each supported entry in the configuration file (`config.ya
 | `checkqual` 	| Boolean flag for whether to run quality checking with `salmon`, `QUAST`, `BUSCO`, etc. on assemblies. If 1, these quality checks are performed. 	|
 | `spikefile` 	| A path to a FASTA file containing the sequence of any spiking that might affect reads. This will depend on experimental setup. If the file is not valid (e.g., if this flag is set to 0), nothing is done. 	|
 | `runbbmap` 	| A boolean flag to specify whether to use a spike file to drop spiked reads, according to what was done in your experiment. If 1,  the spikefile is used; otherwise, this  filtering is either not performed or is not used downstream in the pipeline  (depending on whether a spike file exists). 	|
-| `kmers` 	| A list of *k*-mer sizes to use, where applicable, in assembly. These should all be integer values (default: 20, 50, 110). 	|
+| `kmers` 	| A list of *k*-mer sizes to use, where applicable, in assembly. These should all be integer values (default: 20, 50, 110). The median *k*-mer value in this list will be used when just 1 *k*-mer value is required. 	|
 | `assemblers` 	| The assemblers to be used to assemble the metatranscriptomes (which will later be  merged). All of the specified assemblers in this list should have matching Snakemake rules in the `modules` folder of the main pipeline directory (named identically), as well as "clean" rules (explained below). 	|
 | `jobname` 	| A descriptive name to be used to name jobs on your high-performance computing system, such that you can track the progress of your workflow. 	|
 | `adapter` 	| Path to a FASTA file containing the adapter used during sequencing. Defaults to a  static adapter file in the `static` directory. 	|
