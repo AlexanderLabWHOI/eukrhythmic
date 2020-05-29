@@ -1,3 +1,0 @@
-	Unnamed: 0	Unnamed: 0.1	Unnamed: 0.1.1	SampleID	SampleName	Treatment	FastqFile
-0	0	0	0	SH401	S1	N	SH401_test
-1	1	1	1	SH402	S2	N	SH402_test
