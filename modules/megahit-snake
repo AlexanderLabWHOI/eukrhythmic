@@ -44,9 +44,9 @@ rule megahit:
         '''
         if [ -d {params.megadir} ]
         then
-            megahit --continue --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -o megahit -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
+            megahit --continue --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -o {params.megadir} -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
         else
-            megahit --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -o megahit -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
+            megahit --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -o {params.megadir} -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
         fi
         '''
         
@@ -67,9 +67,9 @@ rule megahit_SE:
         '''
         if [ -d {params.megadir} ]
         then
-            megahit --continue --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -o megahit -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
+            megahit --continue --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -o {params.megadir} -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
         else
-            megahit --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -o megahit -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
+            megahit --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -o {params.megadir} -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
         fi
         '''
         
