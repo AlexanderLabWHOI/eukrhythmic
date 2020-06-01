@@ -25,8 +25,6 @@ rule transabyss:
         right = RIGHTFILE
     output:
         os.path.join(OUTPUTDIR, "transabyss_{k}_{assembly}", "{assembly}_{k}_transabyss.fasta-final.fa")
-    log:
-        "logs/transabyss/outputlog_{assembly}_{k}_transabyss.log"
     params:
         extra = "",
         kval = "{k}",
@@ -36,8 +34,8 @@ rule transabyss:
         right = RIGHTFILE
     threads: 4
     log:
-        err = os.path.join("logs","transabyss","outputlog_{assembly}_err.log"),
-        out = os.path.join("logs","transabyss","outputlog_{assembly}_out.log")
+        err = os.path.join("logs","transabyss","outputlog_{assembly}_{k}_err.log"),
+        out = os.path.join("logs","transabyss","outputlog_{assembly}_{k}_out.log")
     conda: '../environment.yaml'
     shell:
         '''

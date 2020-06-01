@@ -5,6 +5,7 @@ import os
 import pandas as pd
 from snakemake.exceptions import print_exception, WorkflowError
 import sys
+import statistics
 sys.path.insert(1, '../scripts')
 from importworkspace import *
 
