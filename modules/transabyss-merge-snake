@@ -18,8 +18,6 @@ rule transabyssmerge:
         files = [os.path.join(OUTPUTDIR, "transabyss_" + str(curr) + "_{assembly}", "{assembly}_" + str(curr) + "_transabyss.fasta-final.fa") for curr in KMERVALS]
     output:
         os.path.join(OUTPUTDIR, "transabyss", "{assembly}_transabyss.fasta")
-    log:
-        "logs/transabyss/outputlog_{assembly}_transabyssmerge.log"
     params:
         extra = "",
         minkval = MINKVAL,
