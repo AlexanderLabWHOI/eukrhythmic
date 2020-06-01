@@ -64,7 +64,7 @@ rule all:
         # QUAST OUTPUTS
         quast = expand(os.path.join("{base}", "quast", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
         # COMBINE QUAST OUTPUTS
-        quastcombine = expand(os.path.join("{base}", "quast", "allresults.tsv"), base = OUTPUTDIR),
+        quastcombine = expand(os.path.join("{base}", "quast", "fullresults", "allresults.tsv"), base = OUTPUTDIR),
         # INDIVIDUAL CLUSTERING OUTPUTS
         clustering1 = expand(os.path.join("{base}", "cluster1", "{assembly}_{assembler}.fasta"), base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
         # MERGED CLUSTERING OUTPUTS
@@ -83,7 +83,7 @@ rule all:
         quastfinal = expand(os.path.join("{base}", "quastfinal", "{assembly}"), base = OUTPUTDIR, assembly = "merged"),
         quastmerged = expand(os.path.join("{base}", "quastmerged", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
         # COMBINE QUAST MERGED OUTPUTS
-        quastmergedcombine = expand(os.path.join("{base}", "quastmerged", "allresults.tsv"), base = OUTPUTDIR),
+        quastmergedcombine = expand(os.path.join("{base}", "quastmerged", "fullresults", "allresults.tsv"), base = OUTPUTDIR),
         # BUSCO ASSESSMENT OF FINAL ASSEMBLY
         busco = expand(os.path.join("{base}", "busco", "{assembly}"), base = OUTPUTDIR, assembly = "merged")
         

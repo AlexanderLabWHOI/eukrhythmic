@@ -36,7 +36,27 @@ rule quast:
         '''
         quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assemblers}
         '''
-
+        
+rule combinequast:
+    input:
+        quastdir = [os.path.join(OUTPUTDIR, "quast", curr) for curr in assemblygroups]
+    output:
+        os.path.join(OUTPUTDIR, "quast", "fullresults", "allresults.tsv")
+    params:
+        assemblers = ",".join(ASSEMBLERS),
+        quastdir = os.path.join(OUTPUTDIR, "quast"),
+        outputassemblies = lambda wildcards: combineassemblers(wildcards.assembly) 
+    run:
+        quastfiles = os.listdir(os.path.join(OUTPUTDIR, "quast"))
+        if len(quastfiles) > 0:
+            outputassemblers = pd.DataFrame()
+            for r in quastfiles:
+                currentreport = pd.read_csv(os.path.join(params.quastdir, r, "report.tsv", index_col = 0), sep = "\t")
+                for c in range(0,len(currentreport.columns)):
+                    currentreport = currentreport.rename(columns={currentreport.columns[c]: (currentreport.columns[c] + "_" + str(r))})
+                outputassemblers = outputassemblers.append(currentreport)
+        outputassemblers.to_csv(path_or_buf = output, sep = "\t")
+        
 rule quastfinal:
     input:
         outputassemblies = os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta")
@@ -68,3 +88,23 @@ rule quastmerge:
         '''
         quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly}
         '''
+        
+rule combinequastmerge:
+    input:
+        quastdir = [os.path.join(OUTPUTDIR, "quastmerged", curr) for curr in assemblygroups]
+    output:
+        os.path.join(OUTPUTDIR, "quastmerged", "fullresults", "allresults.tsv")
+    params:
+        assemblers = ",".join(ASSEMBLERS),
+        quastdir = os.path.join(OUTPUTDIR, "quastmerged"),
+        outputassemblies = lambda wildcards: combineassemblers(wildcards.assembly) 
+    run:
+        quastfiles = os.listdir(os.path.join(OUTPUTDIR, "quastmerged"))
+        if len(quastfiles) > 0:
+            outputassemblers = pd.DataFrame()
+            for r in quastfiles:
+                currentreport = pd.read_csv(os.path.join(params.quastdir, r, "report.tsv", index_col = 0), sep = "\t")
+                for c in range(1,len(currentreport.columns)):
+                    currentreport = currentreport.rename(columns={currentreport.columns[c]: (currentreport.columns[c] + "_" + str(r))})
+                outputassemblers = outputassemblers.append(currentreport)
+        outputassemblers.to_csv(path_or_buf = output, sep = "\t")
