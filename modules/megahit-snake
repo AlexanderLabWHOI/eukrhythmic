@@ -38,15 +38,15 @@ rule megahit:
         maxkval = MAXKVAL
     log:
         err = os.path.join("logs","megahit","outputlog_{assembly}_err.log"),
-        out = os.path.join("logs","megahit","outputlog_{assembly}_err.log")
+        out = os.path.join("logs","megahit","outputlog_{assembly}_out.log")
     conda: "../envs/megahit-env.yaml"
     shell:
         '''
         if [ -d {params.megadir} ]
         then
-            megahit --continue --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -o megahit -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
+            megahit --continue --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
         else
-            megahit --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -o megahit -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
+            megahit --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
         fi
         '''
         
@@ -61,15 +61,15 @@ rule megahit_SE:
         maxkval = MAXKVAL
     log:
         err = os.path.join("logs","megahit","outputlog_{assembly}_err.log"),
-        out = os.path.join("logs","megahit","outputlog_{assembly}_err.log")
+        out = os.path.join("logs","megahit","outputlog_{assembly}_out.log")
     conda: "../envs/megahit-env.yaml"
     shell:
         '''
         if [ -d {params.megadir} ]
         then
-            megahit --continue --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -o megahit -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
+            megahit --continue --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
         else
-            megahit --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -o megahit -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
+            megahit --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
         fi
         '''
         
