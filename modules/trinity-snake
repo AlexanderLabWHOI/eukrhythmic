@@ -35,10 +35,9 @@ rule trinity:
         right = RIGHTFILE,
         maxmem = MAXMEMORY,
         CPUs = MAXTHREADS * MAXCORES
-    threads: 4
     log:
         err = os.path.join("logs","trinity","outputlog_{assembly}_err.log"),
-        out = os.path.join("logs","trinity","outputlog_{assembly}_err.log")
+        out = os.path.join("logs","trinity","outputlog_{assembly}_out.log")
     conda: '../envs/trinity-env.yaml'
     shell:
         '''
@@ -50,8 +49,6 @@ rule trinity_SE:
         single = LEFTFILE
     output:
         os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta")
-    log:
-        "logs/trinity/outputlog_{assembly}_trinity.log"
     params:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}"),
@@ -62,7 +59,7 @@ rule trinity_SE:
     threads: 4
     log:
         err = os.path.join("logs","trinity","outputlog_{assembly}_err.log"),
-        out = os.path.join("logs","trinity","outputlog_{assembly}_err.log")
+        out = os.path.join("logs","trinity","outputlog_{assembly}_out.log")
     conda: '../envs/trinity-env.yaml'
     shell:
         '''
@@ -83,7 +80,6 @@ rule trinity_cleanup:
         right = RIGHTFILE,
         scratch = os.path.join(SCRATCHDIR),
         jellyfile = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "jellyfish.kmers.25.asm.fa")
-    threads: 4
     conda: '../environment.yaml'
     shell:
         '''

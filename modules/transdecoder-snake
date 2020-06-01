@@ -22,7 +22,6 @@ rule transdecoder:
         merged = "{assembly}",
         outputdir = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.pep"),
         size = TRANSDECODERORFSIZE
-    threads: 4
     conda: 
         "../envs/transdecoder-env.yaml"
     shell:
@@ -50,7 +49,6 @@ rule transdecoder_indiv:
     params:
         merged = "{assembly}_{assembler}",
         size = TRANSDECODERORFSIZE
-    threads: 4
     conda: 
         "../envs/transdecoder-env.yaml"
     shell:
