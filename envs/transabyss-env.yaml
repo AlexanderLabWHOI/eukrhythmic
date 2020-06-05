@@ -1,7 +1,9 @@
 name: transabyss
 channels:
     - bioconda
+    - anaconda
     - conda-forge
 dependencies:
     - transabyss
+    - icu
     - python
