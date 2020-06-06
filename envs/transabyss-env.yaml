@@ -5,5 +5,5 @@ channels:
     - conda-forge
 dependencies:
     - transabyss
-    - icu
+    - abyss
     - python
