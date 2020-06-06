@@ -181,6 +181,10 @@ In order to run the pipeline with `SLURM` or any other similar scheduling platfo
 
 If you set your account name at the top of the `cluster.yaml` file, as well as setting the default partition just once, and you do not change the parameter `rewritecluster` to 0 in `config.yaml`, you can use the command line interface or the provided submission file to circumvent filling out the rest of `cluster.yaml`. You can also do this by invoking `python scripts/importworkspace.py` once before running the pipeline, if you already have a valid `config.yaml`. If you do this, you won't need to change these values for the specifications for all of the individual rules, unless you have specific computational needs or usage requirements, in which case you should set `rewritecluster` to 0. If defaults are not specified at the beginning of the `cluster.yaml` file for the user, maximum memory usage, maximum number of cores, and maximum number of threads, *`euk`*`rhythmic` will not execute successfully and an error will be thrown.
 
+#### Setting CPUs and memory requirements 
+
+As a general rule for memory-intensive assemblers, the memory available to the process should be about ten times the number of cores/CPUs that you have available to you on the machine. For example, if using a machine with 30 cores available and 300 GB of available memory, you may want to configure your jobs to use 15 cores and 150 GB of memory, to allow two jobs to run concurrently on one node, and optimize memory relative to number of cores.
+
 ## <a name="assemblers"></a> Adding new assemblers
 
 In order to add a new assembler to the pipeline, three things need to be included:

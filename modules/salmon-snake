@@ -34,11 +34,14 @@ rule salmon:
         indexname = os.path.join(OUTPUTDIR, "salmon_index_assembly_{assembly}"),
         decoysfile = "decoys_{assembly}.txt",
         kval = 31
+    log:
+        err = os.path.join("logs","salmon","orig_{assembly}_err.log"),
+        out = os.path.join("logs","salmon","orig_{assembly}_out.log")
     conda: "../envs/salmon-env.yaml"
     shell:
         """
-        salmon index -t {input.trinityfile} -i {params.indexname} -k {params.kval}
-        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output}
+        salmon index -t {input.trinityfile} -i {params.indexname} -k {params.kval} 2> {log.err} 1> {log.out}
+        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output} 2>> {log.err} 1>> {log.out}
         """
         
 rule salmon_indiv:
@@ -52,11 +55,14 @@ rule salmon_indiv:
         libtype = "A",
         indexname = os.path.join(OUTPUTDIR, "salmon_indiv", "salmon_index_assembly_{assembly}_{assembler}"),
         kval = 31
+    log:
+        err = os.path.join("logs","salmon","indiv_{assembly}_err.log"),
+        out = os.path.join("logs","salmon","indiv_{assembly}_out.log")
     conda: "../envs/salmon-env.yaml"
     shell:
         """
-        salmon index -t {input.fastafile} -i {params.indexname} -k {params.kval}
-        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output}
+        salmon index -t {input.fastafile} -i {params.indexname} -k {params.kval} 2> {log.err} 1> {log.out}
+        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output} 2>> {log.err} 1>> {log.out}
         """
     
 rule salmon_clust3:
@@ -71,10 +77,13 @@ rule salmon_clust3:
         indexname = os.path.join(OUTPUTDIR, "salmon_index_assembly_{assembly}"),
         decoysfile = "decoys_{assembly}.txt",
         kval = 31
+    log:
+        err = os.path.join("logs","salmon","merged_{assembly}_err.log"),
+        out = os.path.join("logs","salmon","merged_{assembly}_out.log")
     conda:
         "../envs/salmon-env.yaml"
     shell:
         """
-        salmon index -t {input.assemblyfile} -i {params.indexname} -k {params.kval}
-        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output}
+        salmon index -t {input.assemblyfile} -i {params.indexname} -k {params.kval} 2> {log.err} 1> {log.out}
+        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output} 2>> {log.err} 1>> {log.out}
         """

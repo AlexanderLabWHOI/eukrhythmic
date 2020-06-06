@@ -36,11 +36,12 @@ rule trimmomatic:
         s1 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_1.unpaired.fastq.gz"),
         s2 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_2.unpaired.fastq.gz")
     log:
-        "logs/trimming/{sample}.log"
+        err = os.path.join("logs","trimmomatic","PE_{assembly}_err.log"),
+        out = os.path.join("logs","trimmomatic","PE_{assembly}_out.log")
     conda: "../envs/trimmomatic-env.yaml"
     shell:
         '''
-        trimmomatic PE {input.r1} {input.r2} {output.p1} {output.s1} {output.p2} {output.s2} ILLUMINACLIP:{input.adapters}:2:30:7 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:2 MINLEN:50
+        trimmomatic PE {input.r1} {input.r2} {output.p1} {output.s1} {output.p2} {output.s2} ILLUMINACLIP:{input.adapters}:2:30:7 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:2 MINLEN:50 2> {log.err} 1> {log.out}
         '''
         
 rule trimmomatic_SE:
@@ -51,9 +52,10 @@ rule trimmomatic_SE:
         p1 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_1.trimmed.fastq.gz"),
         s1 = os.path.join(OUTPUTDIR, "firsttrim", "{sample}_1.unpaired.fastq.gz")
     log:
-        "logs/trimming/{sample}.log"
+        err = os.path.join("logs","trimmomatic","SE_{assembly}_err.log"),
+        out = os.path.join("logs","trimmomatic","SE_{assembly}_out.log")
     conda: "../envs/trimmomatic-env.yaml"
     shell:
         '''
-        trimmomatic SE {input.r1} {output.p1} {output.s1} ILLUMINACLIP:{input.adapters}:2:30:7 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:2 MINLEN:50
+        trimmomatic SE {input.r1} {output.p1} {output.s1} ILLUMINACLIP:{input.adapters}:2:30:7 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:2 MINLEN:50 2> {log.err} 1> {log.out}
         '''

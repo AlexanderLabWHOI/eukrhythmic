@@ -17,7 +17,7 @@ rule bbmap:
         r1 = os.path.join(OUTPUTDIR, "bbmap", "{sample}_1.clean.fastq.gz"),
         r2 = os.path.join(OUTPUTDIR, "bbmap", "{sample}_2.clean.fastq.gz")
     log:
-        "logs/trinity/outputlog_{sample}_bbmap.log"
+        os.path.join("logs","bbmap","outputlog_{sample}_bbmap.log")
     params:
         spikefile = SPIKEFILE,
         isspike = ISFILESPIKE

@@ -39,8 +39,8 @@ rule velvet:
     shell:
         '''
         velveth {params.velvetdir} {params.kmerval} -strand_specific -shortPaired -fastq {input.r1} {input.r2} 2> {log.err} 1> {log.out}
-        velvetg {params.velvetdir} -cov_cutoff auto -min_contig_lgth {params.mincontig} -exp_cov auto 2> {log.err} 1> {log.out}
-        meta-velvetg {params.velvetdir}
+        velvetg {params.velvetdir} -cov_cutoff auto -min_contig_lgth {params.mincontig} -exp_cov auto 2>> {log.err} 1>> {log.out}
+        meta-velvetg {params.velvetdir} 2>> {log.err} 1>> {log.out}
         '''
         
 rule velvet_SE:
@@ -60,8 +60,8 @@ rule velvet_SE:
     shell:
         '''
         velveth {params.velvetdir} {params.kmerval} -strand_specific -short -fastq {input.r1} 2> {log.err} 1> {log.out}
-        velvetg {params.velvetdir} -cov_cutoff auto -min_contig_lgth {params.mincontig} -exp_cov auto 2> {log.err} 1> {log.out}
-        meta-velvetg {params.velvetdir}
+        velvetg {params.velvetdir} -cov_cutoff auto -min_contig_lgth {params.mincontig} -exp_cov auto 2>> {log.err} 1>> {log.out}
+        meta-velvetg {params.velvetdir} 2>> {log.err} 1>> {log.out}
         '''
         
 rule velvet_cleanup:
