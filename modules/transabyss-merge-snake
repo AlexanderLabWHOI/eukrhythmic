@@ -23,11 +23,10 @@ rule transabyssmerge:
         minkval = MINKVAL,
         maxkval = MAXKVAL,
         prefixks = PREFIXKS
-    threads: 4
     log:
         err = os.path.join("logs","transabyss_merge","outputlog_{assembly}_err.log"),
         out = os.path.join("logs","transabyss_merge","outputlog_{assembly}_out.log")
-    conda: '../environment.yaml'
+    conda: "../envs/transabyss-env.yaml"
     shell:
         '''
         transabyss-merge {input.files} --mink {params.minkval} --maxk {params.maxkval} --prefixes {params.prefixks} --out {output} 2> {log.err} 1> {log.out}
@@ -42,8 +41,6 @@ rule transabyssmerge_cleanup:
         mergefile = os.path.join(OUTPUTDIR, "transabyss", "{assembly}_transabyss.fasta"),
         outdir = os.path.join(OUTPUTDIR, "transabyss_*_{assembly}"),
         scratch = os.path.join(SCRATCHDIR, "transabyss")
-    threads: 4
-    conda: '../environment.yaml'
     shell:
         '''
         mkdir -p {params.scratch}

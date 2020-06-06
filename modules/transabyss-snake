@@ -36,7 +36,7 @@ rule transabyss:
     log:
         err = os.path.join("logs","transabyss","outputlog_{assembly}_{k}_err.log"),
         out = os.path.join("logs","transabyss","outputlog_{assembly}_{k}_out.log")
-    conda: '../environment.yaml'
+    conda: '../envs/transabyss-env.yaml'
     shell:
         '''
         transabyss --pe {input.left} {input.right} --name {params.fastaname} --outdir {params.outdir} --kmer {params.kval} --threads 8 2> {log.err} 1> {log.out}

@@ -17,7 +17,8 @@ rule transdecoder:
         cds = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.fasta.transdecoder.cds"),
         bed = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.fasta.transdecoder.bed")
     log:
-        "logs/transdecoder/outputlog_{assembly}_transdecoder.log"
+        err = os.path.join("logs","transdecoder","orig_{assembly}_err.log"),
+        out = os.path.join("logs","transdecoder","orig_{assembly}_out.log")
     params:
         merged = "{assembly}",
         outputdir = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.pep"),
@@ -26,8 +27,8 @@ rule transdecoder:
         "../envs/transdecoder-env.yaml"
     shell:
         """
-        TransDecoder.LongOrfs -t {input.merged} -m {params.size}
-        TransDecoder.Predict -t {input.merged} --no_refine_starts 
+        TransDecoder.LongOrfs -t {input.merged} -m {params.size} 2> {log.err} 1> {log.out}
+        TransDecoder.Predict -t {input.merged} --no_refine_starts 2>> {log.err} 1>> {log.out}
         mv {params.merged}.fasta.transdecoder.pep {output.pep}
         mv {params.merged}.fasta.transdecoder.cds {output.cds}
         mv {params.merged}.fasta.transdecoder.gff3 {output.gff}
@@ -49,12 +50,15 @@ rule transdecoder_indiv:
     params:
         merged = "{assembly}_{assembler}",
         size = TRANSDECODERORFSIZE
+    log:
+        err = os.path.join("logs","transdecoder","indiv_{assembly}_err.log"),
+        out = os.path.join("logs","transdecoder","indiv_{assembly}_out.log")
     conda: 
         "../envs/transdecoder-env.yaml"
     shell:
         """
-        TransDecoder.LongOrfs -t {input.merged} -m {params.size}
-        TransDecoder.Predict -t {input.merged} --no_refine_starts 
+        TransDecoder.LongOrfs -t {input.merged} -m {params.size} 2> {log.err} 1> {log.out}
+        TransDecoder.Predict -t {input.merged} --no_refine_starts 2>> {log.err} 1>> {log.out}
         mv {params.merged}.fasta.transdecoder.pep {output.pep}
         mv {params.merged}.fasta.transdecoder.cds {output.cds}
         mv {params.merged}.fasta.transdecoder.gff3 {output.gff}

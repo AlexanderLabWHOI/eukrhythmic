@@ -16,16 +16,24 @@ def getalloutputs():
     return listqc
 
 rule fastqc_trimmed:
-	input:
-		os.path.join(OUTPUTDIR, "firsttrim", "{sample}_{num}.trimmed.fastq.gz")
-	output:
-		html = os.path.join(OUTPUTDIR, "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.html"),
-		zip = os.path.join(OUTPUTDIR, "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.zip")
-	params: ""
-	log: 
-		"logs/fastqc/{sample}_{num}.trimmed.log"
-	wrapper:
-		"0.36.0/bio/fastqc"
+    input:
+        os.path.join(OUTPUTDIR, "firsttrim", "{sample}_{num}.trimmed.fastq.gz")
+    output:
+        html = os.path.join(OUTPUTDIR, "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.html"),
+        zip = os.path.join(OUTPUTDIR, "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.zip")
+    params: 
+        fastqdir = os.path.join(OUTPUTDIR, "qc", "fastqc"),
+        outname = (lambda filename: os.path.join(OUTPUTDIR, "qc", "fastqc", splitfilenames(get_filenames(filename.sample, filename.num))))
+    log: 
+        err = os.path.join("logs","fastqc","{sample}_{num}_trimmed_err.log"),
+        out = os.path.join("logs","fastqc","{sample}_{num}_trimmed_out.log")
+    shell:
+        '''
+        mkdir -p {params.fastqdir}
+        fastqc {input} -o {params.fastqdir} 2> {log.err} 1> {log.out}
+        mv {params.outname}.html {output.html}
+        mv {params.outname}.zip {output.zip}
+        '''
         
 rule multiqc_trimmed:
     input:

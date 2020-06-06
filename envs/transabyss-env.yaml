@@ -1,7 +1,9 @@
-name: trinity
+name: transabyss
 channels:
     - bioconda
+    - anaconda
     - conda-forge
 dependencies:
-    - trinity=2.9.1
+    - transabyss
+    - abyss
     - python

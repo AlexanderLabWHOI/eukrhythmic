@@ -50,7 +50,7 @@ rule merge:
         '''
         if [ ! -f {output} ]; then
             cat {params.assemblyfiles} > {output}
-        end
+        fi
         '''
         
 # this rule merges all of the different assemblies of samples

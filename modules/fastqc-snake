@@ -34,12 +34,20 @@ rule fastqc:
         (lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"), sampnames = get_filenames(filename.sample, filename.num)))
     output:
         html = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}_fastqc.html"),
-        zip = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}_fastqc.zip")
-    params: ""
+        zip = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}_fastqc.zip")    
+    params:
+        fastqdir = os.path.join(OUTPUTDIR, "qc", "fastqc"),
+        outname = (lambda filename: os.path.join(OUTPUTDIR, "qc", "fastqc", splitfilenames(get_filenames(filename.sample, filename.num))))
     log: 
-        "logs/fastqc/{sample}_{num}.log"
-    wrapper:
-        "0.36.0/bio/fastqc"
+        err = os.path.join("logs","fastqc","{sample}_{num}_err.log"),
+        out = os.path.join("logs","fastqc","{sample}_{num}_out.log")
+    shell:
+        '''
+        mkdir -p {params.fastqdir}
+        fastqc {input} -o {params.fastqdir} 2> {log.err} 1> {log.out}
+        mv {params.outname}.html {output.html}
+        mv {params.outname}.zip {output.zip}
+        '''
         
 rule multiqc:
     input:

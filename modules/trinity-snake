@@ -11,7 +11,11 @@ from importworkspace import *
 def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID'])
     return samplelist
-    
+   
+print("CPUs in")
+print(MAXCPUSPERTASK * MAXTASKS)
+#print(MAXTHREADS * MAXCORES)
+ 
 if DROPSPIKE == 0:
     LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
     RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
@@ -34,7 +38,7 @@ rule trinity:
         left = LEFTFILE,
         right = RIGHTFILE,
         maxmem = MAXMEMORY,
-        CPUs = MAXTHREADS * MAXCORES
+        CPUs = MAXCPUSPERTASK * MAXTASKS #MAXTHREADS * MAXCORES
     log:
         err = os.path.join("logs","trinity","outputlog_{assembly}_err.log"),
         out = os.path.join("logs","trinity","outputlog_{assembly}_out.log")
@@ -55,15 +59,14 @@ rule trinity_SE:
         left = LEFTFILE,
         right = RIGHTFILE,
         maxmem = MAXMEMORY,
-        CPUs = MAXTHREADS * MAXCORES
-    threads: 4
+        CPUs = MAXCPUSPERTASK * MAXTASKS #MAXTHREADS * MAXCORES
     log:
         err = os.path.join("logs","trinity","outputlog_{assembly}_err.log"),
         out = os.path.join("logs","trinity","outputlog_{assembly}_out.log")
     conda: '../envs/trinity-env.yaml'
     shell:
         '''
-        Trinity --seqType fq --max_memory {params.maxmem}G --CPU {params.CPUs} --single {input.single} --output {params.outdir} 2> {log.err} 1> {log.out}
+        Trinity --seqType fq --max_memory {params.maxmem}G --CPU {params.CPUs} --bflyCalculateCPU --single {input.single} --output {params.outdir} 2> {log.err} 1> {log.out}
         '''
    
 rule trinity_cleanup:

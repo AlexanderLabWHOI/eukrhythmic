@@ -17,7 +17,7 @@ print("\033[1;35m Reading in variables from cluster configuration file...  \n")
 with open('cluster.yaml') as f:
     cluster = yaml.load(f, Loader=yaml.FullLoader)
 
-required_entries = ["maxmemory","maxthreads","maxcores"]
+required_entries = ["maxmemory","maxtasks","maxcores"]
 if (cluster != None) & ("required" in cluster):
     for r in required_entries:
         try:
@@ -31,8 +31,9 @@ if (cluster != None) & ("required" in cluster):
 DEFAULTQUEUE = cluster["required"]["defaultqueue"]
 DEFAULTUSER = cluster["required"]["accountname"]
 MAXMEMORY = cluster["required"]["maxmemory"]
-MAXTHREADS = cluster["required"]["maxthreads"]
-MAXCORES = cluster["required"]["maxcores"]
+MAXTASKS = cluster["required"]["maxtasks"]
+MAXNODES = cluster["required"]["maxcores"]
+MAXCPUSPERTASK = cluster["required"]["maxcpuspertask"]
     
 required_entries = ["metaT_sample","inputDIR","checkqual","spikefile","runbbmap",\
                     "kmers","assemblers","jobname","adapter","separategroups","outputDIR","scratch",\
@@ -118,7 +119,7 @@ for r in cluster.keys():
         if "queue" in cluster[r].keys():
             cluster[r]["queue"] = DEFAULTQUEUE
         if ("nodes" in cluster[r].keys()) & (r == "trinity"):
-            cluster[r]["nodes"] = MAXCORES
+            cluster[r]["nodes"] = MAXNODES
         if ("mem" in cluster[r].keys()) & (r == "trinity"):
             cluster[r]["mem"] = MAXMEMORY
         if ("threads" in cluster[r].keys()) & (r == "trinity"):
