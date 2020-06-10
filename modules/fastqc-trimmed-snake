@@ -31,8 +31,8 @@ rule fastqc_trimmed:
         '''
         mkdir -p {params.fastqdir}
         fastqc {input} -o {params.fastqdir} 2> {log.err} 1> {log.out}
-        mv {params.outname}.html {output.html}
-        mv {params.outname}.zip {output.zip}
+        mv {params.outname}_fastqc.html {output.html}
+        mv {params.outname}_fastqc.zip {output.zip}
         '''
         
 rule multiqc_trimmed:
