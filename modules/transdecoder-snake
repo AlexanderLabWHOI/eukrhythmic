@@ -45,14 +45,12 @@ rule transdecoder_indiv:
         gff = os.path.join(OUTPUTDIR, "transdecoder_indiv", "{assembly}_{assembler}.fasta.transdecoder.gff3"),
         cds = os.path.join(OUTPUTDIR, "transdecoder_indiv", "{assembly}_{assembler}.fasta.transdecoder.cds"),
         bed = os.path.join(OUTPUTDIR, "transdecoder_indiv", "{assembly}_{assembler}}.fasta.transdecoder.bed")
-    log:
-        "logs/transdecoder/outputlog_{assembly}_{assembler}_transdecoder.log"
     params:
         merged = "{assembly}_{assembler}",
         size = TRANSDECODERORFSIZE
     log:
-        err = os.path.join("logs","transdecoder","indiv_{assembly}_err.log"),
-        out = os.path.join("logs","transdecoder","indiv_{assembly}_out.log")
+        err = os.path.join("logs","transdecoder","indiv_{assembly}_{assembler}_err.log"),
+        out = os.path.join("logs","transdecoder","indiv_{assembly}_{assembler}_out.log")
     conda: 
         "../envs/transdecoder-env.yaml"
     shell:
