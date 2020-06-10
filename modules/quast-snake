@@ -47,8 +47,7 @@ rule combinequast:
         os.path.join(OUTPUTDIR, "quast", "fullresults", "allresults.tsv")
     params:
         assemblers = ",".join(ASSEMBLERS),
-        quastdir = os.path.join(OUTPUTDIR, "quast"),
-        outputassemblies = lambda wildcards: combineassemblers(wildcards.assembly) 
+        quastdir = os.path.join(OUTPUTDIR, "quast") 
     run:
         quastfiles = os.listdir(os.path.join(OUTPUTDIR, "quast"))
         if len(quastfiles) > 0:
@@ -105,8 +104,7 @@ rule combinequastmerge:
         os.path.join(OUTPUTDIR, "quastmerged", "fullresults", "allresults.tsv")
     params:
         assemblers = ",".join(ASSEMBLERS),
-        quastdir = os.path.join(OUTPUTDIR, "quastmerged"),
-        outputassemblies = lambda wildcards: combineassemblers(wildcards.assembly) 
+        quastdir = os.path.join(OUTPUTDIR, "quastmerged")
     run:
         quastfiles = os.listdir(os.path.join(OUTPUTDIR, "quastmerged"))
         if len(quastfiles) > 0:

@@ -23,6 +23,9 @@ def get_filenames(sample, leftorright):
     else:
         return matchednames[1]
 
+def splitfilenames(inname):
+    return inname.split(".")[0]
+
 def getalloutputs():
     listqc = []
     for s in SAMPLEINFO.SampleID:

@@ -23,8 +23,8 @@ rule cdhit_individualclusters:
         mincoverageshorter = 1.00,
         mincoveragelong = 0.005
     log:
-        err = os.path.join("logs","cdhit","individual_{assembly}_err.log"),
-        out = os.path.join("logs","cdhit","individual_{assembly}_out.log")
+        err = os.path.join("logs","cdhit","individual_{assembly}_{assembler}_err.log"),
+        out = os.path.join("logs","cdhit","individual_{assembly}_{assembler}_out.log")
     conda:
         "../envs/cd-hit-env.yaml"    
     shell:

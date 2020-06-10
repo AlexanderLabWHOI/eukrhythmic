@@ -56,8 +56,8 @@ rule salmon_indiv:
         indexname = os.path.join(OUTPUTDIR, "salmon_indiv", "salmon_index_assembly_{assembly}_{assembler}"),
         kval = 31
     log:
-        err = os.path.join("logs","salmon","indiv_{assembly}_err.log"),
-        out = os.path.join("logs","salmon","indiv_{assembly}_out.log")
+        err = os.path.join("logs","salmon","indiv_{assembly}_{assembler}_err.log"),
+        out = os.path.join("logs","salmon","indiv_{assembly}_{assembler}_out.log")
     conda: "../envs/salmon-env.yaml"
     shell:
         """

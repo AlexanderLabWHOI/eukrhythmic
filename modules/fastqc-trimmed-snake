@@ -12,7 +12,7 @@ from importworkspace import *
 def getalloutputs():
     listqc = []
     for s in SAMPLEINFO.SampleID:
-        listqc.extend([os.path.join(OUTPUTDIR, "qc", "fastqc", s + "_1.trimmed_fastqc.html"), os.path.join(OUTPUTDIR, "qc", "fastqc", s + "_2.trimmed_fastqc.html")])
+        listqc.extend([os.path.join(OUTPUTDIR, "qc", "fastqc_trimmed", s + "_1.trimmed_fastqc.html"), os.path.join(OUTPUTDIR, "qc", "fastqc_trimmed", s + "_2.trimmed_fastqc.html")])
     return listqc
 
 rule fastqc_trimmed:
