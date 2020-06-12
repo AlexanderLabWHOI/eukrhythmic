@@ -49,14 +49,15 @@ rule combinequast:
         assemblers = ",".join(ASSEMBLERS),
         quastdir = os.path.join(OUTPUTDIR, "quast") 
     run:
-        quastfiles = os.listdir(os.path.join(OUTPUTDIR, "quast"))
+        quastfiles = os.listdir(params.quastdir)
         if len(quastfiles) > 0:
             outputassemblers = pd.DataFrame()
             for r in quastfiles:
-                currentreport = pd.read_csv(os.path.join(params.quastdir, r, "report.tsv"), index_col = 0, sep = "\t")
-                for c in range(0,len(currentreport.columns)):
-                    currentreport = currentreport.rename(columns={currentreport.columns[c]: (currentreport.columns[c] + "_" + str(r))})
-                outputassemblers = pd.concat([outputassemblers,currentreport], axis = 1)
+                if os.path.isfile(os.path.join(params.quastdir, r, "report.tsv")):
+                    currentreport = pd.read_csv(os.path.join(params.quastdir, r, "report.tsv"), index_col = 0, sep = "\t")
+                    for c in range(0,len(currentreport.columns)):
+                        currentreport = currentreport.rename(columns={currentreport.columns[c]: (currentreport.columns[c] + "_" + str(r))})
+                    outputassemblers = pd.concat([outputassemblers,currentreport], axis = 1)
         outputassemblers.to_csv(path_or_buf = output, sep = "\t")
         
 rule quastfinal:
@@ -110,8 +111,9 @@ rule combinequastmerge:
         if len(quastfiles) > 0:
             outputassemblers = pd.DataFrame()
             for r in quastfiles:
-                currentreport = pd.read_csv(os.path.join(params.quastdir, r, "report.tsv"), index_col = 0, sep = "\t")
-                for c in range(0,len(currentreport.columns)):
-                    currentreport = currentreport.rename(columns={currentreport.columns[c]: (currentreport.columns[c] + "_" + str(r))})
-                outputassemblers = pd.concat([outputassemblers,currentreport], axis = 1)
+                if os.path.isfile(os.path.join(params.quastdir, r, "report.tsv")):
+                    currentreport = pd.read_csv(os.path.join(params.quastdir, r, "report.tsv"), index_col = 0, sep = "\t")
+                    for c in range(0,len(currentreport.columns)):
+                        currentreport = currentreport.rename(columns={currentreport.columns[c]: (currentreport.columns[c] + "_" + str(r))})
+                    outputassemblers = pd.concat([outputassemblers,currentreport], axis = 1)
         outputassemblers.to_csv(path_or_buf = output, sep = "\t")
