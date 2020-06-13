@@ -44,7 +44,7 @@ ruleorder: trimmomatic > trimmomatic_SE
 ruleorder: trinity > trinity_SE
 ruleorder: megahit > megahit_SE
 ruleorder: velvet > velvet_SE
-    
+
 rule all:
     input:
         # FASTQC OUTPUTS

@@ -149,6 +149,3 @@ if config["separategroups"] == 1:
     assemblygroups = list(set(SAMPLEINFO.AssemblyGroup))
 else:
     assemblygroups = [1] * len(INPUTFILES)
-
-def combineassemblers(assembly):
-    return(" ".join([os.path.join(ASSEMBLEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS]))

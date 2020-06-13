@@ -7,6 +7,8 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
 
+print(RENAMEDDIR)
+
 def getallmergedlist():
     mergednames = [os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in SAMPLEINFO.AssemblyGroup]
     return(mergednames)
@@ -29,7 +31,7 @@ rule rename:
     input:
         assemblyfiles = os.path.join(ASSEMBLEDDIR, "{assembly}_{assembler}.fasta")
     output:
-        os.path.join(OUTPUTDIR, "renamed", "{assembly}_{assembler}.fasta")
+        os.path.join(RENAMEDDIR, "{assembly}_{assembler}.fasta")
     params:
         assemblername = "{assembler}"
     shell:
