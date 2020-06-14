@@ -63,5 +63,7 @@ rule multiqc:
     conda: '../envs/fastqc-env.yaml'
     shell:
         '''
+        export LC_ALL=en_US.utf-8
+        export LANG=en_US.utf-8
         multiqc -o {params.multiqc} -f {params.fastqcdir}
         '''

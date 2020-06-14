@@ -29,7 +29,7 @@ rule cdhit_individualclusters:
         "../envs/cd-hit-env.yaml"    
     shell:
         '''
-        cd-hit-est -i {input.infiles} -o {output} -T {params.threads} -M {params.maxmemory} -G o -c {params.identityparam} -aS {params.mincoverageshorter} -aL {params.mincoveragelong} 2> {log.err} 1> {log.out}
+        cd-hit-est -d 0 -i {input.infiles} -o {output} -T {params.threads} -M {params.maxmemory} -G o -c {params.identityparam} -aS {params.mincoverageshorter} -aL {params.mincoveragelong} 2> {log.err} 1> {log.out}
         '''
     
 rule cdhit_mergedclusters:
@@ -50,7 +50,7 @@ rule cdhit_mergedclusters:
         "../envs/cd-hit-env.yaml"
     shell:
         '''
-        cd-hit-est -i {input.infiles} -o {output} -T {params.threads} -M {params.maxmemory} -G o -c {params.identityparam} -aS {params.mincoverageshorter} -aL {params.mincoveragelong} 2> {log.err} 1> {log.out}
+        cd-hit-est -d 0 -i {input.infiles} -o {output} -T {params.threads} -M {params.maxmemory} -G o -c {params.identityparam} -aS {params.mincoverageshorter} -aL {params.mincoveragelong} 2> {log.err} 1> {log.out}
         '''
         
         
@@ -72,5 +72,5 @@ rule cdhit_transdecoded:
         "../envs/cd-hit-env.yaml"
     shell:
         '''
-        cd-hit-est -i {input.infiles} -o {output} -T {params.threads} -M {params.maxmemory} -G o -c {params.identityparam} -aS {params.mincoverageshorter} -aL {params.mincoveragelong} 2> {log.err} 1> {log.out}
+        cd-hit-est -d 0 -i {input.infiles} -o {output} -T {params.threads} -M {params.maxmemory} -G o -c {params.identityparam} -aS {params.mincoverageshorter} -aL {params.mincoveragelong} 2> {log.err} 1> {log.out}
         '''
