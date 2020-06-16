@@ -6,7 +6,7 @@ import argparse
 
 #### PROCESSING FUNCTIONS ####
 def parseFile(file_in, column_1, column_2):
-    file_read = pd.read_csv(file_in, header = None, sep = "\t")
+    file_read = pd.read_csv(file_in, header = None, names = [column_1, column_2], sep = "\t")
     for c in file_read.columns:
         file_read[c] = [curr.split(":")[len(curr.split(":"))-1] for curr in file_read[c]]
     return file_read
@@ -16,17 +16,38 @@ def createDictionary(list_in):
     for r in range(len(list_in.index)):
         curr = list_in.iloc[r,0]
         if (curr in dict_out):
-            if (dict_out[curr] != None):
-                dict_out[curr] = dict_out[curr].append(list_in.iloc[r,1])
+            if isinstance(dict_out[curr], list):
+                dict_out[curr].append(list_in.iloc[r,1])
             else:
-                dict_out[curr] = [list_in.iloc[r,1]]
+                dict_out[curr] = [dict_out[curr], list_in.iloc[r,1]]
         else:
-            dict_out[curr] = [list_in.iloc[r,1]]
+            dict_out[curr] = list_in.iloc[r,1]
     return dict_out
 
+def findModulesPaths(subject_dict, ko_to_subject_dict, diamond_file):
+    subjects = [ko_to_dict[curr] if (curr in ko_to_dict) \
+               else "" for curr in diamond_file["KO"]]
+    
+    subjects_names = [[subject_dict[inner_curr]["name"] for inner_curr in curr if inner_curr in subject_dict] \
+                     if isinstance(curr,list) \
+                     else subject_dict[curr]["name"] if curr in subject_dict \
+                     else "" \
+                     for curr in subjects]
+    subjects_classes = [[subject_dict[inner_curr]["class"] for inner_curr in curr if inner_curr in subject_dict] \
+                     if isinstance(curr,list) \
+                     else subject_dict[curr]["class"] if curr in subject_dict \
+                     else "" \
+                     for curr in subjects]
+    
+    return subjects, subjects_names, subjects_classes
+
 #### PROCESS KEGG PATH ARGUMENTS ####
-parser = argparse.ArgumentParser(description='Read in the relevant information for your KEGG install.')
+parser = argparse.ArgumentParser(description='Read in the relevant information for your KEGG install and output file to be mapped to the database.')
 parser.add_argument('kegg_path', metavar='path', type=str,\
+                    help='The path to the KEGG database. Can be specified without other paths for default paths to be inferred.')
+parser.add_argument('-d', '--diamond_path', dest = "diamond_path", type=str,\
+                    help='The path to the DIAMOND file to be parsed.')
+parser.add_argument('-o', '--output_file', dest = "output_file", type=str,\
                     help='The path to the KEGG database. Can be specified without other paths for default paths to be inferred.')
 args = parser.parse_args()
 
@@ -66,6 +87,10 @@ ko_genes_dict = createDictionary(ko_genes_list)
 ko_module_dict = createDictionary(ko_module_list)
 ko_pathway_dict = createDictionary(ko_pathway_list)
 ko_enzyme_dict = createDictionary(ko_enzyme_list)
+
+#### CREATE GENES TO KO DICTIONARY ####
+genes_ko_dict = createDictionary(pd.DataFrame({"genes": ko_genes_list.iloc[:,1],\
+                                               "ko": ko_genes_list.iloc[:,0]}))
 
 #### PARSE KO FILE ####
 KOfile = open(args.ko, "r")
@@ -109,7 +134,7 @@ for line in modulefile:
             next
         elif (not not curr_entry) & (not not curr_name):
             module_dict[curr_entry] = {"name": curr_name, "class": curr_class}
-            curr_def = ""
+            curr_class = ""
             curr_entry = ""
             curr_name = ""
         else:
@@ -132,13 +157,48 @@ for line in pathwayfile:
     elif "NAME" in line:
         curr_name = line.split("NAME")[1].strip()
     elif "///" in line:
-        if (not curr_class) & (not curr_entry) & (not curr_name):
+        if (not curr_class) & (not curr_entry) & (not curr_name) & (not curr_desc):
             next
-        elif (not not curr_entry) & (not not curr_name):
-            pathway_dict[curr_entry] = {"name": curr_name, "desc": curr_desc, "class": curr_class}
-            curr_desc = ""
-            curr_entry = ""
-            curr_name = ""
-            cur_class = ""
-        else:
-            print("Parsing error")
+        elif curr_entry:
+            if (not curr_class) & (not curr_name) & (not curr_desc):
+                print("Parsing error")
+            else:
+                pathway_dict[curr_entry] = {"name": curr_name, "desc": curr_desc, "class": curr_class}
+        curr_desc = ""
+        curr_entry = ""
+        curr_name = ""
+        cur_class = ""
+
+#### PARSE AND ANNOTATE DIAMOND HITS ####
+diamond_file = pd.read_csv(os.path.join(args.diamond_path, d), \
+                              names = ['query_id', 'subject_id', 'perc_ident', \
+                                       'length', 'mismatch', 'gapopen', \
+                                       'qstart', 'qend', 'sstart', 'send', 'evalue', 'bitscore'], \
+                             sep = "\t")
+diamond_file["KO"] = [genes_ko_dict[curr.split(":")[len(curr.split(":"))-1]] \
+                         if curr.split(":")[len(curr.split(":"))-1] in genes_ko_dict \
+                         else "no_match" \
+                         for curr in diamond_dict[d]["subject_id"]]
+diamond_file = diamond_file.loc[diamond_file["KO"] != "no_match",:]
+
+## pull the names & definitions of the KO matches from dictionary ##
+diamond_file["KO_names"] = [KO_dict[curr]["name"] for curr in diamond_file["KO"]]
+diamond_file["KO_def"] = [KO_dict[curr]["def"] for curr in diamond_file["KO"]]
+
+## pull the names & classes of the modules associated with the KO matches from dictionary ##
+modules, modules_names, modules_classes = findModulesPaths(module_dict, ko_module_dict, diamond_file)
+
+## Add those module names to the dataframe ## 
+diamond_file["modules"] = ["; ".join(curr) for curr in modules]
+diamond_file["module_names"] = ["; ".join(curr) for curr in modules_names]
+diamond_file["module_classes"] = ["; ".join(curr) for curr in modules_classes]
+
+## pull the names & classes of the pathways associated with the KO matches from dictionary ##
+pathways, pathways_names, pathways_classes = findModulesPaths(pathway_dict, ko_pathway_dict, diamond_file)
+
+## Add those pathway names to the dataframe ##
+diamond_file["pathways"] = ["; ".join(curr) for curr in pathways]
+diamond_file["pathway_names"] = ["; ".join(curr) for curr in pathways_names]
+diamond_file["pathway_classes"] = ["; ".join(curr) for curr in pathways_classes] 
+    
+diamond_file.to_csv(path_or_buf = str(args.diamond_path), row.names = False)

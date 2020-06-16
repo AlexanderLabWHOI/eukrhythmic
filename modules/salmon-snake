@@ -21,28 +21,6 @@ if DROPSPIKE == 0:
 else:
     LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_1.clean.fastq.gz"), samples = get_samples(filename.assembly))
     RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_2.clean.fastq.gz"), samples = get_samples(filename.assembly))
-    
-rule salmon:
-    input: 
-        trinityfile = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta"),
-        left = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly)),
-        right = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
-    output:
-        directory(os.path.join(OUTPUTDIR, "salmon_quant_assembly_{assembly}"))
-    params:
-        libtype = "A",
-        indexname = os.path.join(OUTPUTDIR, "salmon_index_assembly_{assembly}"),
-        decoysfile = "decoys_{assembly}.txt",
-        kval = 31
-    log:
-        err = os.path.join("logs","salmon","orig_{assembly}_err.log"),
-        out = os.path.join("logs","salmon","orig_{assembly}_out.log")
-    conda: "../envs/salmon-env.yaml"
-    shell:
-        """
-        salmon index -t {input.trinityfile} -i {params.indexname} -k {params.kval} 2> {log.err} 1> {log.out}
-        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output} 2>> {log.err} 1>> {log.out}
-        """
         
 rule salmon_indiv:
     input: 

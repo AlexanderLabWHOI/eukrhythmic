@@ -18,7 +18,8 @@ def get_filenames(sample, leftorright):
         if sample_fastq in fcurr:
             matchednames.append(fcurr)
     matchednames = sorted(matchednames)
-    if leftorright == 1:
+    print(matchednames)
+    if int(leftorright) == 1:
         return matchednames[0]
     else:
         return matchednames[1]
@@ -41,6 +42,7 @@ rule fastqc:
     params:
         fastqdir = os.path.join(OUTPUTDIR, "qc", "fastqc"),
         outname = (lambda filename: os.path.join(OUTPUTDIR, "qc", "fastqc", splitfilenames(get_filenames(filename.sample, filename.num))))
+    conda: "../envs/fastqc-env.yaml"
     log: 
         err = os.path.join("logs","fastqc","{sample}_{num}_err.log"),
         out = os.path.join("logs","fastqc","{sample}_{num}_out.log")
@@ -48,8 +50,8 @@ rule fastqc:
         '''
         mkdir -p {params.fastqdir}
         fastqc {input} -o {params.fastqdir} 2> {log.err} 1> {log.out}
-        mv {params.outname}_fastq.html {output.html}
-        mv {params.outname}_fastq.zip {output.zip}
+        mv {params.outname}_fastqc.html {output.html}
+        mv {params.outname}_fastqc.zip {output.zip}
         '''
         
 rule multiqc:

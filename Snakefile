@@ -45,6 +45,9 @@ ruleorder: trimmomatic > trimmomatic_SE
 ruleorder: trinity > trinity_SE
 ruleorder: megahit > megahit_SE
 ruleorder: velvet > velvet_SE
+ruleorder: transdecoder_indiv > transdecoder > transdecoder_by_assembly
+ruleorder: salmon_indiv > salmon_clustering
+ruleorder: combinequastmerge > quast_merged_transdecoded
 
 rule all:
     input:

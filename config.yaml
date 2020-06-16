@@ -30,7 +30,7 @@ kmers:
 assemblers:
     - megahit
     - velvet
-    - trinity
+#    - trinity
 separategroups: 1
 
 ### Parameters only to be changed by advanced users ###

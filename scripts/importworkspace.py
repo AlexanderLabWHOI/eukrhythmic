@@ -76,7 +76,6 @@ else:
     ISFILESPIKE = 0
 ASSEMBLERS = [curr.lower() for curr in list(config['assemblers'])]
 SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
-print(SAMPLEINFO.columns)
 ASSEMBLYDICT = dict(zip(list(SAMPLEINFO.AssemblyGroup), list(SAMPLEINFO.SampleName)))
 samplenames = list(SAMPLEINFO.SampleID);
 fastqnames = list(SAMPLEINFO.FastqFile);
