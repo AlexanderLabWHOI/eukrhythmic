@@ -65,21 +65,21 @@ rule salmon_indiv:
         salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {output} 2>> {log.err} 1>> {log.out}
         """
     
-rule salmon_clust3:
+rule salmon_clustering:
     input: 
-        assemblyfile = os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta"),
+        assemblyfile = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_transdecoded.fasta"),
         left = LEFTFILE,
         right = RIGHTFILE
     output:
-        directory(os.path.join(OUTPUTDIR, "salmon", "salmon_quant_assembly_{assembly}"))
+        directory(os.path.join(OUTPUTDIR, "salmon_{folder}", "salmon_quant_assembly_{assembly}"))
     params:
         libtype = "A",
         indexname = os.path.join(OUTPUTDIR, "salmon_index_assembly_{assembly}"),
         decoysfile = "decoys_{assembly}.txt",
         kval = 31
     log:
-        err = os.path.join("logs","salmon","merged_{assembly}_err.log"),
-        out = os.path.join("logs","salmon","merged_{assembly}_out.log")
+        err = os.path.join("logs","salmon","{folder}_{assembly}_err.log"),
+        out = os.path.join("logs","salmon","{folder}_{assembly}_out.log")
     conda:
         "../envs/salmon-env.yaml"
     shell:

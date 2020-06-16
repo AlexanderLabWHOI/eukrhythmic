@@ -38,6 +38,7 @@ include: "modules/manipnames-snake"
 include: "modules/transdecoder-snake"
 include: "modules/busco-snake"
 include: "modules/salmon-snake"
+include: "modules/annotate-snake"
 include: "modules/hardclean-snake"
 
 ruleorder: trimmomatic > trimmomatic_SE
@@ -65,25 +66,29 @@ rule all:
         quast = expand(os.path.join("{base}", "quast", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
         # COMBINE QUAST OUTPUTS
         quastcombine = expand(os.path.join("{base}", "quast", "fullresults", "allresults.tsv"), base = OUTPUTDIR),
+        # TRANSDECODER OUTPUTS - optionally, run TransDecoder on the individual assemblies
+        transdecoder_indiv = expand(os.path.join("{base}", "transdecoder_indiv", "{assembly}_{assembler}.fasta.transdecoder.cds"),  base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
         # INDIVIDUAL CLUSTERING OUTPUTS
-        clustering1 = expand(os.path.join("{base}", "cluster1", "{assembly}_{assembler}.fasta"), base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
-        # MERGED CLUSTERING OUTPUTS
-        clustering2 = expand(os.path.join("{base}", "cluster2", "{assembly}_merged.fasta"), base = OUTPUTDIR, assembly = assemblygroups),
-        # TRANSDECODER OUTPUTS - temporarily, run TransDecoder on the individual assemblies
-        transdecoder_temp = expand(os.path.join("{base}", "transdecoder_indiv", "{assembly}_{assembler}.fasta.transdecoder.cds"),  base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
-        # TRANSDECODER OUTPUTS - second merging occurs within this step
-        transdecoder = expand(os.path.join("{base}", "transdecoder", "{assembly}.fasta.transdecoder.cds"),  base = OUTPUTDIR, assembly = "merged"),
+        clustering_each_assembler = expand(os.path.join("{base}", "cluster1", "{assembly}_{assembler}.fasta"), base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
+        # TRANSDECODER OUTPUTS - on individual assemblies by assembly group
+        transdecoder_by_assembly = expand(os.path.join("{base}", "transdecoder_{folder}", "{assembly}.fasta.transdecoder.cds"),  base = OUTPUTDIR, folder = "by_assembly_group", assembly = "merged"),
+        # TRANSDECODER OUTPUTS - second merging ("mega-merge") occurs within this step
+        transdecoder = expand(os.path.join("{base}", "transdecoder_{folder}", "{assembly}.fasta.transdecoder.cds"), base = OUTPUTDIR, folder = "mega_merge", assembly = "merged"),
+        # MERGED CLUSTERING OUTPUTS - cluster on merged samples by assembly group, transdecoded
+        clustering_by_assembly_group = expand(os.path.join("{base}", "cluster_{folder}", "{assembly}_merged.fasta"), base = OUTPUTDIR, folder = "by_assembly_group", assembly = assemblygroups),
         # SALMON QUANTIFICATION OF RAW AGAINST INDIVIDUAL ASSEMBLIES/ASSEMBLERS
         salmon_indiv = expand(os.path.join("{base}", "salmon_indiv", "salmon_quant_assembly_{assembly}_{assembler}"), base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
         # TRANSDECODED CLUSTERING OUTPUTS
-        clustering3 = expand(os.path.join("{base}", "cluster3", "{assembly}_transdecoded.fasta"), base = OUTPUTDIR, assembly = "merged"),
-        # SALMON QUANTIFICATION OF RAW AGAINST FINAL ASSEMBLY
-        salmon = expand(os.path.join("{base}", "salmon", "salmon_quant_assembly_{assembly}"), base = OUTPUTDIR, assembly = "merged"),
+        clustering_mega_merge = expand(os.path.join("{base}", "cluster_{folder}", "{assembly}_transdecoded.fasta"), base = OUTPUTDIR, folder = "mega_merge", assembly = "merged"),
+        # SALMON QUANTIFICATION OF RAW AGAINST MERGED & TRANSDECODED BY ASSEMBLY GROUP
+        salmon_by_assembly = expand(os.path.join("{base}", "salmon_{folder}", "salmon_quant_assembly_{assembly}"), base = OUTPUTDIR, folder = "by_assembly_group", assembly = assemblygroups),
+        # SALMON QUANTIFICATION OF RAW AGAINST MEGA-MERGED ASSEMBLY
+        salmon_mega_merge = expand(os.path.join("{base}", "salmon_{folder}", "salmon_quant_assembly_{assembly}"), base = OUTPUTDIR, folder = "mega_merge", assembly = "merged"),
         # QUAST QUALITY ASSESSMENT OF FINAL ASSEMBLY
-        quastfinal = expand(os.path.join("{base}", "quastfinal", "{assembly}"), base = OUTPUTDIR, assembly = "merged"),
-        quastmerged = expand(os.path.join("{base}", "quastmerged", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
-        # COMBINE QUAST MERGED OUTPUTS
-        quastmergedcombine = expand(os.path.join("{base}", "quastmerged", "fullresults", "allresults.tsv"), base = OUTPUTDIR),
+        quastfinal = expand(os.path.join("{base}", "quast_{folder}", "{assembly}"), base = OUTPUTDIR, folder = "mega_merge", assembly = "merged"),
+        quast_merged_mega_merge = expand(os.path.join("{base}", "quast_{folder}", "{assembly}"), base = OUTPUTDIR, folder = "by_assembly_group", assembly = assemblygroups),
+        # COMBINE QUAST MERGED OUTPUTS FOR BY ASSEMBLY GROUP
+        quastmergedcombine = expand(os.path.join("{base}", "quast_{folder}", "fullresults", "allresults.tsv"), base = OUTPUTDIR, folder = "by_assembly_group"),
         # BUSCO ASSESSMENT OF FINAL ASSEMBLY
-        busco = expand(os.path.join("{base}", "busco", "{assembly}"), base = OUTPUTDIR, assembly = "merged")
+        #busco = expand(os.path.join("{base}", "busco", "{assembly}"), base = OUTPUTDIR, assembly = "merged")
         

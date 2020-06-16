@@ -12,16 +12,15 @@ rule transdecoder:
     input:
         merged = os.path.join(OUTPUTDIR, "merged_all", "{assembly}.fasta")
     output:
-        pep = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.fasta.transdecoder.pep"),
-        gff = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.fasta.transdecoder.gff3"),
-        cds = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.fasta.transdecoder.cds"),
-        bed = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.fasta.transdecoder.bed")
+        pep = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.pep"),
+        gff = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.gff3"),
+        cds = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.cds"),
+        bed = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.bed")
     log:
-        err = os.path.join("logs","transdecoder","orig_{assembly}_err.log"),
-        out = os.path.join("logs","transdecoder","orig_{assembly}_out.log")
+        err = os.path.join("logs","transdecoder","{folder}_{assembly}_err.log"),
+        out = os.path.join("logs","transdecoder","{folder}_{assembly}_out.log")
     params:
         merged = "{assembly}",
-        outputdir = os.path.join(OUTPUTDIR, "transdecoder", "{assembly}.pep"),
         size = TRANSDECODERORFSIZE
     conda: 
         "../envs/transdecoder-env.yaml"
@@ -36,7 +35,7 @@ rule transdecoder:
         rm -rf {params.merged}.fasta.transdecoder_dir*
         rm -rf pipeliner.*.cmds
         """
-        
+  
 rule transdecoder_indiv:
     input:
         merged = os.path.join(OUTPUTDIR, "assembled", "{assembly}_{assembler}.fasta")
@@ -51,6 +50,34 @@ rule transdecoder_indiv:
     log:
         err = os.path.join("logs","transdecoder","indiv_{assembly}_{assembler}_err.log"),
         out = os.path.join("logs","transdecoder","indiv_{assembly}_{assembler}_out.log")
+    conda: 
+        "../envs/transdecoder-env.yaml"
+    shell:
+        """
+        TransDecoder.LongOrfs -t {input.merged} -m {params.size} 2> {log.err} 1> {log.out}
+        TransDecoder.Predict -t {input.merged} --no_refine_starts 2>> {log.err} 1>> {log.out}
+        mv {params.merged}.fasta.transdecoder.pep {output.pep}
+        mv {params.merged}.fasta.transdecoder.cds {output.cds}
+        mv {params.merged}.fasta.transdecoder.gff3 {output.gff}
+        mv {params.merged}.fasta.transdecoder.bed {output.bed}
+        rm -rf {params.merged}.fasta.transdecoder_dir*
+        rm -rf pipeliner.*.cmds
+        """
+
+rule transdecoder_by_assembly:
+    input:
+        merged = os.path.join(OUTPUTDIR, "merged", "{assembly}_merged.fasta")
+    output:
+        pep = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.pep"),
+        gff = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.gff3"),
+        cds = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.cds"),
+        bed = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.bed")
+    params:
+        merged = "{assembly}_{assembler}",
+        size = TRANSDECODERORFSIZE
+    log:
+        err = os.path.join("logs","transdecoder","{folder}_{assembly}_err.log"),
+        out = os.path.join("logs","transdecoder","{folder}_{assembly}_out.log")
     conda: 
         "../envs/transdecoder-env.yaml"
     shell:

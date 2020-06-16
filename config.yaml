@@ -7,12 +7,18 @@ spikefile: 0 #/vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.
 adapter: static/adapters.fa
 ## DIRECTORIES DURING PROCESSING ##
 inputDIR: input/testdata
-outputDIR: ../testoutput
+outputDIR: ../testoutput_16June2020
 assembledDIR: assembled
 renamedDIR: renamed
 # this is where all the intermediate outputs will go.
 scratch: ../testscratch 
 ## ANALYSIS OPTIONS ##
+kegg: /vortexfs1/omics/alexander/data/KEGG
+kegg_prot_db: /vortexfs1/omics/alexander/data/KEGG/diamond_db/family_eukaryotes.dmnd 
+busco: 
+    - https://www.dropbox.com/s/uqbag10d3soks68/eukaryota_odb10.2019-11-20.tar.gz?dl=1
+pfam: ""
+    
 # 1 indicates that "spikefile" is used to clean reads
 runbbmap: 1
 # flag to be used to decide whether QUAST/salmon quantification performed

@@ -1,0 +1,46 @@
+configfile: "config.yaml"
+
+import io
+import os
+import pathlib
+import pandas as pd
+from snakemake.exceptions import print_exception, WorkflowError
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
+
+KEGG_PROT_DB = config["kegg_prot_db"]
+
+rule diamond_database:
+    input:
+        tobuild = KEGG_PROT_DB # os.path.join("vortexfs1","omics","alexander","data","KEGG","diamond_db","family_eukaryotes.dmnd")
+    output:
+        dmnd = os.path.join(OUTPUT_DIR, "diamond", "diamond_ref.dmnd")
+    params:
+        db = os.path.join(DATABASE_DIR, "diamond", "diamond_ref")
+    conda:
+        "envs/annotate.yaml"
+    shell:
+        """
+        # diamond makedb --in {input} --db {params.db}
+        cp {input.tobuild} {output.dmnd}
+        """
+
+rule align_assemblies:
+  ## runs alignment against reference DB and generates .aln files for each contig in each samples
+    input:
+        dmnd = os.path.join(OUTPUT_DIR, "diamond", "diamond_ref.dmnd"),
+        fasta = os.path.join(OUTPUT_DIR, "merged", "{assembly}_merged.fasta") 
+    output:
+        os.path.join(OUTPUT_DIR, "diamond", "{assembly}_merged.diamond.out")
+    params:
+        other = "--outfmt 6 -k 100 -e 1e-5",
+        outfmt = 6,
+        k = 100,
+        e = 1e-5
+    conda:
+        "envs/annotate.yaml"
+    shell:
+        """
+        diamond blastx --db {input.dmnd} -q {input.fasta} -o {output} --outfmt {params.outfmt} -k {params.k} -e {params.e}
+        """

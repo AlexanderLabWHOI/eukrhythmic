@@ -1,0 +1,11 @@
+name: annotate
+channels:
+    - bioconda
+    - conda-forge
+    - anaconda
+dependencies:
+    - crb-blast
+    - diamond
+    - sword
+    - python
+    - wget
