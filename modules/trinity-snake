@@ -31,13 +31,18 @@ rule trinity:
         left = LEFTFILE,
         right = RIGHTFILE
     output:
-        os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta")
+        assemblyfile = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta"),
+        jellyfile = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "jellyfish.kmers.25.asm.fa")
+    envvars:
+        "TMPDIR"
     params:
-        extra = "",
-        outdir = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}"),
+        outdir = os.path.join(os.environ["TMPDIR"], "trinity_results_assembly_{assembly}"),
+        outfasta = os.path.join(os.environ["TMPDIR"], "trinity_results_assembly_{assembly}", "Trinity.fasta"),
+        outjelly = os.path.join(os.environ["TMPDIR"], "trinity_results_assembly_{assembly}", "jellyfish.kmers.fa"), #"jellyfish.K25.min2.kmers.fa"), #"jellyfish.kmers.25.asm.fa"),
         left = LEFTFILE,
         right = RIGHTFILE,
         maxmem = MAXMEMORY,
+        finalout = assemblyfile = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}",
         CPUs = MAXCPUSPERTASK * MAXTASKS #MAXTHREADS * MAXCORES
     log:
         err = os.path.join("logs","trinity","outputlog_{assembly}_err.log"),
@@ -46,6 +51,9 @@ rule trinity:
     shell:
         '''
         Trinity --seqType fq --max_memory {params.maxmem}G --CPU {params.CPUs} --left {input.left} --right {input.right} --output {params.outdir} 2> {log.err} 1> {log.out}
+        mkdir -p {params.finalout}
+        mv {params.outfasta} {output.assemblyfile}
+        mv {params.outjelly} {output.jellyfile}
         '''
         
 rule trinity_SE:

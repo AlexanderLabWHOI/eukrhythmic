@@ -32,7 +32,6 @@ rule transabyss:
         outdir = os.path.join(OUTPUTDIR, "transabyss_{k}_{assembly}"),
         left = LEFTFILE,
         right = RIGHTFILE
-    threads: 4
     log:
         err = os.path.join("logs","transabyss","outputlog_{assembly}_{k}_err.log"),
         out = os.path.join("logs","transabyss","outputlog_{assembly}_{k}_out.log")
