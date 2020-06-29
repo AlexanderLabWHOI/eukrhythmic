@@ -25,7 +25,7 @@ def createDictionary(list_in):
     return dict_out
 
 def findModulesPaths(subject_dict, ko_to_subject_dict, diamond_file):
-    subjects = [ko_to_dict[curr] if (curr in ko_to_dict) \
+    subjects = [ko_to_subject_dict[curr] if (curr in ko_to_subject_dict) \
                else "" for curr in diamond_file["KO"]]
     
     subjects_names = [[subject_dict[inner_curr]["name"] for inner_curr in curr if inner_curr in subject_dict] \
@@ -47,8 +47,10 @@ parser.add_argument('kegg_path', metavar='path', type=str,\
                     help='The path to the KEGG database. Can be specified without other paths for default paths to be inferred.')
 parser.add_argument('-d', '--diamond_path', dest = "diamond_path", type=str,\
                     help='The path to the DIAMOND file to be parsed.')
+
+## TO-DO: specify a default location for output and allow the user not to specify this, if they choose. 
 parser.add_argument('-o', '--output_file', dest = "output_file", type=str,\
-                    help='The path to the KEGG database. Can be specified without other paths for default paths to be inferred.')
+                    help='The path to the final output file that the user wishes to be able to find.')
 args = parser.parse_args()
 
 #### SPECIFIC PATH ARGUMENTS; MAY BE LEFT OUT ####
@@ -170,7 +172,7 @@ for line in pathwayfile:
         cur_class = ""
 
 #### PARSE AND ANNOTATE DIAMOND HITS ####
-diamond_file = pd.read_csv(os.path.join(args.diamond_path, d), \
+diamond_file = pd.read_csv(args.diamond_path, \
                               names = ['query_id', 'subject_id', 'perc_ident', \
                                        'length', 'mismatch', 'gapopen', \
                                        'qstart', 'qend', 'sstart', 'send', 'evalue', 'bitscore'], \
@@ -178,7 +180,7 @@ diamond_file = pd.read_csv(os.path.join(args.diamond_path, d), \
 diamond_file["KO"] = [genes_ko_dict[curr.split(":")[len(curr.split(":"))-1]] \
                          if curr.split(":")[len(curr.split(":"))-1] in genes_ko_dict \
                          else "no_match" \
-                         for curr in diamond_dict[d]["subject_id"]]
+                         for curr in diamond_file["subject_id"]]
 diamond_file = diamond_file.loc[diamond_file["KO"] != "no_match",:]
 
 ## pull the names & definitions of the KO matches from dictionary ##
@@ -201,4 +203,4 @@ diamond_file["pathways"] = ["; ".join(curr) for curr in pathways]
 diamond_file["pathway_names"] = ["; ".join(curr) for curr in pathways_names]
 diamond_file["pathway_classes"] = ["; ".join(curr) for curr in pathways_classes] 
     
-diamond_file.to_csv(path_or_buf = str(args.diamond_path), row.names = False)
+diamond_file.to_csv(path_or_buf = str(args.output_file), index = False, sep = "\t")

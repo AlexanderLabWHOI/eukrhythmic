@@ -69,7 +69,7 @@ rule quast_merged_transdecoded:
     params:
         assemblers = ",".join(ASSEMBLERS),
         assembly = "{assembly}",
-        outputassemblies = os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta") 
+        outputassemblies = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_transdecoded.fasta") 
     log:
         err = os.path.join("logs","quast","{folder}_{assembly}_err.log"),
         out = os.path.join("logs","quast","{folder}_{assembly}_out.log")

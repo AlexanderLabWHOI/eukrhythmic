@@ -18,15 +18,16 @@ with open('cluster.yaml') as f:
     cluster = yaml.load(f, Loader=yaml.FullLoader)
 
 required_entries = ["maxmemory","maxtasks","maxcores"]
-if (cluster != None) & ("required" in cluster):
-    for r in required_entries:
-        try:
-            if r not in cluster["required"].keys():
-                offender = r
-                raise ValueError
-        except ValueError:
-            print("Check that you have specified values in the cluster configuration file file. The missing entry that triggered this error was "  + str(offender) + ".")
-            sys.exit(1)
+if (cluster != None):
+    if ("required" in cluster):
+        for r in required_entries:
+            try:
+                if r not in cluster["required"].keys():
+                    offender = r
+                    raise ValueError
+            except ValueError:
+                print("Check that you have specified values in the cluster configuration file file. The missing entry that triggered this error was "  + str(offender) + ".")
+                sys.exit(1)
 
 DEFAULTQUEUE = cluster["required"]["defaultqueue"]
 DEFAULTUSER = cluster["required"]["accountname"]
@@ -113,7 +114,7 @@ for dir_curr in directories:
 
 print("\033[1;35m Setting appropriate cluster.yaml entries if specified...  \n")
 for r in cluster.keys():
-    if WRITECLUSTER == 1:
+    if WRITECLUSTER == 1: # need to add additional flag to make sure only done once
         if "account" in cluster[r].keys():
             cluster[r]["account"] = DEFAULTUSER
         if "queue" in cluster[r].keys():

@@ -10,4 +10,4 @@ outdir=$(cat config.yaml | grep outputDIR | cut -d ":" -f 2 | cut -d " " -f 2)
 #python scripts/writeconfig.py
 
 snakemake  \
-    --rerun-incomplete --jobs 100 --use-conda --cluster-config cluster.yaml --cluster "sbatch --parsable --qos=unlim --partition={cluster.queue} --job-name=${jobname}.{rule}.{wildcards} --mem={cluster.mem}gb --time={cluster.time} --ntasks={cluster.tasks} --nodes={cluster.nodes} --cpus-per-task={cluster.cpupertask} --requeue"
+    --rerun-incomplete --jobs 500 --use-conda --cluster-config cluster.yaml --cluster "sbatch --parsable --qos=unlim --partition={cluster.queue} --job-name=${jobname}.{rule}.{wildcards} --mem={cluster.mem}gb --time={cluster.time} --ntasks={cluster.tasks} --nodes={cluster.nodes} --cpus-per-task={cluster.cpupertask} --requeue"

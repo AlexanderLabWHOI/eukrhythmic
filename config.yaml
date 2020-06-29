@@ -17,7 +17,7 @@ kegg: /vortexfs1/omics/alexander/data/KEGG
 kegg_prot_db: /vortexfs1/omics/alexander/data/KEGG/diamond_db/family_eukaryotes.dmnd 
 busco: 
     - https://www.dropbox.com/s/uqbag10d3soks68/eukaryota_odb10.2019-11-20.tar.gz?dl=1
-pfam: ""
+pfam: ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
     
 # 1 indicates that "spikefile" is used to clean reads
 runbbmap: 1
@@ -29,8 +29,8 @@ kmers:
     - 110
 assemblers:
     - megahit
-    - velvet
-#    - trinity
+#    - velvet
+    - trinity
 separategroups: 1
 
 ### Parameters only to be changed by advanced users ###
@@ -38,4 +38,4 @@ transdecodercutoff: 100
 secondclustercutoff: 0.98
 defaultkmer: 25
 mincontig: 100
-rewritecluster: 1
+rewritecluster: 0

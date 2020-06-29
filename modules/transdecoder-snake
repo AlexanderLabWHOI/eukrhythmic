@@ -73,7 +73,7 @@ rule transdecoder_by_assembly:
         cds = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.cds"),
         bed = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.bed")
     params:
-        merged = "{assembly}_{assembler}",
+        merged = "{assembly}_merged",
         size = TRANSDECODERORFSIZE
     log:
         err = os.path.join("logs","transdecoder","{folder}_{assembly}_err.log"),
@@ -84,6 +84,34 @@ rule transdecoder_by_assembly:
         """
         TransDecoder.LongOrfs -t {input.merged} -m {params.size} 2> {log.err} 1> {log.out}
         TransDecoder.Predict -t {input.merged} --no_refine_starts 2>> {log.err} 1>> {log.out}
+        mv {params.merged}.fasta.transdecoder.pep {output.pep}
+        mv {params.merged}.fasta.transdecoder.cds {output.cds}
+        mv {params.merged}.fasta.transdecoder.gff3 {output.gff}
+        mv {params.merged}.fasta.transdecoder.bed {output.bed}
+        rm -rf {params.merged}.fasta.transdecoder_dir*
+        rm -rf pipeliner.*.cmds
+        """
+
+rule transdecoder_final_proteins:
+    input:
+        clustered = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_transdecoded.fasta")
+    output:
+        pep = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.pep"),
+        gff = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.gff3"),
+        cds = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.cds"),
+        bed = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.bed")
+    params:
+        merged = "{assembly}_transdecoded",
+        size = TRANSDECODERORFSIZE
+    log:
+        err = os.path.join("logs","transdecoder","{folder}_{assembly}_err.log"),
+        out = os.path.join("logs","transdecoder","{folder}_{assembly}_out.log")
+    conda: 
+        "../envs/transdecoder-env.yaml"
+    shell:
+        """
+        TransDecoder.LongOrfs -t {input.clustered} -m {params.size} 2> {log.err} 1> {log.out}
+        TransDecoder.Predict -t {input.clustered} --no_refine_starts 2>> {log.err} 1>> {log.out}
         mv {params.merged}.fasta.transdecoder.pep {output.pep}
         mv {params.merged}.fasta.transdecoder.cds {output.cds}
         mv {params.merged}.fasta.transdecoder.gff3 {output.gff}

@@ -36,7 +36,7 @@ include: "modules/quast-snake"
 include: "modules/cd-hit-snake"
 include: "modules/manipnames-snake"
 include: "modules/transdecoder-snake"
-include: "modules/busco-snake"
+#include: "modules/busco-snake"
 include: "modules/salmon-snake"
 include: "modules/annotate-snake"
 include: "modules/hardclean-snake"
@@ -93,5 +93,9 @@ rule all:
         # COMBINE QUAST MERGED OUTPUTS FOR BY ASSEMBLY GROUP
         quastmergedcombine = expand(os.path.join("{base}", "quast_{folder}", "fullresults", "allresults.tsv"), base = OUTPUTDIR, folder = "by_assembly_group"),
         # BUSCO ASSESSMENT OF FINAL ASSEMBLY
-        #busco = expand(os.path.join("{base}", "busco", "{assembly}"), base = OUTPUTDIR, assembly = "merged")
+        busco = expand(os.path.join("{base}", "busco", "{database}", "{folder}", "{assembly}"), base = OUTPUTDIR, database = "bacteria", folder = "mega_merge", assembly = "merged"), # eukaryota, bacteria
+        # HMMER ALIGNMENT OF FINAL ASSEMBLY BEFORE MEGA-MERGE
+        hmmer = expand(os.path.join("{base}", "pfam", "{folder}", "{assembly}.tblout"), base = OUTPUTDIR, folder = "by_assembly_group", assembly = assemblygroups),
+        # DIAMOND ALIGNMENT AND KEGG ANNOTATION 
+        kegg = expand(os.path.join("{base}", "kegg", "{folder}", "{assembly}_kegg.csv"), base = OUTPUTDIR, folder = "by_assembly_group", assembly = assemblygroups)
         

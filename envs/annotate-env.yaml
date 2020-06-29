@@ -4,8 +4,10 @@ channels:
     - conda-forge
     - anaconda
 dependencies:
-    - crb-blast
+    - shmlast
+    - hmmer
     - diamond
     - sword
     - python
     - wget
+    - busco
