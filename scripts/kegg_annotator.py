@@ -182,10 +182,24 @@ diamond_file["KO"] = [genes_ko_dict[curr.split(":")[len(curr.split(":"))-1]] \
                          else "no_match" \
                          for curr in diamond_file["subject_id"]]
 diamond_file = diamond_file.loc[diamond_file["KO"] != "no_match",:]
+diamond_file_unpacked = pd.DataFrame({'KO':np.concatenate([[curr] if not isinstance(curr, list) else curr for curr in list(diamond_file["KO"].values)])})
+for curr in diamond_file.columns:
+    if curr != "KO":
+        diamond_file_unpacked[curr] = np.repeat(diamond_file[curr].values, pd.Series([[curr] if not isinstance(curr, list) else curr for curr in list(diamond_file["KO"].values)]).str.len())
+    else:
+        print("Don't want to replace!")
+
+print(diamond_file_unpacked.head())
+diamond_file = diamond_file_unpacked
+for curr in list(diamond_file["KO"]):
+    if isinstance(curr, list):
+        print("problematic list " + str(curr))
+        
+diamond_file = diamond_file.loc[[(not isinstance(curr,list)) for curr in list(diamond_file["KO"])],:]
 
 ## pull the names & definitions of the KO matches from dictionary ##
-diamond_file["KO_names"] = [KO_dict[curr]["name"] for curr in diamond_file["KO"]]
-diamond_file["KO_def"] = [KO_dict[curr]["def"] for curr in diamond_file["KO"]]
+diamond_file["KO_names"] = [KO_dict[curr]["name"] if curr in KO_dict else "" for curr in list(diamond_file["KO"])]
+diamond_file["KO_def"] = [KO_dict[curr]["def"] if curr in KO_dict else "" for curr in list(diamond_file["KO"])]
 
 ## pull the names & classes of the modules associated with the KO matches from dictionary ##
 modules, modules_names, modules_classes = findModulesPaths(module_dict, ko_module_dict, diamond_file)
