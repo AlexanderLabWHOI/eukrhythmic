@@ -106,7 +106,7 @@ rule run_busco:
         cp {params.static_ini_path} {params.ini_path}
         sed -i '/out = /c\out = {params.assembly}' {params.ini_path} # the name of the output files
         sed -i '/out_path = /c\out_path = {params.out_path}' {params.ini_path} # what directory the output will be stored in
-        busco -i {input.fasta_file} -l {params.busco_db_name} -m transcriptome --cpu {params.CPUs} --config {params.ini_path} -f #{input.busco_db}
+        busco -i {input.fasta_file} -l {params.busco_db_name} -m transcriptome --cpu {params.CPUs} --config {params.ini_path} -f
         '''
   
 rule download_pfam:

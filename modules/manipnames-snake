@@ -33,10 +33,11 @@ rule rename:
     output:
         os.path.join(RENAMEDDIR, "{assembly}_{assembler}.fasta")
     params:
-        assemblername = "{assembler}"
+        assemblername = "{assembler}",
+        assembly = "{assembly}"
     shell:
         '''
-        sed 's/>/>{params.assemblername}_/' {input.assemblyfiles} > {output}
+        sed 's/>/>{params.assemblername}_{params.assembly}_/' {input.assemblyfiles} > {output}
         '''
 
 
@@ -60,7 +61,7 @@ rule merge_all:
     input:
         assemblyfiles = getallmergedlist()
     output:
-        os.path.join(OUTPUTDIR, "merged_all", "{assembly}.fasta")
+        os.path.join(OUTPUTDIR, "merged_all", "merged.fasta")
     params:
         assemblyfiles = getallmerged()
     shell:

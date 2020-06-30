@@ -23,13 +23,13 @@ from checkrequirements import *
 ## CHECK THAT ALL REQUIREMENTS ARE SATISFIED BY EXECUTING checkrequirements() from `scripts/checkrequirements.py` ##
 checkrequirementsfct()
 
-include: "modules/fastqc-snake"
-include: "modules/bbmap-snake"
-include: "modules/trimmomatic-snake"
-include: "modules/fastqc-trimmed-snake"
-include: "modules/trinity-snake"
-include: "modules/velvet-snake"
-include: "modules/megahit-snake"
+#include: "modules/fastqc-snake"
+#include: "modules/bbmap-snake"
+#include: "modules/trimmomatic-snake"
+#include: "modules/fastqc-trimmed-snake"
+#include: "modules/trinity-snake"
+#include: "modules/velvet-snake"
+#include: "modules/megahit-snake"
 include: "modules/transabyss-snake"
 include: "modules/transabyss-merge-snake"
 include: "modules/quast-snake"
@@ -41,10 +41,10 @@ include: "modules/salmon-snake"
 include: "modules/annotate-snake"
 include: "modules/hardclean-snake"
 
-ruleorder: trimmomatic > trimmomatic_SE
-ruleorder: trinity > trinity_SE
-ruleorder: megahit > megahit_SE
-ruleorder: velvet > velvet_SE
+#ruleorder: trimmomatic > trimmomatic_SE
+#ruleorder: trinity > trinity_SE
+#ruleorder: megahit > megahit_SE
+#ruleorder: velvet > velvet_SE
 ruleorder: transdecoder_indiv > transdecoder > transdecoder_by_assembly
 ruleorder: salmon_indiv > salmon_clustering
 ruleorder: combinequastmerge > quast_merged_transdecoded
@@ -52,19 +52,19 @@ ruleorder: combinequastmerge > quast_merged_transdecoded
 rule all:
     input:
         # FASTQC OUTPUTS
-        fastqc1 = expand([os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.html"), os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.zip")], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+ #       fastqc1 = expand([os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.html"), os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.zip")], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # MULTIQC OUTPUTS
-        multiqc1 = expand(os.path.join("{base}", "qc", "multiqc", "firstqcreport", "multiqc_report.html"), zip, base = OUTPUTDIR),
+ #       multiqc1 = expand(os.path.join("{base}", "qc", "multiqc", "firstqcreport", "multiqc_report.html"), zip, base = OUTPUTDIR),
         # BBMAP OUTPUTS
-        bbmap = expand(os.path.join("{base}", "bbmap", "{sample}_{num}.clean.fastq.gz"), zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+ #       bbmap = expand(os.path.join("{base}", "bbmap", "{sample}_{num}.clean.fastq.gz"), zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # TRIMMOMATIC OUTPUTS
-        trimmed = expand([os.path.join("{base}", "firsttrim", "{sample}_1.trimmed.fastq.gz"), os.path.join("{base}", "firsttrim", "{sample}_2.trimmed.fastq.gz")], zip, base = OUTPUTDIR, sample = filenames),
+ #       trimmed = expand([os.path.join("{base}", "firsttrim", "{sample}_1.trimmed.fastq.gz"), os.path.join("{base}", "firsttrim", "{sample}_2.trimmed.fastq.gz")], zip, base = OUTPUTDIR, sample = filenames),
         # FASTQC 2 OUTPUTS (trimmed)
-        fastqc2 = expand([os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.html"), os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.zip")], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+ #       fastqc2 = expand([os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.html"), os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.zip")], zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # MULTIQC 2 OUTPUTS
-        multiqc2 = expand(os.path.join("{base}", "qc", "multiqc", "trimmedqcreport", "multiqc_report.html"), zip, base = OUTPUTDIR),
+ #       multiqc2 = expand(os.path.join("{base}", "qc", "multiqc", "trimmedqcreport", "multiqc_report.html"), zip, base = OUTPUTDIR),
         # ASSEMBLER OUTPUTS
-        assemblersout = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"), base = ASSEMBLEDDIR, assembly = assemblygroups, assembler = ASSEMBLERS), 
+ #       assemblersout = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"), base = ASSEMBLEDDIR, assembly = assemblygroups, assembler = ASSEMBLERS), 
         # QUAST OUTPUTS
         quast = expand(os.path.join("{base}", "quast", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
         # COMBINE QUAST OUTPUTS
