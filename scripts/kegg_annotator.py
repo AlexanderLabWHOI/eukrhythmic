@@ -177,6 +177,7 @@ diamond_file = pd.read_csv(args.diamond_path, \
                                        'length', 'mismatch', 'gapopen', \
                                        'qstart', 'qend', 'sstart', 'send', 'evalue', 'bitscore'], \
                              sep = "\t")
+diamond_file = diamond_file.loc[(diamond_file["perc_ident"] > 80),:]
 diamond_file["KO"] = [genes_ko_dict[curr.split(":")[len(curr.split(":"))-1]] \
                          if curr.split(":")[len(curr.split(":"))-1] in genes_ko_dict \
                          else "no_match" \
@@ -205,16 +206,16 @@ diamond_file["KO_def"] = [KO_dict[curr]["def"] if curr in KO_dict else "" for cu
 modules, modules_names, modules_classes = findModulesPaths(module_dict, ko_module_dict, diamond_file)
 
 ## Add those module names to the dataframe ## 
-diamond_file["modules"] = ["; ".join(curr) for curr in modules]
-diamond_file["module_names"] = ["; ".join(curr) for curr in modules_names]
-diamond_file["module_classes"] = ["; ".join(curr) for curr in modules_classes]
+diamond_file["modules"] = ["; ".join(curr) if isinstance(curr, list) else curr for curr in modules]
+diamond_file["module_names"] = ["; ".join(curr) if isinstance(curr, list) else curr for curr in modules_names]
+diamond_file["module_classes"] = ["; ".join(curr) if isinstance(curr, list) else curr for curr in modules_classes]
 
 ## pull the names & classes of the pathways associated with the KO matches from dictionary ##
 pathways, pathways_names, pathways_classes = findModulesPaths(pathway_dict, ko_pathway_dict, diamond_file)
 
 ## Add those pathway names to the dataframe ##
-diamond_file["pathways"] = ["; ".join(curr) for curr in pathways]
-diamond_file["pathway_names"] = ["; ".join(curr) for curr in pathways_names]
-diamond_file["pathway_classes"] = ["; ".join(curr) for curr in pathways_classes] 
+diamond_file["pathways"] = ["; ".join(curr) if isinstance(curr, list) else curr for curr in pathways]
+diamond_file["pathway_names"] = ["; ".join(curr) if isinstance(curr, list) else curr for curr in pathways_names]
+diamond_file["pathway_classes"] = ["; ".join(curr) if isinstance(curr, list) else curr for curr in pathways_classes] 
     
 diamond_file.to_csv(path_or_buf = str(args.output_file), index = False, sep = "\t")
