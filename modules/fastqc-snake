@@ -12,7 +12,7 @@ from importworkspace import *
 def get_filenames(sample, leftorright):
     filenames = os.listdir(INPUTDIR)
     matchednames = []
-    indexsample = [ind for ind in range(0,len(samplenames)) if strip(sample) == samplenames[ind]][0]
+    indexsample = [ind for ind in range(0,len(samplenames)) if sample.strip() == samplenames[ind]][0]
     sample_fastq = fastqnames[indexsample]
     for fcurr in filenames: 
         if sample_fastq in fcurr:
