@@ -10,8 +10,6 @@ sys.path.insert(1, '../scripts')
 from importworkspace import *
 
 def get_filenames(sample, leftorright):
-    if (leftorright != 2):
-        return "hello"
     filenames = os.listdir(INPUTDIR)
     matchednames = []
     indexsample = [ind for ind in range(0,len(samplenames)) if sample.strip() == samplenames[ind]][0]
@@ -20,8 +18,6 @@ def get_filenames(sample, leftorright):
         if sample_fastq in fcurr:
             matchednames.append(fcurr)
     matchednames = sorted(matchednames)
-    print(matchednames, flush=True)
-    print(leftorright.strip(), flush=True)
     if int(leftorright.strip()) == 1:
         return matchednames[0]
     else:
