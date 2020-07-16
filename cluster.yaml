@@ -14,7 +14,7 @@ __default__:
   cpupertask: 18
   mem: 180
   nodes: 1
-  queue: compute
+  queue: scavenger
   system: slurm
   tasks: 1
   time: 1400
@@ -22,19 +22,19 @@ fastqc:
   account: akrinos
   cpupertask: 5
   mem: 1
-  queue: compute
+  queue: scavenger
   tasks: 1
   time: 720
 fastqc_trimmed:
   account: akrinos
   cpupertask: 5
   mem: 1
-  queue: compute
+  queue: scavenger
   tasks: 1
   time: 720
 required:
   accountname: akrinos
-  defaultqueue: compute
+  defaultqueue: scavenger
   maxcores: 1
   maxcpuspertask: 18
   maxmemory: 180
@@ -44,7 +44,7 @@ transabyssmerge:
   cpupertask: 18
   mem: 180
   nodes: 1
-  queue: compute
+  queue: scavenger
   tasks: 1
   time: 10000
 trimmomatic:
@@ -52,7 +52,7 @@ trimmomatic:
   cpupertask: 5
   mem: 48
   nodes: 1
-  queue: compute
+  queue: scavenger
   tasks: 1
   time: 1400
 trinity:
@@ -60,7 +60,7 @@ trinity:
   cpupertask: 18
   mem: 180
   nodes: 1
-  queue: compute
+  queue: scavenger
   tasks: 1
   time: 10000
 velvet:
@@ -68,6 +68,6 @@ velvet:
   cpupertask: 18
   mem: 180
   nodes: 1
-  queue: compute
+  queue: scavenger
   tasks: 1
   time: 10000

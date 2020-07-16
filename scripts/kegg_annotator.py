@@ -54,6 +54,11 @@ parser.add_argument('-o', '--output_file', dest = "output_file", type=str,\
 args = parser.parse_args()
 
 #### SPECIFIC PATH ARGUMENTS; MAY BE LEFT OUT ####
+parser.add_argument('--filter_metric', dest = "filter_metric", type=str, default = "perc_ident",\
+                    choices = ["perc_ident","evalue","bitscore"],\
+                    help='The filtering metric to use.')
+parser.add_argument('--filter_number', dest = "filter_number", type=float, default=80,\
+                    help='The path to the final output file that the user wishes to be able to find.')
 parser.add_argument('--ko-genes-list', dest='ko_genes_list', \
                     default=os.path.join(args.kegg_path, "genes", "ko", "ko_genes.list"), \
                     help='The path to the KO genes list (not required).')
@@ -77,12 +82,15 @@ parser.add_argument('--pathway', dest='pathway', \
                     help='The path to the module file (not required).')
 
 args = parser.parse_args()
+print("KEGG annotation starting...")
 
 #### READ IN EACH OF THE LIST FILES ####
 ko_genes_list = parseFile(args.ko_genes_list, column_1 = "ko", column_2 = "genes")
 ko_module_list = parseFile(args.ko_module_list, column_1 = "ko", column_2 = "module")
 ko_pathway_list = parseFile(args.ko_pathway_list, column_1 = "ko", column_2 = "pathway")
 ko_enzyme_list = parseFile(args.ko_enzyme_list, column_1 = "ko", column_2 = "enzyme")
+
+print("Files read.")
 
 #### CREATE DICTIONARY FROM EACH OF THE LIST FILES ####
 ko_genes_dict = createDictionary(ko_genes_list)
@@ -93,6 +101,7 @@ ko_enzyme_dict = createDictionary(ko_enzyme_list)
 #### CREATE GENES TO KO DICTIONARY ####
 genes_ko_dict = createDictionary(pd.DataFrame({"genes": ko_genes_list.iloc[:,1],\
                                                "ko": ko_genes_list.iloc[:,0]}))
+print("Dictionaries created.")
 
 #### PARSE KO FILE ####
 KOfile = open(args.ko, "r")
@@ -118,6 +127,8 @@ for line in KOfile:
         else:
             print("Parsing error")
             
+print("KO file parsed.")
+
 #### PARSE MODULE FILE ####
 modulefile = open(args.module, "r")
 curr_class = ""
@@ -141,6 +152,8 @@ for line in modulefile:
             curr_name = ""
         else:
             print("Parsing error")
+
+print("Module file parsed.")
 
 #### PARSE PATHWAY FILE ####
 pathwayfile = open(args.pathway, "r")
@@ -170,19 +183,25 @@ for line in pathwayfile:
         curr_entry = ""
         curr_name = ""
         cur_class = ""
+        
+print("Pathway file parsed.")
 
 #### PARSE AND ANNOTATE DIAMOND HITS ####
+print("Parsing diamond hits over threshold " + str(args.filter_metric) + "=" + str(args.filter_number))
 diamond_file = pd.read_csv(args.diamond_path, \
                               names = ['query_id', 'subject_id', 'perc_ident', \
                                        'length', 'mismatch', 'gapopen', \
                                        'qstart', 'qend', 'sstart', 'send', 'evalue', 'bitscore'], \
                              sep = "\t")
-diamond_file = diamond_file.loc[(diamond_file["perc_ident"] > 80),:]
+diamond_file = diamond_file.loc[(diamond_file[args.filter_metric] > args.filter_number),:]
 diamond_file["KO"] = [genes_ko_dict[curr.split(":")[len(curr.split(":"))-1]] \
                          if curr.split(":")[len(curr.split(":"))-1] in genes_ko_dict \
                          else "no_match" \
                          for curr in diamond_file["subject_id"]]
 diamond_file = diamond_file.loc[diamond_file["KO"] != "no_match",:]
+if len(diamond_file["KO"].values) == 0:
+    print("No hits found that exceed the threshold filter value. You may consider a less stringent filter value, or make sure your diamond file is an alignment against the KEGG database.")
+    sys.exit(0)
 diamond_file_unpacked = pd.DataFrame({'KO':np.concatenate([[curr] if not isinstance(curr, list) else curr for curr in list(diamond_file["KO"].values)])})
 for curr in diamond_file.columns:
     if curr != "KO":

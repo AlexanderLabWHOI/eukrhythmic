@@ -103,7 +103,7 @@ rule run_busco:
     shell:
         '''
         mkdir -p {output.busco_res}
-        ./busco_configurator.py $BUSCO_CONFIG_FILE {params.static_config}
+        ./busco_configurator.py $BUSCO_CONFIG_FILE {params.static_ini_path}
         cp {params.static_ini_path} {params.ini_path}
         sed -i '/out = /c\out = {params.assembly}' {params.ini_path} # the name of the output files
         sed -i '/out_path = /c\out_path = {params.out_path}' {params.ini_path} # what directory the output will be stored in

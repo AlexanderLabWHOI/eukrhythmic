@@ -10,6 +10,8 @@ sys.path.insert(1, '../scripts')
 from importworkspace import *
 
 def get_filenames(sample, leftorright):
+    if (leftorright != 2):
+        return "hello"
     filenames = os.listdir(INPUTDIR)
     matchednames = []
     indexsample = [ind for ind in range(0,len(samplenames)) if sample.strip() == samplenames[ind]][0]
@@ -18,8 +20,9 @@ def get_filenames(sample, leftorright):
         if sample_fastq in fcurr:
             matchednames.append(fcurr)
     matchednames = sorted(matchednames)
-    print(matchednames)
-    if int(leftorright) == 1:
+    print(matchednames, flush=True)
+    print(leftorright.strip(), flush=True)
+    if int(leftorright.strip()) == 1:
         return matchednames[0]
     else:
         return matchednames[1]
@@ -40,6 +43,7 @@ rule fastqc:
         html = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}_fastqc.html"),
         zip = os.path.join(OUTPUTDIR, "qc", "fastqc", "{sample}_{num}_fastqc.zip")    
     params:
+        filenum = "{num}",
         fastqdir = os.path.join(OUTPUTDIR, "qc", "fastqc"),
         outname = (lambda filename: os.path.join(OUTPUTDIR, "qc", "fastqc", splitfilenames(get_filenames(filename.sample, filename.num))))
     conda: "../envs/fastqc-env.yaml"
@@ -48,6 +52,10 @@ rule fastqc:
         out = os.path.join("logs","fastqc","{sample}_{num}_out.log")
     shell:
         '''
+        echo hello{params.filenum}hello
+        if [ {params.filenum} == 1 ]; then
+            echo "hello"
+        fi
         mkdir -p {params.fastqdir}
         fastqc {input} -o {params.fastqdir} 2> {log.err} 1> {log.out}
         mv {params.outname}_fastqc.html {output.html}

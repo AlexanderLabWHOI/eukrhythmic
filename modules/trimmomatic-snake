@@ -9,7 +9,7 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
 
-def get_filenames(sample, leftorright):
+def get_filenames_trim(sample, leftorright):
     filenames = os.listdir(INPUTDIR)
     matchednames = []
     indexsample = [ind for ind in range(0,len(samplenames)) if sample == samplenames[ind]][0]
@@ -25,9 +25,9 @@ def get_filenames(sample, leftorright):
 
 rule trimmomatic:
     input:
-        r1 = lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"), sampnames = get_filenames(filename.sample, "left")),
+        r1 = lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"), sampnames = get_filenames_trim(filename.sample, "left")),
         #os.path.join(INPUTDIR, "{sample}_R1" + SUFFIX),
-        r2 = lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"), sampnames = get_filenames(filename.sample, "right")),
+        r2 = lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"), sampnames = get_filenames_trim(filename.sample, "right")),
         #os.path.join(INPUTDIR, "{sample}_R2" + SUFFIX),
         adapters = ADAPTER
     output:
