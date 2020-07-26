@@ -16,7 +16,7 @@ PFAM = config["pfam"]
 
 rule diamond_database:
     input:
-        tobuild = KEGG_PROT_DB # os.path.join("vortexfs1","omics","alexander","data","KEGG","diamond_db","family_eukaryotes.dmnd")
+        tobuild = KEGG_PROT_DB
     output:
         dmnd = os.path.join(OUTPUTDIR, "diamond", "diamond_ref.dmnd")
     params:
@@ -33,7 +33,7 @@ rule align_assemblies:
   ## runs alignment against reference DB and generates .aln files for each contig in each samples
     input:
         dmnd = os.path.join(OUTPUTDIR, "diamond", "diamond_ref.dmnd"),
-        fasta = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_transdecoded.fasta") 
+        fasta = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_merged.fasta") 
     output:
         os.path.join(OUTPUTDIR, "diamond", "{folder}", "{assembly}.diamond.out")
     params:
@@ -87,7 +87,7 @@ rule download_busco:
 rule run_busco:
     input:
         #busco_db = os.path.join(OUTPUTDIR, "busco", "{database}_odb10"),
-        fasta_file = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_transdecoded.fasta")
+        fasta_file = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_merged.fasta")
     output:
         busco_res = directory(os.path.join(OUTPUTDIR, "busco", "{database}", "{folder}", "{assembly}"))
     params:
@@ -103,6 +103,8 @@ rule run_busco:
     shell:
         '''
         mkdir -p {output.busco_res}
+        BUSCO_DIR="$(dirname $(which busco))"
+        BUSCO_CONFIG_FILE="$BUSCO_DIR"/../config/config.ini
         ./busco_configurator.py $BUSCO_CONFIG_FILE {params.static_ini_path}
         cp {params.static_ini_path} {params.ini_path}
         sed -i '/out = /c\out = {params.assembly}' {params.ini_path} # the name of the output files
@@ -127,7 +129,7 @@ rule download_pfam:
 rule run_hmmer:
     input:
         pfam_file = os.path.join(OUTPUTDIR, "pfam", "pfam_hmmer.hmm"),
-        fasta_file = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_transdecoded.fasta")
+        fasta_file = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_merged.fasta")
     output:
         hmmer_res = os.path.join(OUTPUTDIR, "pfam", "{folder}", "{assembly}.tblout")
     params:

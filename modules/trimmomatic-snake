@@ -21,7 +21,10 @@ def get_filenames_trim(sample, leftorright):
     if leftorright == "left":
         return matchednames[0]
     else:
-        return matchednames[1]   
+        if len(matchednames) > 1:
+            return matchednames[1]   
+        else:
+            return ""
 
 rule trimmomatic:
     input:

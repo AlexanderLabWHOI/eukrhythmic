@@ -52,24 +52,3 @@ rule clustering_by_assembly_group:
         '''
         cd-hit-est -d 0 -i {input.infiles} -o {output} -T {params.threads} -M {params.maxmemory} -G o -c {params.identityparam} -aS {params.mincoverageshorter} -aL {params.mincoveragelong} 2> {log.err} 1> {log.out}
         '''
-            
-rule cdhit_transdecoded:
-    input: 
-        infiles = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.cds")
-    output:
-        os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_transdecoded.fasta")
-    params:
-        threads = 10,
-        maxmemory = 2549, # -G o indicates local sequence identity.
-        identityparam = 1.00,
-        mincoverageshorter = MINCOVERAGECLUST2,
-        mincoveragelong = 0.005
-    log:
-        err = os.path.join("logs","cdhit","{folder}_transdecoded_{assembly}_err.log"),
-        out = os.path.join("logs","cdhit","{folder}_transdecoded_{assembly}_out.log")
-    conda:
-        "../envs/cd-hit-env.yaml"
-    shell:
-        '''
-        cd-hit-est -d 0 -i {input.infiles} -o {output} -T {params.threads} -M {params.maxmemory} -G o -c {params.identityparam} -aS {params.mincoverageshorter} -aL {params.mincoveragelong} 2> {log.err} 1> {log.out}
-        '''

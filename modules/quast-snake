@@ -57,19 +57,20 @@ rule combinequast:
                 if os.path.isfile(os.path.join(params.quastdir, r, "report.tsv")):
                     currentreport = pd.read_csv(os.path.join(params.quastdir, r, "report.tsv"), index_col = 0, sep = "\t")
                     for c in range(0,len(currentreport.columns)):
-                        currentreport = currentreport.rename(columns={currentreport.columns[c]: (currentreport.columns[c] + "_" + str(r))})
+                        currentreport = currentreport.rename(columns={currentreport.columns[c]: (currentreport.columns[c] + 
+                                                                                                 "_" + str(r))})
                     outputassemblers = pd.concat([outputassemblers,currentreport], axis = 1)
         outputassemblers.to_csv(path_or_buf = params.outputfile, sep = "\t")
         
 rule quast_merged_transdecoded:
     input:
-        outputassemblies = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_transdecoded.fasta")
+        outputassemblies = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_merged.fasta")
     output:
         directory(os.path.join(OUTPUTDIR, "quast_{folder}", "{assembly}"))
     params:
         assemblers = ",".join(ASSEMBLERS),
         assembly = "{assembly}",
-        outputassemblies = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_transdecoded.fasta") 
+        outputassemblies = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_merged.fasta") 
     log:
         err = os.path.join("logs","quast","{folder}_{assembly}_err.log"),
         out = os.path.join("logs","quast","{folder}_{assembly}_out.log")
@@ -97,6 +98,7 @@ rule combinequastmerge:
                 if os.path.isfile(os.path.join(params.quastdir, r, "report.tsv")):
                     currentreport = pd.read_csv(os.path.join(params.quastdir, r, "report.tsv"), index_col = 0, sep = "\t")
                     for c in range(0,len(currentreport.columns)):
-                        currentreport = currentreport.rename(columns={currentreport.columns[c]: (currentreport.columns[c] + "_" + str(r))})
+                        currentreport = currentreport.rename(columns={currentreport.columns[c]: 
+                                                                      (currentreport.columns[c] + "_" + str(r))})
                     outputassemblers = pd.concat([outputassemblers,currentreport], axis = 1)
         outputassemblers.to_csv(path_or_buf = params.outputfile, sep = "\t")
