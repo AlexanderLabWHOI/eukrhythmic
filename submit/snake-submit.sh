@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --qos=unlim
 #SBATCH --time=5000
-#SBATCH --partition=compute
+#SBATCH --partition=scavenger
 #SBATCH --mem=100gb
 
 jobname=$(cat config.yaml | grep jobname | cut -d ":" -f 2 | cut -d " " -f 2)

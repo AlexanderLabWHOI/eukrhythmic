@@ -97,7 +97,7 @@ rule transdecoder_by_assembly:
 
 rule transdecoder_final_proteins:
     input:
-        clustered = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_transdecoded.fasta")
+        clustered = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_merged.fasta")
     output:
         pep = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.pep"),
         gff = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.gff3"),
@@ -118,7 +118,7 @@ rule transdecoder_final_proteins:
         TransDecoder.Predict -t {input.clustered} --no_refine_starts 2>> {log.err} 1>> {log.out}
         mv {params.merged}.fasta.transdecoder.pep {output.pep}
         mv {params.merged}.fasta.transdecoder.cds {output.cds}
-        bedtools getfasta -fi {input.merged} -bed {params.merged}.fasta.transdecoder.bed -fo {output.cds_all}
+        bedtools getfasta -fi {input.clustered} -bed {params.merged}.fasta.transdecoder.bed -fo {output.cds_all}
         mv {params.merged}.fasta.transdecoder.gff3 {output.gff}
         mv {params.merged}.fasta.transdecoder.bed {output.bed}
         rm -rf {params.merged}.fasta.transdecoder_dir*
