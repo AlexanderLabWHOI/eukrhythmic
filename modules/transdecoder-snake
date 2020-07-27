@@ -26,8 +26,8 @@ rule transdecoder:
         "../envs/transdecoder-env.yaml"
     shell:
         """
-        TransDecoder.LongOrfs -t {input.merged} -m {params.size} 2> {log.err} 1> {log.out}
-        TransDecoder.Predict -t {input.merged} --no_refine_starts 2>> {log.err} 1>> {log.out}
+        #TransDecoder.LongOrfs -t {input.merged} -m {params.size} 2> {log.err} 1> {log.out}
+        #TransDecoder.Predict -t {input.merged} --no_refine_starts 2>> {log.err} 1>> {log.out}
         mv {params.merged}.fasta.transdecoder.pep {output.pep}
         #mv {params.merged}.fasta.transdecoder.cds {output.cds}
         bedtools getfasta -fi {input.merged} -bed {params.merged}.fasta.transdecoder.bed -fo {output.cds}
@@ -105,7 +105,7 @@ rule transdecoder_final_proteins:
         cds_all = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.all.cds"),
         bed = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.bed")
     params:
-        merged = "{assembly}_transdecoded",
+        merged = "{assembly}_merged",
         size = TRANSDECODERORFSIZE
     log:
         err = os.path.join("logs","transdecoder","{folder}_{assembly}_err.log"),
