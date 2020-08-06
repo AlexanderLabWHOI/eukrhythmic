@@ -23,15 +23,15 @@ from checkrequirements import *
 ## CHECK THAT ALL REQUIREMENTS ARE SATISFIED BY EXECUTING checkrequirements() from `scripts/checkrequirements.py` ##
 checkrequirementsfct()
 
-#include: "modules/fastqc-snake"
-#include: "modules/bbmap-snake"
-#include: "modules/trimmomatic-snake"
-#include: "modules/fastqc-trimmed-snake"
-#include: "modules/trinity-snake"
-#include: "modules/velvet-snake"
-#include: "modules/megahit-snake"
-#include: "modules/transabyss-snake"
-#include: "modules/transabyss-merge-snake"
+include: "modules/fastqc-snake"
+include: "modules/bbmap-snake"
+include: "modules/trimmomatic-snake"
+include: "modules/fastqc-trimmed-snake"
+include: "modules/trinity-snake"
+include: "modules/velvet-snake"
+include: "modules/megahit-snake"
+include: "modules/transabyss-snake"
+include: "modules/transabyss-merge-snake"
 include: "modules/quast-snake"
 include: "modules/cd-hit-snake"
 include: "modules/manipnames-snake"
@@ -42,13 +42,15 @@ include: "modules/annotate-snake"
 include: "modules/hardclean-snake"
 include: "modules/spike-snake"
 
-#ruleorder: trimmomatic > trimmomatic_SE
-#ruleorder: trinity > trinity_SE
-#ruleorder: megahit > megahit_SE
-#ruleorder: velvet > velvet_SE
+ruleorder: trimmomatic > trimmomatic_SE
+ruleorder: trinity > trinity_SE
+ruleorder: megahit > megahit_SE
+ruleorder: velvet > velvet_SE
 ruleorder: transdecoder_indiv > transdecoder_final_proteins > transdecoder > transdecoder_by_assembly
 ruleorder: salmon_indiv > salmon_clustering
 ruleorder: combinequastmerge > quast_merged_transdecoded
+ruleorder: clustering_mega_merge > clustering_by_assembly_group
+ruleorder: salmon_clustering_against_mega > salmon_clustering
 ruleorder: merge_all > copies
 
 rule all:
@@ -108,8 +110,10 @@ rule all:
         salmon_mega_merge = expand(os.path.join("{base}", "salmon_{folder}", "salmon_quant_assembly_{assembly}"), 
                                    base = OUTPUTDIR, folder = "mega_merge", assembly = "merged"),
         # SALMON QUANTIFICATION OF MERGED BY ASSEMBLY GROUP AGAINST MEGA_MERGED
-        salmon_mega_merge = expand(os.path.join("{base}", "salmon_{folder}", "against_mega", "salmon_quant_assembly_{assembly}"), 
-                                   base = OUTPUTDIR, folder = "mega_merge", assembly = assemblygroups),
+        salmon_against_mega_merge = expand(os.path.join("{base}", "salmon_{folder}", "against_mega", 
+                                                        "salmon_quant_assembly_{assembly}"), 
+                                                         base = OUTPUTDIR, folder = "mega_merge", 
+                                                         assembly = assemblygroups),
         # TRANSDECODER ON FINAL AND MEGA-MERGED ASSEMBLY
         transdecoder_mega_merge = expand(os.path.join("{base}", "transdecoder_{folder}_finalproteins", 
                                                     "{assembly}.fasta.transdecoder.cds"), 
@@ -135,5 +139,7 @@ rule all:
         kegg = expand(os.path.join("{base}", "kegg", "{folder}", "{assembly}_kegg.csv"), base = OUTPUTDIR, 
                       folder = "by_assembly_group", assembly = assemblygroups),
         # QUANTIFICATION BASED ON SPIKE FILE
-        copies = expand(os.path.join("{base}", "salmon_indiv_megamerge", "copiesperL.tab"), base = OUTPUTDIR)
+        copies = expand(os.path.join(OUTPUTDIR, "salmon_{folder}", "copiesperL.tab"), 
+                        folder = "by_assembly_group",
+                        base = OUTPUTDIR)
         

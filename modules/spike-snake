@@ -9,16 +9,15 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
 
-SAMPLES = sampleID
-
 rule salmon_rename:
     input:
-        input = expand(os.path.join(OUTPUTDIR, "salmon_indiv_megamerge", "mapping", "{assemblies}_quant", "quant.sf"), 
-                       assemblies = SAMPLES)
+        input = (lambda filename: expand(os.path.join(OUTPUTDIR, "salmon_{folder}", "against_mega", 
+                                    "salmon_quant_assembly_{assembly}", "quant.sf"), 
+                       assembly = assemblygroups, folder = filename.folder))
     output:
-        out = os.path.join(OUTPUTDIR, "salmon_indiv_megamerge", "mapping", "{assemblies}_quant", "quant.sf_cleaned")
+        out = os.path.join(OUTPUTDIR, "salmon_{folder}", "against_mega", "salmon_quant_assembly_{assembly}", "quant.sf_cleaned")
     params:
-        assemblies = SAMPLES
+        extra = ""
     shell:
         """
         for i in {input.input}; do awk -F, -v OFS=, 'NR==1{{split(FILENAME,a,"_quant");$2= a[1] ""}}1' ${{i}} | awk '{{gsub(".*/","",$5)}}1' > {output.output}; done
@@ -27,10 +26,11 @@ rule salmon_rename:
 
 rule salmon_table:
     input:
-        input = expand(os.path.join(OUTPUTDIR, "salmon_indiv_megamerge", "mapping", 
-                                    "{assemblies}_quant","quant.sf_cleaned"), assemblies = SAMPLES)
+        input = (lambda filename: expand(os.path.join(OUTPUTDIR, "salmon_{folder}", "against_mega", 
+                                                      "salmon_quant_assembly_{assembly}", "quant.sf_cleaned"), 
+                                         assembly = assemblygroups, folder = filename.folder))
     output:
-        out = os.path.join(OUTPUTDIR, "salmon_indiv_megamerge", "mergedtable.tab")
+        out = os.path.join(OUTPUTDIR, "salmon_{folder}", "mergedtable.tab")
     shell:
         """
         awk '
@@ -45,13 +45,13 @@ rule salmon_table:
 
 rule copies:
     input:
-        countfile = os.path.join(OUTPUTDIR,"salmon_indiv_megamerge", "mergedtable.tab"),
+        countfile = os.path.join(OUTPUTDIR, "salmon_{folder}", "mergedtable.tab"),
         copiestable = SPIKETABLE
     output:
-        out = os.path.join(OUTPUTDIR, "salmon_indiv_megamerge", "copiesperL.tab")
+        out = os.path.join(OUTPUTDIR, "salmon_{folder}", "copiesperL.tab")
     params:
         spikecopies = 500000,
-    IDs = sampleID
+        IDs = assemblygroups
     run:
         final = pd.DataFrame()
         spike=pd.read_csv(input.copiestable, sep=' ')
