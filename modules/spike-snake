@@ -1,0 +1,71 @@
+configfile: "config.yaml"
+
+import io
+import os
+import pathlib
+import pandas as pd
+from snakemake.exceptions import print_exception, WorkflowError
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
+
+SAMPLES = sampleID
+
+rule salmon_rename:
+    input:
+        input = expand(os.path.join(OUTPUTDIR, "salmon_indiv_megamerge", "mapping", "{assemblies}_quant", "quant.sf"), 
+                       assemblies = SAMPLES)
+    output:
+        out = os.path.join(OUTPUTDIR, "salmon_indiv_megamerge", "mapping", "{assemblies}_quant", "quant.sf_cleaned")
+    params:
+        assemblies = SAMPLES
+    shell:
+        """
+        for i in {input.input}; do awk -F, -v OFS=, 'NR==1{{split(FILENAME,a,"_quant");$2= a[1] ""}}1' ${{i}} | awk '{{gsub(".*/","",$5)}}1' > {output.output}; done
+        #Second step merges all count files by the 1st column (contig ID)
+        """
+
+rule salmon_table:
+    input:
+        input = expand(os.path.join(OUTPUTDIR, "salmon_indiv_megamerge", "mapping", 
+                                    "{assemblies}_quant","quant.sf_cleaned"), assemblies = SAMPLES)
+    output:
+        out = os.path.join(OUTPUTDIR, "salmon_indiv_megamerge", "mergedtable.tab")
+    shell:
+        """
+        awk '
+            {{samples[$1] = samples[$1] OFS $NF}}
+            END {{
+                print "Name", samples["Name"]
+                delete samples["Name"]
+                for (name in samples) print name, samples[name]
+            }}
+        ' {input.input} > {output.out}
+        """
+
+rule copies:
+    input:
+        countfile = os.path.join(OUTPUTDIR,"salmon_indiv_megamerge", "mergedtable.tab"),
+        copiestable = SPIKETABLE
+    output:
+        out = os.path.join(OUTPUTDIR, "salmon_indiv_megamerge", "copiesperL.tab")
+    params:
+        spikecopies = 500000,
+    IDs = sampleID
+    run:
+        final = pd.DataFrame()
+        spike=pd.read_csv(input.copiestable, sep=' ')
+        counts=pd.read_csv(input.countfile, sep=' ')
+        for i in params.IDs:
+            df = (spike.loc[spike['ID'] == (i)])
+            calc = (counts[i] * ((float((df['TotalReads'])) * 
+                                  (params.spikecopies / (float((df['bbmap-total']))))) / 
+                                 (float((df['TotalReads']))))) / float((df['VolumeFiltered']))
+            colNames = calc.name
+            rowNames = counts.iloc[:,0]
+            calc.index = rowNames
+            calc.column_name = colNames
+            final = final.append(calc)
+        final_transpose = final.T
+        print(final_transpose)
+        final_transpose.to_csv(output.out, sep = ' ', index=True)

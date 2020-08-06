@@ -40,6 +40,7 @@ include: "modules/busco-snake"
 include: "modules/salmon-snake"
 include: "modules/annotate-snake"
 include: "modules/hardclean-snake"
+include: "modules/spike-snake"
 
 #ruleorder: trimmomatic > trimmomatic_SE
 #ruleorder: trinity > trinity_SE
@@ -48,33 +49,34 @@ include: "modules/hardclean-snake"
 ruleorder: transdecoder_indiv > transdecoder_final_proteins > transdecoder > transdecoder_by_assembly
 ruleorder: salmon_indiv > salmon_clustering
 ruleorder: combinequastmerge > quast_merged_transdecoded
+ruleorder: merge_all > copies
 
 rule all:
     input:
         # FASTQC OUTPUTS
-        #fastqc1 = expand([os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.html"), 
-        #                  os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.zip")], zip, 
-        #                 base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        fastqc1 = expand([os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.html"), 
+                          os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.zip")], zip, 
+                         base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # MULTIQC OUTPUTS
-        #multiqc1 = expand(os.path.join("{base}", "qc", "multiqc", "firstqcreport", "multiqc_report.html"), zip, 
-        #                  base = OUTPUTDIR),
+        multiqc1 = expand(os.path.join("{base}", "qc", "multiqc", "firstqcreport", "multiqc_report.html"), zip, 
+                          base = OUTPUTDIR),
         # BBMAP OUTPUTS
-        #bbmap = expand(os.path.join("{base}", "bbmap", "{sample}_{num}.clean.fastq.gz"), zip, base = OUTPUTDIR, 
-        #               sample = filenames, num = singleorpaired),
+        bbmap = expand(os.path.join("{base}", "bbmap", "{sample}_{num}.clean.fastq.gz"), zip, base = OUTPUTDIR, 
+                       sample = filenames, num = singleorpaired),
         # TRIMMOMATIC OUTPUTS
-        #trimmed = expand([os.path.join("{base}", "firsttrim", "{sample}_1.trimmed.fastq.gz"), 
-        #                  os.path.join("{base}", "firsttrim", "{sample}_2.trimmed.fastq.gz")], zip, 
-        #                 base = OUTPUTDIR, sample = filenames),
+        trimmed = expand([os.path.join("{base}", "firsttrim", "{sample}_1.trimmed.fastq.gz"), 
+                          os.path.join("{base}", "firsttrim", "{sample}_2.trimmed.fastq.gz")], zip, 
+                         base = OUTPUTDIR, sample = filenames),
         # FASTQC 2 OUTPUTS (trimmed)
-        #fastqc2 = expand([os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.html"), 
-        #                  os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.zip")], 
-        #                 zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        fastqc2 = expand([os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.html"), 
+                          os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.zip")], 
+                         zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # MULTIQC 2 OUTPUTS
-        #multiqc2 = expand(os.path.join("{base}", "qc", "multiqc", "trimmedqcreport", "multiqc_report.html"), zip, 
-        #                  base = OUTPUTDIR),
+        multiqc2 = expand(os.path.join("{base}", "qc", "multiqc", "trimmedqcreport", "multiqc_report.html"), zip, 
+                          base = OUTPUTDIR),
         # ASSEMBLER OUTPUTS
-        #assemblersout = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"), 
-        #                       base = ASSEMBLEDDIR, assembly = assemblygroups, assembler = ASSEMBLERS), 
+        assemblersout = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"), 
+                               base = ASSEMBLEDDIR, assembly = assemblygroups, assembler = ASSEMBLERS), 
         # QUAST OUTPUTS
         quast = expand(os.path.join("{base}", "quast", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
         # COMBINE QUAST OUTPUTS
@@ -105,6 +107,9 @@ rule all:
         # SALMON QUANTIFICATION OF RAW AGAINST MEGA-MERGED ASSEMBLY
         salmon_mega_merge = expand(os.path.join("{base}", "salmon_{folder}", "salmon_quant_assembly_{assembly}"), 
                                    base = OUTPUTDIR, folder = "mega_merge", assembly = "merged"),
+        # SALMON QUANTIFICATION OF MERGED BY ASSEMBLY GROUP AGAINST MEGA_MERGED
+        salmon_mega_merge = expand(os.path.join("{base}", "salmon_{folder}", "against_mega", "salmon_quant_assembly_{assembly}"), 
+                                   base = OUTPUTDIR, folder = "mega_merge", assembly = assemblygroups),
         # TRANSDECODER ON FINAL AND MEGA-MERGED ASSEMBLY
         transdecoder_mega_merge = expand(os.path.join("{base}", "transdecoder_{folder}_finalproteins", 
                                                     "{assembly}.fasta.transdecoder.cds"), 
@@ -128,5 +133,7 @@ rule all:
                        folder = "by_assembly_group", assembly = assemblygroups),
         # DIAMOND ALIGNMENT AND KEGG ANNOTATION 
         kegg = expand(os.path.join("{base}", "kegg", "{folder}", "{assembly}_kegg.csv"), base = OUTPUTDIR, 
-                      folder = "by_assembly_group", assembly = assemblygroups)
+                      folder = "by_assembly_group", assembly = assemblygroups),
+        # QUANTIFICATION BASED ON SPIKE FILE
+        copies = expand(os.path.join("{base}", "salmon_indiv_megamerge", "copiesperL.tab"), base = OUTPUTDIR)
         
