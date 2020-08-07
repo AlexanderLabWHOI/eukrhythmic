@@ -15,12 +15,13 @@ rule salmon_rename:
                                     "salmon_quant_assembly_{assembly}", "quant.sf"), 
                        assembly = assemblygroups, folder = filename.folder))
     output:
-        out = os.path.join(OUTPUTDIR, "salmon_{folder}", "against_mega", "salmon_quant_assembly_{assembly}", "quant.sf_cleaned")
+        out = os.path.join(OUTPUTDIR, "salmon_{folder}", "against_mega", 
+                           "salmon_quant_assembly_{assembly}", "quant.sf_cleaned")
     params:
         extra = ""
     shell:
         """
-        for i in {input.input}; do awk -F, -v OFS=, 'NR==1{{split(FILENAME,a,"_quant");$2= a[1] ""}}1' ${{i}} | awk '{{gsub(".*/","",$5)}}1' > {output.output}; done
+        for i in {input.input}; do awk -F, -v OFS=, 'NR==1{{split(FILENAME,a,"_quant");$2= a[1] ""}}1' ${{i}} | awk '{{gsub(".*/","",$5)}}1' > {output.out}; done
         #Second step merges all count files by the 1st column (contig ID)
         """
 

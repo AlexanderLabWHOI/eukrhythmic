@@ -52,6 +52,8 @@ ruleorder: combinequastmerge > quast_merged_transdecoded
 ruleorder: clustering_mega_merge > clustering_by_assembly_group
 ruleorder: salmon_clustering_against_mega > salmon_clustering
 ruleorder: merge_all > copies
+ruleorder: salmon_rename > salmon_clustering_against_mega
+ruleorder: salmon_rename > salmon_clustering
 
 rule all:
     input:
@@ -99,24 +101,24 @@ rule all:
         clustering_mega_merge = expand(os.path.join("{base}", "cluster_{folder}", "{assembly}_merged.fasta"), 
                                    base = OUTPUTDIR, folder = "mega_merge", assembly = "merged"),
         # SALMON QUANTIFICATION OF RAW AGAINST INDIVIDUAL ASSEMBLIES/ASSEMBLERS
-        salmon_indiv = expand(os.path.join("{base}", "indiv_salmon", "salmon_quant_assembly_{assembly}_{assembler}"), 
-                              base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
-        salmon_merged = expand(os.path.join("{base}", "merged_salmon", "salmon_quant_assembly_{assembly}"), 
+        salmon_indiv = expand(os.path.join("{base}", "indiv_salmon", "salmon_quant_assembly_{assembly}_{assembler}",
+                              "quant.sf"), base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
+        salmon_merged = expand(os.path.join("{base}", "merged_salmon", "salmon_quant_assembly_{assembly}", "quant.sf"), 
                                base = OUTPUTDIR, assembly = assemblygroups),
         # SALMON QUANTIFICATION OF RAW AGAINST MERGED BY ASSEMBLY GROUP
-        salmon_by_assembly = expand(os.path.join("{base}", "salmon_{folder}", "salmon_quant_assembly_{assembly}"), 
-                                    base = OUTPUTDIR, folder = "by_assembly_group", assembly = assemblygroups),
+        salmon_by_assembly = expand(os.path.join("{base}", "salmon_{folder}", "salmon_quant_assembly_{assembly}",
+                                    "quant.sf"), base = OUTPUTDIR, folder = "by_assembly_group", assembly = assemblygroups),
         # SALMON QUANTIFICATION OF RAW AGAINST MEGA-MERGED ASSEMBLY
-        salmon_mega_merge = expand(os.path.join("{base}", "salmon_{folder}", "salmon_quant_assembly_{assembly}"), 
+        salmon_mega_merge = expand(os.path.join("{base}", "salmon_{folder}", "salmon_quant_assembly_{assembly}", "quant.sf"), 
                                    base = OUTPUTDIR, folder = "mega_merge", assembly = "merged"),
         # SALMON QUANTIFICATION OF MERGED BY ASSEMBLY GROUP AGAINST MEGA_MERGED
         salmon_against_mega_merge = expand(os.path.join("{base}", "salmon_{folder}", "against_mega", 
-                                                        "salmon_quant_assembly_{assembly}"), 
+                                                        "salmon_quant_assembly_{assembly}", "quant.sf"), 
                                                          base = OUTPUTDIR, folder = "mega_merge", 
                                                          assembly = assemblygroups),
         # TRANSDECODER ON FINAL AND MEGA-MERGED ASSEMBLY
         transdecoder_mega_merge = expand(os.path.join("{base}", "transdecoder_{folder}_finalproteins", 
-                                                    "{assembly}.fasta.transdecoder.cds"), 
+                                                      "{assembly}.fasta.transdecoder.cds"), 
                                        base = OUTPUTDIR, folder = "mega_merge", assembly = "merged"),
         trandecoder_by_assembly_group = expand(os.path.join("{base}", "transdecoder_{folder}_finalproteins", 
                                                     "{assembly}.fasta.transdecoder.cds"), 
