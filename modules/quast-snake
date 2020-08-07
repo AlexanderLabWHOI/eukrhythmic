@@ -46,6 +46,7 @@ rule combinequast:
     output:
         os.path.join(OUTPUTDIR, "quast", "fullresults", "allresults.tsv")
     params:
+        outputfile = os.path.join(OUTPUTDIR, "quast", "fullresults", "allresults.tsv"),
         assemblers = ",".join(ASSEMBLERS),
         quastdir = os.path.join(OUTPUTDIR, "quast") 
     run:
@@ -56,56 +57,39 @@ rule combinequast:
                 if os.path.isfile(os.path.join(params.quastdir, r, "report.tsv")):
                     currentreport = pd.read_csv(os.path.join(params.quastdir, r, "report.tsv"), index_col = 0, sep = "\t")
                     for c in range(0,len(currentreport.columns)):
-                        currentreport = currentreport.rename(columns={currentreport.columns[c]: (currentreport.columns[c] + "_" + str(r))})
+                        currentreport = currentreport.rename(columns={currentreport.columns[c]: (currentreport.columns[c] + 
+                                                                                                 "_" + str(r))})
                     outputassemblers = pd.concat([outputassemblers,currentreport], axis = 1)
-        outputassemblers.to_csv(path_or_buf = output, sep = "\t")
+        outputassemblers.to_csv(path_or_buf = params.outputfile, sep = "\t")
         
-rule quastfinal:
+rule quast_merged_transdecoded:
     input:
-        outputassemblies = os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta")
+        outputassemblies = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_merged.fasta")
     output:
-        directory(os.path.join(OUTPUTDIR, "quastfinal", "{assembly}"))
+        directory(os.path.join(OUTPUTDIR, "quast_{folder}", "{assembly}"))
     params:
         assemblers = ",".join(ASSEMBLERS),
         assembly = "{assembly}",
-        outputassemblies = os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta") 
+        outputassemblies = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_merged.fasta") 
     log:
-        err = os.path.join("logs","quast","final_{assembly}_err.log"),
-        out = os.path.join("logs","quast","final_{assembly}_out.log")
+        err = os.path.join("logs","quast","{folder}_{assembly}_err.log"),
+        out = os.path.join("logs","quast","{folder}_{assembly}_out.log")
     conda:
         "../envs/quast-env.yaml"
     shell:
         '''
         quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly} 2> {log.err} 1> {log.out}
-        '''
-        
-rule quastmerge:
-    input:
-        outputassemblies = os.path.join(OUTPUTDIR, "cluster2", "{assembly}_merged.fasta")
-    output:
-        directory(os.path.join(OUTPUTDIR, "quastmerged", "{assembly}"))
-    params:
-        assemblers = ",".join(ASSEMBLERS),
-        assembly = "{assembly}",
-        outputassemblies = os.path.join(OUTPUTDIR, "cluster2", "{assembly}_merged.fasta")
-    log:
-        err = os.path.join("logs","quast","merged_{assembly}_err.log"),
-        out = os.path.join("logs","quast","merged_{assembly}_out.log")
-    conda:
-        "../envs/quast-env.yaml"
-    shell:
-        '''
-        quast {params.outputassemblies} -o {output} --threads 8 --labels {params.assembly} 2> {log.err} 1> {log.out}
-        '''
+        '''        
         
 rule combinequastmerge:
     input:
-        quastdir = [os.path.join(OUTPUTDIR, "quastmerged", curr) for curr in assemblygroups]
+        quastdir = [os.path.join(OUTPUTDIR, "quast_{folder}", curr) for curr in assemblygroups]
     output:
-        os.path.join(OUTPUTDIR, "quastmerged", "fullresults", "allresults.tsv")
+        os.path.join(OUTPUTDIR, "quast_{folder}", "fullresults", "allresults.tsv")
     params:
+        outputfile = os.path.join(OUTPUTDIR, "quast_{folder}", "fullresults", "allresults.tsv"),
         assemblers = ",".join(ASSEMBLERS),
-        quastdir = os.path.join(OUTPUTDIR, "quastmerged")
+        quastdir = os.path.join(OUTPUTDIR, "quast_{folder}")
     run:
         quastfiles = os.listdir(os.path.join(OUTPUTDIR, "quast"))
         if len(quastfiles) > 0:
@@ -114,6 +98,7 @@ rule combinequastmerge:
                 if os.path.isfile(os.path.join(params.quastdir, r, "report.tsv")):
                     currentreport = pd.read_csv(os.path.join(params.quastdir, r, "report.tsv"), index_col = 0, sep = "\t")
                     for c in range(0,len(currentreport.columns)):
-                        currentreport = currentreport.rename(columns={currentreport.columns[c]: (currentreport.columns[c] + "_" + str(r))})
+                        currentreport = currentreport.rename(columns={currentreport.columns[c]: 
+                                                                      (currentreport.columns[c] + "_" + str(r))})
                     outputassemblers = pd.concat([outputassemblers,currentreport], axis = 1)
-        outputassemblers.to_csv(path_or_buf = output, sep = "\t")
+        outputassemblers.to_csv(path_or_buf = params.outputfile, sep = "\t")

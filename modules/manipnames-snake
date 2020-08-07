@@ -18,14 +18,13 @@ def getallmerged():
     return(" ".join(mergednames))
     
 def combineassemblers(assembly):
-    return(" ".join([os.path.join(RENAMEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS]))
+    return(" ".join([os.path.join(OUTPUTDIR, "cluster1", assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS]))
   
 def combineassemblerslist(assembly):
-    return([os.path.join(RENAMEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS])
+    return([os.path.join(OUTPUTDIR, "cluster1", assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS])
 
-# this rule is meant to change the name of the headers for the FASTA files for 
-# each of the assemblies so that we can track where each of the headers originally
-# came from
+# this rule is meant to change the name of the headers for the FASTA files for each of the assemblies so that 
+# we can track where each of the headers originally came from
 
 rule rename:
     input:
@@ -33,10 +32,11 @@ rule rename:
     output:
         os.path.join(RENAMEDDIR, "{assembly}_{assembler}.fasta")
     params:
-        assemblername = "{assembler}"
+        assemblername = "{assembler}",
+        assembly = "{assembly}"
     shell:
         '''
-        sed 's/>/>{params.assemblername}_/' {input.assemblyfiles} > {output}
+        sed 's/>/>{params.assemblername}_{params.assembly}_/' {input.assemblyfiles} > {output}
         '''
 
 
@@ -60,7 +60,7 @@ rule merge_all:
     input:
         assemblyfiles = getallmergedlist()
     output:
-        os.path.join(OUTPUTDIR, "merged_all", "{assembly}.fasta")
+        os.path.join(OUTPUTDIR, "merged_all", "merged.fasta")
     params:
         assemblyfiles = getallmerged()
     shell:

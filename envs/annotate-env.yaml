@@ -1,0 +1,13 @@
+name: annotate
+channels:
+    - bioconda
+    - conda-forge
+    - anaconda
+dependencies:
+    - hmmer
+    - diamond
+    - sword
+    - python
+    - wget
+    - busco
+    - pandas

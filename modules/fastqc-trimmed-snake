@@ -24,6 +24,7 @@ rule fastqc_trimmed:
     params: 
         fastqdir = os.path.join(OUTPUTDIR, "qc", "fastqc_trimmed"),
         outname = os.path.join(OUTPUTDIR, "qc", "fastqc_trimmed", "{sample}_{num}")
+    conda: "../envs/fastqc-env.yaml"
     log: 
         err = os.path.join("logs","fastqc_trimmed","{sample}_{num}_trimmed_err.log"),
         out = os.path.join("logs","fastqc_trimmed","{sample}_{num}_trimmed_out.log")
