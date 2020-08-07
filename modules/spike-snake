@@ -59,6 +59,7 @@ rule copies:
         counts=pd.read_csv(input.countfile, sep=' ')
         for i in params.IDs:
             df = (spike.loc[spike['ID'] == (i)])
+            #Spike calculation reference: https://www.protocols.io/view/internal-genomic-dna-standard-for-quantitative-met-jxdcpi6?step=12
             calc = (counts[i] * ((float((df['TotalReads'])) * 
                                   (params.spikecopies / (float((df['bbmap-total']))))) / 
                                  (float((df['TotalReads']))))) / float((df['VolumeFiltered']))
