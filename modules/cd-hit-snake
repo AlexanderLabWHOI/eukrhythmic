@@ -18,7 +18,7 @@ rule cdhit_individualclusters:
         os.path.join(OUTPUTDIR, "cluster1", "{assembly}_{assembler}.fasta")
     params:
         threads = 10,
-        maxmemory = 2549, # -G o indicates local sequence identity.
+        maxmemory = 7000, # -G o indicates local sequence identity.
         identityparam = 1.00,
         mincoverageshorter = 1.00,
         mincoveragelong = 0.005
@@ -39,7 +39,7 @@ rule clustering_by_assembly_group:
         os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_merged.fasta")
     params:
         threads = 10,
-        maxmemory = 2549, # -G o indicates local sequence identity.
+        maxmemory = 7000, # -G o indicates local sequence identity.
         identityparam = 1.00,
         mincoverageshorter = MINCOVERAGECLUST2,
         mincoveragelong = 0.005
@@ -60,7 +60,7 @@ rule cdhit_transdecoded:
         os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_transdecoded.fasta")
     params:
         threads = 10,
-        maxmemory = 2549, # -G o indicates local sequence identity.
+        maxmemory = 7000, # -G o indicates local sequence identity.
         identityparam = 1.00,
         mincoverageshorter = MINCOVERAGECLUST2,
         mincoveragelong = 0.005

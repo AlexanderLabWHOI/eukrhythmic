@@ -29,7 +29,7 @@ def combineassemblerslist(assembly):
 
 rule rename:
     input:
-        assemblyfiles = os.path.join(ASSEMBLEDDIR, "{assembly}_{assembler}.fasta")
+        assemblyfiles = ancient(os.path.join(ASSEMBLEDDIR, "{assembly}_{assembler}.fasta"))
     output:
         os.path.join(RENAMEDDIR, "{assembly}_{assembler}.fasta")
     params:

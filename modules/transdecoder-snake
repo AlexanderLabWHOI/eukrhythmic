@@ -38,7 +38,7 @@ rule transdecoder:
   
 rule transdecoder_indiv:
     input:
-        merged = os.path.join(OUTPUTDIR, "assembled", "{assembly}_{assembler}.fasta")
+        merged = ancient(os.path.join(OUTPUTDIR, "assembled", "{assembly}_{assembler}.fasta"))
     output:
         pep = os.path.join(OUTPUTDIR, "transdecoder_indiv", "{assembly}_{assembler}.fasta.transdecoder.pep"),
         gff = os.path.join(OUTPUTDIR, "transdecoder_indiv", "{assembly}_{assembler}.fasta.transdecoder.gff3"),

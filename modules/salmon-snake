@@ -24,7 +24,7 @@ else:
         
 rule salmon_indiv:
     input: 
-        fastafile = os.path.join(OUTPUTDIR, "assembled", "{assembly}_{assembler}.fasta"),
+        fastafile = ancient(os.path.join(OUTPUTDIR, "assembled", "{assembly}_{assembler}.fasta")),
         left = LEFTFILE,
         right = RIGHTFILE
     output:
