@@ -1,0 +1,37 @@
+#!/usr/local/bin/python
+import argparse
+import yaml
+
+parser = argparse.ArgumentParser(
+        description='Welcome to eukrhythmic! By default, all rules are run, unless you have ' + 
+                    'not provided a spikefile/spiketable. Otherwise, please select "all" to run all rules, ' +  
+                    '"setup" to run FastQC and Trimmommatic, "assembly" to assemble trimmed files, "merge" to run ' + 
+                    'concatenation and clustering steps, "analysis" to run Pfam, EUKulele, and KEGG ' +
+                    'annotation on output, or "analysis-spike" to do analysis with spike table counts.',
+        usage='eukrhythmic [subroutine] --jobs <max number of jobs to deploy>')
+
+parser.add_argument('subroutine', metavar="subroutine", nargs='?', type=str, default="all", 
+                        choices = ["","all","setup","assembly","merge","analysis"], 
+                        help='Choice of subroutine to run.')
+
+parser.add_argument('-j', '--jobs', dest = "jobs", default = 500)
+args = parser.parse_args()
+snakefile = "eukrhythmic"
+with open('config.yaml') as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
+if ("spikefile" not in config) | ("spiketable" not in config):
+    snakefile = "eukrhythmic-no-spike"
+
+if args.subroutine == "setup":
+    snakefile = "eukrhythmic-setup"
+elif args.subroutine == "assembly":
+    snakefile = "eukrhythmic-assembly"
+elif args.subroutine == "merge":
+    snakefile = "eukrhythmic-merge"
+elif args.subroutine == "analysis":
+    snakefile = "eukrhythmic-analysis"
+elif args.subroutine == "analysis-spike":
+    snakefile = "eukrhythmic-analysis-spike"
+    
+
+os.system(" ".join(["sbatch",os.path.join("submit","snake-submit.sh"),snakefile,str(args.jobs)]))

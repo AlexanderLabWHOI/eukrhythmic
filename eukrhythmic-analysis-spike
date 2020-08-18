@@ -1,0 +1,55 @@
+configfile: "config.yaml"
+
+import io
+import os
+from os import listdir
+from os.path import isfile, join
+import sys
+import pandas as pd
+import numpy as np
+import pathlib
+from snakemake.exceptions import print_exception, WorkflowError  
+sys.path.insert(1, 'scripts')
+
+# Import relevant variable from config; exit if not supplied
+import importworkspace
+from importworkspace import *
+os.system("python " + os.path.join("scripts", "importworkspace.py"))
+
+# Contains function to check that variables are present and formatted correctly beyond provided values in config file
+import checkrequirements
+from checkrequirements import *
+
+## CHECK THAT ALL REQUIREMENTS ARE SATISFIED BY EXECUTING checkrequirements() from `scripts/checkrequirements.py` ##
+checkrequirementsfct()
+
+include: "modules/busco-snake"
+include: "modules/salmon-snake"
+include: "modules/annotate-snake"
+include: "modules/hardclean-snake"
+include: "modules/spike-snake"
+include: "modules/eukulele-snake"
+
+ruleorder: merge_all > copies
+ruleorder: salmon_rename > salmon_clustering_against_mega
+ruleorder: salmon_rename > salmon_clustering
+
+rule all:
+    input:
+        # BUSCO ASSESSMENT OF FINAL ASSEMBLY
+        busco = expand(os.path.join("{base}", "busco", "{database}", "{folder}", "{assembly}"), base = OUTPUTDIR, 
+                       database = "eukaryota", folder = "mega_merge", assembly = "merged"), # eukaryota, bacteria
+        # HMMER ALIGNMENT OF FINAL ASSEMBLY BEFORE MEGA-MERGE
+        hmmer = expand(os.path.join("{base}", "pfam", "{folder}", "{assembly}.tblout"), base = OUTPUTDIR, 
+                       folder = "by_assembly_group", assembly = assemblygroups),
+        # DIAMOND ALIGNMENT AND KEGG ANNOTATION 
+        kegg = expand(os.path.join("{base}", "kegg", "{folder}", "{assembly}_kegg.csv"), base = OUTPUTDIR, 
+                      folder = "by_assembly_group", assembly = assemblygroups),
+        # QUANTIFICATION BASED ON SPIKE FILE
+        copies = expand(os.path.join(OUTPUTDIR, "salmon_{folder}", "copiesperL.tab"), 
+                        folder = "by_assembly_group",
+                        base = OUTPUTDIR),
+        # EUKULELE
+        eukulele = expand(os.path.join(OUTPUTDIR, "eukulele_{folder}"), 
+                        folder = "by_assembly_group",
+                        base = OUTPUTDIR)

@@ -39,7 +39,7 @@ rule clustering_by_assembly_group:
         os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_merged.fasta")
     params:
         threads = 10,
-        maxmemory = 2549, # -G o indicates local sequence identity.
+        maxmemory = 15000, # -G o indicates local sequence identity.
         identityparam = 1.00,
         mincoverageshorter = MINCOVERAGECLUST2,
         mincoveragelong = 0.005

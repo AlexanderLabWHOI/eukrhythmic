@@ -1,0 +1,7 @@
+name: eukulele
+channels:
+    - bioconda
+    - conda-forge
+    - akrinos
+dependencies:
+    - eukulele

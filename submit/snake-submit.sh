@@ -7,7 +7,8 @@
 jobname=$(cat config.yaml | grep jobname | cut -d ":" -f 2 | cut -d " " -f 2)
 outdir=$(cat config.yaml | grep outputDIR | cut -d ":" -f 2 | cut -d " " -f 2)
 
-#python scripts/writeconfig.py
+SNAKEFILE=$1 # to run all of eukrhythmic, this is "eukrhythmic"
+JOBS=$2 # should default to 500
 
 snakemake  \
-    --rerun-incomplete --jobs 500 --use-conda --cluster-config cluster.yaml --cluster "sbatch --parsable --qos=unlim --partition={cluster.queue} --job-name=${jobname}.{rule}.{wildcards} --mem={cluster.mem}gb --time={cluster.time} --ntasks={cluster.tasks} --nodes={cluster.nodes} --cpus-per-task={cluster.cpupertask} --requeue"
+    -s $SNAKEFILE --rerun-incomplete --jobs $JOBS --use-conda --cluster-config cluster.yaml --cluster "sbatch --parsable --qos=unlim --partition={cluster.queue} --job-name=${jobname}.{rule}.{wildcards} --mem={cluster.mem}gb --time={cluster.time} --ntasks={cluster.tasks} --nodes={cluster.nodes} --cpus-per-task={cluster.cpupertask} --requeue"

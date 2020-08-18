@@ -136,7 +136,7 @@ inputfiles = "|".join(os.listdir(INPUTDIR))
 filenames = []
 singleorpaired = []
 for currfile_ind in range(0, len(fastqnames)):
-    currfile = fastqnames[currfile_ind]
+    currfile = str(fastqnames[currfile_ind])
     occurrences = inputfiles.count(currfile)
     if occurrences > 2:
         print("There are too many occurrences of fastq file " + currfile + " in input directory.")

@@ -1,0 +1,50 @@
+configfile: "config.yaml"
+
+import io
+import os
+from os import listdir
+from os.path import isfile, join
+import sys
+import pandas as pd
+import numpy as np
+import pathlib
+from snakemake.exceptions import print_exception, WorkflowError  
+sys.path.insert(1, 'scripts')
+
+# Import relevant variable from config; exit if not supplied
+import importworkspace
+from importworkspace import *
+os.system("python " + os.path.join("scripts", "importworkspace.py"))
+
+# Contains function to check that variables are present and formatted correctly beyond provided values in config file
+import checkrequirements
+from checkrequirements import *
+
+## CHECK THAT ALL REQUIREMENTS ARE SATISFIED BY EXECUTING checkrequirements() from `scripts/checkrequirements.py` ##
+checkrequirementsfct()
+
+include: "modules/trinity-snake"
+include: "modules/velvet-snake"
+include: "modules/megahit-snake"
+include: "modules/transabyss-snake"
+include: "modules/transabyss-merge-snake"
+include: "modules/quast-snake"
+
+ruleorder: trimmomatic > trimmomatic_SE
+ruleorder: trinity > trinity_SE
+ruleorder: megahit > megahit_SE
+ruleorder: velvet > velvet_SE
+
+rule all:
+    input:
+        # TRIMMOMATIC OUTPUTS
+        trimmed = expand([os.path.join("{base}", "firsttrim", "{sample}_1.trimmed.fastq.gz"), 
+                          os.path.join("{base}", "firsttrim", "{sample}_2.trimmed.fastq.gz")], zip, 
+                         base = OUTPUTDIR, sample = filenames),
+        # ASSEMBLER OUTPUTS
+        assemblersout = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"), 
+                               base = ASSEMBLEDDIR, assembly = assemblygroups, assembler = ASSEMBLERS), 
+        # QUAST OUTPUTS
+        quast = expand(os.path.join("{base}", "quast", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
+        # COMBINE QUAST OUTPUTS
+        quastcombine = expand(os.path.join("{base}", "quast", "fullresults", "allresults.tsv"), base = OUTPUTDIR),
