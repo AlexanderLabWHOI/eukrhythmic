@@ -5,6 +5,8 @@
 #SBATCH --mem=100gb
 
 ## PARAMETERS THAT MAY BE CHANGED FROM THE COMMAND LINE ##
+SUBROUTINE="all" # --subroutine
+JOBS=500 # --jobs; number of simultaneous Snakemake jobs
 JOBNAMEARG="" # -n / --job-name
 METATSAMPLEARG="" # -s / --sample-file-name
 OUTDIRARG="" # -o / --out-dir
@@ -32,6 +34,22 @@ if [[ "$(cat config.yaml | grep spikefile | cut -d ":" -f 2 | cut -d " " -f 2)" 
 PARAMS=""
 while (( "$#" )); do
   case "$1" in
+    --subroutine)
+      if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
+        JOBS=$2
+        shift 2
+      else
+        echo "Error: No number of jobs ($1) provided." >&2
+        exit 1
+      fi
+    --subroutine)
+      if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
+        SUBROUTINE=$2
+        shift 2
+      else
+        echo "Error: No subroutine ($1) provided." >&2
+        exit 1
+      fi
     -q|--check-quality)
       CHECKQUALFLAG=1
       sed -i "/checkqual/c\checkqual: $CHECKQUALFLAG" config.yaml
@@ -149,10 +167,11 @@ else
     if [[ SLURMFLAG -eq 1 ]]
     then
         echo "Running on SLURM."
-        snakemake \
-            --rerun-incomplete --jobs 100 --use-conda \
-            --cluster-config cluster.yaml --cluster \
-            "sbatch --parsable --qos=unlim --partition={cluster.queue} --job-name=${jobname}.{rule}.{wildcards} --mem={cluster.mem}gb --time={cluster.time} --ntasks={cluster.threads} --nodes={cluster.nodes}"
+        submit/eukrhythmic $SUBROUTINE --jobs $JOBS
+        #snakemake \
+        #    --rerun-incomplete --jobs 100 --use-conda \
+        #    --cluster-config cluster.yaml --cluster \
+        #    "sbatch --parsable --qos=unlim --partition={cluster.queue} --job-name=${jobname}.{rule}.{wildcards} --mem={cluster.mem}gb --time={cluster.time} --ntasks={cluster.threads} --nodes={cluster.nodes}"
     else
         echo "Running locally."
         snakemake --rerun-incomplete --jobs 100 --use-conda

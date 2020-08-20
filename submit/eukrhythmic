@@ -1,6 +1,7 @@
 #!/usr/local/bin/python
 import argparse
 import yaml
+import os
 
 parser = argparse.ArgumentParser(
         description='Welcome to eukrhythmic! By default, all rules are run, unless you have ' + 
@@ -13,6 +14,8 @@ parser = argparse.ArgumentParser(
 parser.add_argument('subroutine', metavar="subroutine", nargs='?', type=str, default="all", 
                         choices = ["","all","setup","assembly","merge","analysis"], 
                         help='Choice of subroutine to run.')
+parser.add_argument('--rerun-incomplete', action='store_true', default=False,
+                    help='Whether to tell Snakemake to rerun incomplete jobs.')
 
 parser.add_argument('-j', '--jobs', dest = "jobs", default = 500)
 args = parser.parse_args()
@@ -33,5 +36,8 @@ elif args.subroutine == "analysis":
 elif args.subroutine == "analysis-spike":
     snakefile = "eukrhythmic-analysis-spike"
     
+rerun_incomplete = ""
+if args.rerun_incomplete:
+    rerun_incomplete = "--rerun-incomplete"
 
-os.system(" ".join(["sbatch",os.path.join("submit","snake-submit.sh"),snakefile,str(args.jobs)]))
+os.system(" ".join(["sbatch",os.path.join("submit","snake-submit.sh"),snakefile,str(args.jobs),rerun_incomplete]))
