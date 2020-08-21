@@ -1,0 +1,13 @@
+Adding Assemblers
+=================
+
+.. _assemblers: 
+
+Adding new assemblers
+---------------------
+
+In order to add a new assembler to the pipeline, three things need to be included:
+
+1. A rule for the assembler, including a command that can be run using software in the specified ``conda`` environment, called ``<assembler>``.
+2. A rule to "clean" the assembly output, named ``<assembler>_clean``, including moving the completed assemblies to the shared assembly folder, specified as ``assembledDIR``, which is a subdirectory of the ``outputDIR``, also specified in the configuration file. Intermediate files should also be moved to a scratch directory or deleted, based on user preferences and space requirements. Any other files needed by other tools or desired by the user should be moved to a subdirectory of the output directory. If they are specified as output files, ``snakemake`` will generate them automatically. Otherwise, the user will need to manually create directories that do not already exist (specifying them as output files is more extensible). 
+3. A list entry for the assembler in the configuration file that matches the name of ``<assembler>`` in each ``snakemake`` rule. 
