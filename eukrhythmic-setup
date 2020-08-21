@@ -1,0 +1,55 @@
+configfile: "config.yaml"
+
+import io
+import os
+from os import listdir
+from os.path import isfile, join
+import sys
+import pandas as pd
+import numpy as np
+import pathlib
+from snakemake.exceptions import print_exception, WorkflowError  
+sys.path.insert(1, 'scripts')
+
+# Import relevant variable from config; exit if not supplied
+import importworkspace
+from importworkspace import *
+os.system("python " + os.path.join("scripts", "importworkspace.py"))
+
+# Contains function to check that variables are present and formatted correctly beyond provided values in config file
+import checkrequirements
+from checkrequirements import *
+
+## CHECK THAT ALL REQUIREMENTS ARE SATISFIED BY EXECUTING checkrequirements() from `scripts/checkrequirements.py` ##
+checkrequirementsfct()
+
+include: "modules/fastqc-snake"
+include: "modules/bbmap-snake"
+include: "modules/trimmomatic-snake"
+include: "modules/fastqc-trimmed-snake"
+
+ruleorder: trimmomatic > trimmomatic_SE
+
+rule all:
+    input:
+        # FASTQC OUTPUTS
+        fastqc1 = expand([os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.html"), 
+                          os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.zip")], zip, 
+                         base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        # MULTIQC OUTPUTS
+        multiqc1 = expand(os.path.join("{base}", "qc", "multiqc", "firstqcreport", "multiqc_report.html"), zip, 
+                          base = OUTPUTDIR),
+        # BBMAP OUTPUTS
+        bbmap = expand(os.path.join("{base}", "bbmap", "{sample}_{num}.clean.fastq.gz"), zip, base = OUTPUTDIR, 
+                       sample = filenames, num = singleorpaired),
+        # TRIMMOMATIC OUTPUTS
+        trimmed = expand([os.path.join("{base}", "firsttrim", "{sample}_1.trimmed.fastq.gz"), 
+                          os.path.join("{base}", "firsttrim", "{sample}_2.trimmed.fastq.gz")], zip, 
+                         base = OUTPUTDIR, sample = filenames),
+        # FASTQC 2 OUTPUTS (trimmed)
+        fastqc2 = expand([os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.html"), 
+                          os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.zip")], 
+                         zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        # MULTIQC 2 OUTPUTS
+        multiqc2 = expand(os.path.join("{base}", "qc", "multiqc", "trimmedqcreport", "multiqc_report.html"), zip, 
+                          base = OUTPUTDIR)

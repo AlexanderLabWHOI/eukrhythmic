@@ -1,5 +1,7 @@
 ## Metatranscriptomic Pipelining
 
+[![Documentation Status](https://readthedocs.org/projects/eukrhythmic/badge/?version=latest)](https://eukrhythmic.readthedocs.io/en/latest/?badge=latest)
+
 Documentation for `eukrhythmic` a metatranscriptomics analysis pipeline that enables users to run 
 
 - Trimming

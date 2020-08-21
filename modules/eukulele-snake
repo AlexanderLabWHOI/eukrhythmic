@@ -1,0 +1,30 @@
+configfile: "config.yaml"
+
+import io
+import os
+import pathlib
+import pandas as pd
+from snakemake.exceptions import print_exception, WorkflowError
+import sys
+sys.path.insert(1, '../scripts')
+from importworkspace import *
+
+rule eukulele_run:
+    input:
+        pep = (lambda filename: expand(os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", 
+                                                    "{assembly}.fasta.transdecoder.pep"), 
+               assembly = assemblygroups, folder = filename.folder)),
+        salmon = (lambda filename: expand(os.path.join(OUTPUTDIR, "salmon_{folder}", "against_mega",
+                                                       "salmon_quant_assembly_{assembly}", "quant.sf"), 
+               assembly = assemblygroups, folder = filename.folder))
+    output:
+        directory(os.path.join(OUTPUTDIR, "eukulele_{folder}"))
+    params:
+        sampledir = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins"),
+        salmondir = os.path.join(OUTPUTDIR, "salmon_{folder}", "against_mega")
+    conda:
+        os.path.join("..","envs","eukulele-env.yaml")
+    shell:
+        """
+        EUKulele --mets_or_mags mets --sample_dir {params.sampledir} --p_ext ".pep" --n_ext ".cds" --database mmetsp --use_salmon_counts --salmon_dir {params.salmondir}
+        """
