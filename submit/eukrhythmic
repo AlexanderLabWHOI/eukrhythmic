@@ -18,6 +18,12 @@ parser.add_argument('--rerun-incomplete', action='store_true', default=False,
                     help='Whether to tell Snakemake to rerun incomplete jobs.')
 
 parser.add_argument('-j', '--jobs', dest = "jobs", default = 500)
+parser.add_argument('-s', '--system', dest = "system", choices = ["slurm", "pbs"], 
+                    default = "slurm",
+                    help = "What HPC system you are running eukrhythmic on.")
+parser.add_argument('-q', '--queue', dest = "queue", default = "",
+                    help = "Which queue to submit to on the HPC. Not included if not specified")
+
 args = parser.parse_args()
 snakefile = "eukrhythmic"
 with open('config.yaml') as f:
@@ -39,5 +45,11 @@ elif args.subroutine == "analysis-spike":
 rerun_incomplete = ""
 if args.rerun_incomplete:
     rerun_incomplete = "--rerun-incomplete"
-
-os.system(" ".join(["sbatch",os.path.join("submit","snake-submit.sh"),snakefile,str(args.jobs),rerun_incomplete]))
+if args.system == "slurm":
+    os.system(" ".join(["sbatch",os.path.join("submit","snake-submit.sh"),snakefile,str(args.jobs),rerun_incomplete]))
+elif args.system == "qsub":
+    submit_args = ["sbatch",os.path.join("submit","snake-submit-pbs.sh"),snakefile,str(args.jobs),rerun_incomplete]
+    if args.queue != "":
+        submit_args.append("-q")
+        submit_args.append(str(args.queue))
+    os.system(" ".join(submit_args))

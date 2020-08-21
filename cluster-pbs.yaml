@@ -1,0 +1,75 @@
+__default__:
+  account: haleysh 
+  command_options:
+    slurm:
+      account: --account={}
+      command: sbatch --parsable --qos=unlim
+      key_mapping: null
+      mem: --mem={}gb
+      name: --job-name={}
+      nodes: -N {}
+      queue: --partition={}
+      threads: -n {}
+      time: --time={}
+    pbs: 
+      command: sbatch
+      key_mapping: null
+      mem: -l vmem={}gb
+      name: -N {}
+      nodes: -l nodes={}
+      queue: –partition={}
+      threads: -l ppn={} 
+      time: -l walltime={}
+  cpupertask: 18
+  mem: 180
+  nodes: 1
+  queue: scavenger
+  system: slurm
+  tasks: 1
+  time: 1400
+fastqc:
+  cpupertask: 5
+  mem: 1
+  queue: scavenger
+  tasks: 1
+  time: 720
+fastqc_trimmed:
+  cpupertask: 5
+  mem: 1
+  queue: scavenger
+  tasks: 1
+  time: 720
+required:
+  defaultqueue: scavenger
+  maxcores: 1
+  maxcpuspertask: 18
+  maxmemory: 180
+  maxtasks: 1
+transabyssmerge:
+  cpupertask: 18
+  mem: 180
+  nodes: 1
+  queue: scavenger
+  tasks: 1
+  time: 10000
+trimmomatic:
+  cpupertask: 5
+  mem: 48
+  nodes: 1
+  queue: scavenger
+  tasks: 1
+  time: 1400
+trinity:
+  cpupertask: 20
+  mem: 500
+  nodes: 1
+  queue: bigmem 
+  tasks: 1
+  time: 10000
+velvet:
+  cpupertask: 18
+  mem: 180
+  nodes: 1
+  queue: scavenger
+  tasks: 1
+  time: 10000
