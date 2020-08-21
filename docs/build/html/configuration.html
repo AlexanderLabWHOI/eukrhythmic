@@ -1,0 +1,266 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Configuring eukrhythmic &mdash; eukrhythmic  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> eukrhythmic
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Configuring <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code></a><ul>
+<li><a class="reference internal" href="#configuration-file-entries">Configuration file entries</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">eukrhythmic</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Configuring <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/configuration.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="configuring-eukrhythmic">
+<h1>Configuring <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code><a class="headerlink" href="#configuring-eukrhythmic" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="configuration-file-entries">
+<span id="config"></span><h2>Configuration file entries<a class="headerlink" href="#configuration-file-entries" title="Permalink to this headline">¶</a></h2>
+<p>Below is a listing of each supported entry in the configuration file (<code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> in the base directory) and how to specify each flag when using the pipeline.</p>
+<table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-text">Title</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag in file</p></th>
+<th class="head"><p>Meaning &amp; how to specify</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">metaT_sample</span></code></p></td>
+<td><p>The name of the sample file containing sample ids to be used as unique identifiers in the pipeline, descriptive sample names, and input FASTA file names.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">inputDIR</span></code></p></td>
+<td><p>The file directory where the input data is found. Currently, should be specified with “/” separators, but no trailing “/”. Should begin with “/” only if you are going to the root of your file system (not a  relative path).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">checkqual</span></code></p></td>
+<td><p>Boolean flag for whether to run quality checking with <code class="docutils literal notranslate"><span class="pre">salmon</span></code>, <code class="docutils literal notranslate"><span class="pre">QUAST</span></code>, <code class="docutils literal notranslate"><span class="pre">BUSCO</span></code>, etc. on assemblies. If 1, these quality checks are performed.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">spikefile</span></code></p></td>
+<td><p>A path to a FASTA file containing the sequence of any spiking that might affect reads. This will depend on experimental setup. If the file is not valid (e.g., if this flag is set to 0), nothing is done.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">runbbmap</span></code></p></td>
+<td><p>A boolean flag to specify whether to use a spike file to drop spiked reads, according to what was done in your experiment. If 1,  the spikefile is used; otherwise, this  filtering is either not performed or is not used downstream in the pipeline  (depending on whether a spike file exists).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">kmers</span></code></p></td>
+<td><p>A list of <em>k</em>-mer sizes to use, where applicable, in assembly. These should all be integer values (default: 20, 50, 110). The median <em>k</em>-mer value in this list will be used when just 1 <em>k</em>-mer value is required.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">assemblers</span></code></p></td>
+<td><p>The assemblers to be used to assemble the metatranscriptomes (which will later be  merged). All of the specified assemblers in this list should have matching Snakemake rules in the <code class="docutils literal notranslate"><span class="pre">modules</span></code> folder of the main pipeline directory (named identically), as well as “clean” rules (explained below).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">jobname</span></code></p></td>
+<td><p>A descriptive name to be used to name jobs on your high-performance computing system, such that you can track the progress of your workflow.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">adapter</span></code></p></td>
+<td><p>Path to a FASTA file containing the adapter used during sequencing. Defaults to a  static adapter file in the <code class="docutils literal notranslate"><span class="pre">static</span></code> directory.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">separategroups</span></code></p></td>
+<td><p>A boolean flag. If 1, specified assembly  groups in the <code class="docutils literal notranslate"><span class="pre">metaT_sample</span></code> file are used to co-assemble raw files. Otherwise, each raw file is assembled separately regardless of what is specified in the “AssemblyGroup” column of the input file.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">outputDIR</span></code></p></td>
+<td><p>The path to a directory where all program output will be stored.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">assembledDIR</span></code></p></td>
+<td><p>The directory to move assembled files to, relative to the output directory. Defaults to “assembled”; not necessary to specify.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">renamedDIR</span></code></p></td>
+<td><p>The directory to move “renamed” files to  (which are files with the name of the  assembler added to each FASTA header), relative to the output directory. Defaults to “assembled”; not necessary to specify.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">scratch</span></code></p></td>
+<td><p>The location to move unnecessary intermediate files to after computation.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Arianna Krinos
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

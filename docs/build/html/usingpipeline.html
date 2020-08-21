@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Using the Pipeline &mdash; eukrhythmic  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> eukrhythmic
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Using the Pipeline</a><ul>
+<li><a class="reference internal" href="#how-to-use-the-pipeline">How to use the pipeline</a></li>
+<li><a class="reference internal" href="#running-the-pipeline-from-the-command-line">Running the pipeline from the command line</a></li>
+<li><a class="reference internal" href="#running-the-pipeline-directly-with-snakemake">Running the pipeline directly with Snakemake</a></li>
+<li><a class="reference internal" href="#running-the-pipeline-manually">Running the pipeline manually</a></li>
+<li><a class="reference internal" href="#running-the-pipeline-with-slurm">Running the pipeline with <code class="docutils literal notranslate"><span class="pre">SLURM</span></code></a></li>
+<li><a class="reference internal" href="#setting-cpus-and-memory-requirements">Setting CPUs and memory requirements</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">eukrhythmic</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Using the Pipeline</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/usingpipeline.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="using-the-pipeline">
+<h1>Using the Pipeline<a class="headerlink" href="#using-the-pipeline" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="how-to-use-the-pipeline">
+<h2>How to use the pipeline<a class="headerlink" href="#how-to-use-the-pipeline" title="Permalink to this headline">¶</a></h2>
+<p>There are three main options for using the pipeline: you can run the pipeline directly using command-line arguments (:ref:<code class="docutils literal notranslate"><span class="pre">commandline</span></code>), you can set up a simple batch script with those command line options, and run it via <code class="docutils literal notranslate"><span class="pre">SLURM</span></code> (:ref:<code class="docutils literal notranslate"><span class="pre">snake</span></code>), or you can treat the pipeline as a normal <code class="docutils literal notranslate"><span class="pre">Snakemake</span></code> workflow, and edit its components manually (:ref:<code class="docutils literal notranslate"><span class="pre">pipeline</span></code>) by changing the configuration file.</p>
+</div>
+<div class="section" id="running-the-pipeline-from-the-command-line">
+<span id="commandline"></span><h2>Running the pipeline from the command line<a class="headerlink" href="#running-the-pipeline-from-the-command-line" title="Permalink to this headline">¶</a></h2>
+<p>To run the pipeline from the command line, you likely still want to make sure that the sample file is generated the way you intend. To explore what goes into this file, and the way it will be autogenerated when executing <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> from the command line, please read the section on file naming (:ref:<code class="docutils literal notranslate"><span class="pre">naming</span></code>) below.</p>
+<p>Other than that, all you need to do to execute <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> from the command line is to alias the executable while in the <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> base directory after cloning from <code class="docutils literal notranslate"><span class="pre">GitHub</span></code>, like so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">alias</span> <span class="n">eukrhythmic</span><span class="o">=</span><span class="s1">&#39;./bin/eukrhythmic.sh&#39;</span>
+</pre></div>
+</div>
+<p>And then invoke:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">eukrhythmic</span> <span class="o">&lt;</span><span class="n">arguments</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>To run <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> on the provided sample data, simply invoke <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> on a clean install of the program without arguments. You can also run the sample data by using the argument <code class="docutils literal notranslate"><span class="pre">--use-sample</span></code>, which will copy the relevant configuration entries. The exception is if you are running on an HPC system that uses the <code class="docutils literal notranslate"><span class="pre">SLURM</span></code> scheduler, invoke <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> with one argument: <code class="docutils literal notranslate"><span class="pre">-l</span></code> or <code class="docutils literal notranslate"><span class="pre">--slurm</span></code> to leverage your computing resources. In that case, you will also want to invoke <code class="docutils literal notranslate"><span class="pre">sbatch</span> <span class="pre">eukrhythmic</span> <span class="pre">--slurm</span></code>, to avoid running any steps on your current remote machine. A list of additional arguments required commonly by users is given below:</p>
+<table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-text">Title</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> entry</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-n</span></code> / <code class="docutils literal notranslate"><span class="pre">--job-name</span></code></p></td>
+<td><p>jobname</p></td>
+<td><p>A descriptive/unique name to be applied to SLURM jobs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-s</span></code> / <code class="docutils literal notranslate"><span class="pre">--sample-file-name</span></code></p></td>
+<td><p>metaT_sample</p></td>
+<td><p>The listing of SampleIDs, SampleNames, FastqFiles, and assembly groups for each sample.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-o</span></code> / <code class="docutils literal notranslate"><span class="pre">--out-dir</span></code></p></td>
+<td><p>outputDIR</p></td>
+<td><p>The output directory to write to.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-i</span></code> / <code class="docutils literal notranslate"><span class="pre">--in-dir</span></code></p></td>
+<td><p>inputDIR</p></td>
+<td><p>The location of the sample FASTQ files (crucial unless running sample data).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-q</span></code> / <code class="docutils literal notranslate"><span class="pre">--check-quality</span></code></p></td>
+<td><p>checkqual</p></td>
+<td><p>Takes no arguments. If specified, quality assessment is run on assemblies.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-b</span></code> / <code class="docutils literal notranslate"><span class="pre">--run-bbmap</span></code></p></td>
+<td><p>runbbmap; spikefile</p></td>
+<td><p>If your data contains spiked reads, you can list this flag and specify a FASTA file containing the spike.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-l</span></code> / <code class="docutils literal notranslate"><span class="pre">--slurm</span></code></p></td>
+<td><p>N/A</p></td>
+<td><p>If provided, run <code class="docutils literal notranslate"><span class="pre">snakemake</span></code> on SLURM.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-g</span></code> / <code class="docutils literal notranslate"><span class="pre">--generate-file</span></code></p></td>
+<td><p>N/A</p></td>
+<td><p>If provided, create the sample file automatically from the files present in the input directory.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--use-sample</span></code></p></td>
+<td><p>N/A</p></td>
+<td><p>If provided, override all other parameters and run the sample file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-c</span></code> / <code class="docutils literal notranslate"><span class="pre">--scratch-dir</span></code></p></td>
+<td><p>scratch</p></td>
+<td><p>Takes argument of the directory to be used as scratch space.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="running-the-pipeline-directly-with-snakemake">
+<span id="snake"></span><h2>Running the pipeline directly with Snakemake<a class="headerlink" href="#running-the-pipeline-directly-with-snakemake" title="Permalink to this headline">¶</a></h2>
+<p>You can use the command-line arguments described above if you run the pipeline from <code class="docutils literal notranslate"><span class="pre">submit/eukrhythmic.sh</span></code>. Submitting this, customized with whatever arguments you prefer, to a scheduler (from the home directory) will run the pipeline in full.</p>
+<p>To use the pipeline, the most important thing to do is to specify the paths to your particular input and output directories. Personalizing this will allow the pipeline to pull the relevant files when computing the results of individual rules, so this step is crucial. You can edit the configuration file randomly, or use the command-line options specified above (:ref:<code class="docutils literal notranslate"><span class="pre">command</span></code>). Specifically, you would change this line in <code class="docutils literal notranslate"><span class="pre">eukrhythmic.sh</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">eukrhythmic</span> <span class="o">--</span><span class="n">use</span><span class="o">-</span><span class="n">sample</span> <span class="o">--</span><span class="n">slurm</span>
+</pre></div>
+</div>
+<p>And add an <code class="docutils literal notranslate"><span class="pre">in-dir</span></code> flag like so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">eukrhythmic</span> <span class="o">--</span><span class="n">use</span><span class="o">-</span><span class="n">sample</span> <span class="o">--</span><span class="ow">in</span><span class="o">-</span><span class="nb">dir</span> <span class="o">&lt;</span><span class="n">name</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="nb">input</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">out</span><span class="o">-</span><span class="nb">dir</span> <span class="o">&lt;</span><span class="n">name</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="n">output</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>All input <code class="docutils literal notranslate"><span class="pre">fastq</span></code> files must be contained in the same directory, the <code class="docutils literal notranslate"><span class="pre">inputDIR</span></code> location, specified by the <code class="docutils literal notranslate"><span class="pre">--in-dir</span></code> flag. Only these metatranscriptomic data will be included in the analysis. These files do <em>not</em>, however, need to be located inside the <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> directory (and it is recommended that they are located elsewhere).</p>
+<p>The next thing that needs to be done is to produce the sample file, containing all of the relevant information to run the pipeline. You can create this yourself (:ref:<code class="docutils literal notranslate"><span class="pre">manual</span></code>), using only a list of Sample IDs (:ref:<code class="docutils literal notranslate"><span class="pre">fastqauto</span></code>), or completely automatically (:ref:<code class="docutils literal notranslate"><span class="pre">fullauto</span></code>), which can be done all in one with the <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> bash script, by specifying:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">eukrhythmic</span> <span class="o">--</span><span class="n">use</span><span class="o">-</span><span class="n">sample</span> <span class="o">--</span><span class="ow">in</span><span class="o">-</span><span class="nb">dir</span> <span class="o">&lt;</span><span class="n">name</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="nb">input</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">out</span><span class="o">-</span><span class="nb">dir</span> <span class="o">&lt;</span><span class="n">name</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="n">output</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">g</span>
+</pre></div>
+</div>
+<p>using the <code class="docutils literal notranslate"><span class="pre">-g</span></code> or <code class="docutils literal notranslate"><span class="pre">--generate-file</span></code> option, which runs the included script (:ref:<code class="docutils literal notranslate"><span class="pre">fullauto</span></code>).</p>
+<p>If you are using the <code class="docutils literal notranslate"><span class="pre">SLURM</span></code> scheduler, you can run the pipeline by simply adding/keeping the <code class="docutils literal notranslate"><span class="pre">--slurm</span></code> flag in the <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> command, after configuring options for your particular system (:ref:<code class="docutils literal notranslate"><span class="pre">slurm</span></code>), or by setting the <code class="docutils literal notranslate"><span class="pre">rewritecluster</span></code> configuration flag to 1, and specifying the options for all jobs in the <code class="docutils literal notranslate"><span class="pre">required</span></code> section of the <code class="docutils literal notranslate"><span class="pre">cluster.yaml</span></code> file.</p>
+</div>
+<div class="section" id="running-the-pipeline-manually">
+<span id="pipeline"></span><h2>Running the pipeline manually<a class="headerlink" href="#running-the-pipeline-manually" title="Permalink to this headline">¶</a></h2>
+<p>To use the pipeline as a <code class="docutils literal notranslate"><span class="pre">Snakemake</span></code> workflow manually, the most important thing to do is to populate <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> with the paths to your particular input and output directories, and to generate the sample file (either manually (:ref:<code class="docutils literal notranslate"><span class="pre">manual</span></code>) or using a semi (:ref:<code class="docutils literal notranslate"><span class="pre">fastqauto</span></code>) or completely (:ref:<code class="docutils literal notranslate"><span class="pre">fullauto</span></code>) automatic procedure. Personalizing this will allow the pipeline to pull the relevant files when computing the results of individual rules, so this step is crucial. You should also edit any other important parts of the configuration file, as described here (:ref:<code class="docutils literal notranslate"><span class="pre">config</span></code>).</p>
+<p>Once the pieces are in place, and you have either activated an environment using <code class="docutils literal notranslate"><span class="pre">environment.yaml</span></code> or otherwise installed <code class="docutils literal notranslate"><span class="pre">snakemake</span></code>, you can run the pipeline using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sbatch</span> <span class="n">submit</span><span class="o">/</span><span class="n">snake_submit</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>If you are using the <code class="docutils literal notranslate"><span class="pre">SLURM</span></code> scheduler, you can run the pipeline by simply executing the <code class="docutils literal notranslate"><span class="pre">submit/snake_submit.sh</span></code> file in the <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> directory, after configuring options for your particular system (:ref:<code class="docutils literal notranslate"><span class="pre">slurm</span></code>), or by setting the <code class="docutils literal notranslate"><span class="pre">rewritecluster</span></code> configuration flag to 1, and specifying the options for all jobs in the <code class="docutils literal notranslate"><span class="pre">required</span></code> section of the <code class="docutils literal notranslate"><span class="pre">cluster.yaml</span></code> file. If you are not using a scheduler, or are logged into a computer with sufficient computational resources (e.g., a <code class="docutils literal notranslate"><span class="pre">SLURM</span></code> job run in interactive mode), you can execute <code class="docutils literal notranslate"><span class="pre">Snakemake</span></code> directly.</p>
+</div>
+<div class="section" id="running-the-pipeline-with-slurm">
+<span id="slurm"></span><h2>Running the pipeline with <code class="docutils literal notranslate"><span class="pre">SLURM</span></code><a class="headerlink" href="#running-the-pipeline-with-slurm" title="Permalink to this headline">¶</a></h2>
+<p>In order to run the pipeline with <code class="docutils literal notranslate"><span class="pre">SLURM</span></code> or any other similar scheduling platform on an HPC system, the file <code class="docutils literal notranslate"><span class="pre">cluster.yaml</span></code> in the base directory needs to be populated. Specifications for individual rules can be added or removed as needed; the default configuration is what must absolutely be specified for the pipeline to run properly. Make sure that you include the following:</p>
+<ul class="simple">
+<li><p>Your account name</p></li>
+<li><p>Any flags that you typically use when running commands on the system, in the <code class="docutils literal notranslate"><span class="pre">__default__</span></code>-&gt;``slurm``-&gt;``command`` string</p></li>
+<li><p>The partition of your system that you plan to use, as <code class="docutils literal notranslate"><span class="pre">queue</span></code>. By default, this might be <code class="docutils literal notranslate"><span class="pre">compute</span></code> or <code class="docutils literal notranslate"><span class="pre">normal</span></code>.</p></li>
+</ul>
+<p>If you set your account name at the top of the <code class="docutils literal notranslate"><span class="pre">cluster.yaml</span></code> file, as well as setting the default partition just once, and you do not change the parameter <code class="docutils literal notranslate"><span class="pre">rewritecluster</span></code> to 0 in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code>, you can use the command line interface or the provided submission file to circumvent filling out the rest of <code class="docutils literal notranslate"><span class="pre">cluster.yaml</span></code>. You can also do this by invoking <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/importworkspace.py</span></code> once before running the pipeline, if you already have a valid <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code>. If you do this, you won’t need to change these values for the specifications for all of the individual rules, unless you have specific computational needs or usage requirements, in which case you should set <code class="docutils literal notranslate"><span class="pre">rewritecluster</span></code> to 0. If defaults are not specified at the beginning of the <code class="docutils literal notranslate"><span class="pre">cluster.yaml</span></code> file for the user, maximum memory usage, maximum number of cores, and maximum number of threads, <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> will not execute successfully and an error will be thrown.</p>
+</div>
+<div class="section" id="setting-cpus-and-memory-requirements">
+<h2>Setting CPUs and memory requirements<a class="headerlink" href="#setting-cpus-and-memory-requirements" title="Permalink to this headline">¶</a></h2>
+<p>As a general rule for memory-intensive assemblers, the memory available to the process should be about ten times the number of cores/CPUs that you have available to you on the machine. For example, if using a machine with 30 cores available and 300 GB of available memory, you may want to configure your jobs to use 15 cores and 150 GB of memory, to allow two jobs to run concurrently on one node, and optimize memory relative to number of cores.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Arianna Krinos
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
