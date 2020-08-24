@@ -2,6 +2,7 @@
 import argparse
 import yaml
 import os
+import sys
 
 parser = argparse.ArgumentParser(
         description='Welcome to eukrhythmic! By default, all rules are run, unless you have ' + 
@@ -23,6 +24,8 @@ parser.add_argument('-s', '--system', dest = "system", choices = ["slurm", "pbs"
                     help = "What HPC system you are running eukrhythmic on.")
 parser.add_argument('-q', '--queue', dest = "queue", default = "",
                     help = "Which queue to submit to on the HPC. Not included if not specified")
+parser.add_argument('-np', '--np', dest = "np", action = "store_true", default = False,
+                    help = "Whether to just do a dry run.")
 
 args = parser.parse_args()
 snakefile = "eukrhythmic"
@@ -41,7 +44,11 @@ elif args.subroutine == "analysis":
     snakefile = "eukrhythmic-analysis"
 elif args.subroutine == "analysis-spike":
     snakefile = "eukrhythmic-analysis-spike"
-    
+
+if args.np:
+    os.system(" ".join(["snakemake","-c",str(snakefile),"--rerun-incomplete","-np","--cores",str(1)]))
+    sys.exit(0)  
+ 
 rerun_incomplete = ""
 if args.rerun_incomplete:
     rerun_incomplete = "--rerun-incomplete"
