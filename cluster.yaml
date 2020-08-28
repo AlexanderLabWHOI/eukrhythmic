@@ -17,7 +17,7 @@ __default__:
   queue: scavenger
   system: slurm
   tasks: 1
-  time: 1400
+  time: 5000
 fastqc:
   account: akrinos
   cpupertask: 5

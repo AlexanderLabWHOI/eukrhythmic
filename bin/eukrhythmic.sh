@@ -63,7 +63,7 @@ while (( "$#" )); do
       USESAMPFLAG=1
       shift
       ;;
-    --dry-run)
+    -np|--dry-run)
       DRYRUNFLAG=1
       shift
       ;;
@@ -159,15 +159,20 @@ fi
 
 python scripts/importworkspace.py
 
-if [[ DRYRUNFLAG -eq 1 ]]
+if [[ DRYRUNFLAG -eq 1 ]] && [[ SLURMFLAG -ne 1 ]]
 then
     echo "Running a dry run."
-    snakemake -np --rerun-incomplete --jobs 100 --use-conda
+    snakemake -np --rerun-incomplete --jobs 100 --use-conda -c eukrhythmic
 else
     if [[ SLURMFLAG -eq 1 ]]
     then
         echo "Running on SLURM."
-        submit/eukrhythmic $SUBROUTINE --jobs $JOBS
+        if [[ DRYRUNFLAG -eq 1 ]]
+        then
+            submit/eukrhythmic $SUBROUTINE --jobs $JOBS -np
+        else
+            submit/eukrhythmic $SUBROUTINE --jobs $JOBS
+        fi
         #snakemake \
         #    --rerun-incomplete --jobs 100 --use-conda \
         #    --cluster-config cluster.yaml --cluster \
