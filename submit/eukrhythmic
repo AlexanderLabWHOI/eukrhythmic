@@ -19,7 +19,7 @@ parser.add_argument('--rerun-incomplete', action='store_true', default=False,
                     help='Whether to tell Snakemake to rerun incomplete jobs.')
 
 parser.add_argument('-j', '--jobs', dest = "jobs", default = 500)
-parser.add_argument('-s', '--system', dest = "system", choices = ["slurm", "pbs"], 
+parser.add_argument('-s', '--system', dest = "system", choices = ["slurm", "pbs", "qsub", "sbatch"], 
                     default = "slurm",
                     help = "What HPC system you are running eukrhythmic on.")
 parser.add_argument('-q', '--queue', dest = "queue", default = "",
@@ -52,9 +52,9 @@ if args.np:
 rerun_incomplete = ""
 if args.rerun_incomplete:
     rerun_incomplete = "--rerun-incomplete"
-if args.system == "slurm":
+if (args.system == "sbatch") | (args.system == "slurm"):
     os.system(" ".join(["sbatch",os.path.join("submit","snake-submit.sh"),snakefile,str(args.jobs),rerun_incomplete]))
-elif args.system == "qsub":
+elif (args.system == "qsub") | (args.system == "pbs"):
     submit_args = ["sbatch",os.path.join("submit","snake-submit-pbs.sh"),snakefile,str(args.jobs),rerun_incomplete]
     if args.queue != "":
         submit_args.append("-q")
