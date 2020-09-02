@@ -1,46 +1,51 @@
 __default__:
-  account: akrinos
+  account: haleysh 
   command_options:
     slurm:
       account: --account={}
       command: sbatch --parsable --qos=unlim
       key_mapping: null
-      mem: --mem={}g
+      mem: --mem={}gb
       name: --job-name={}
       nodes: -N {}
       queue: --partition={}
       threads: -n {}
       time: --time={}
+    pbs: 
+      command: sbatch
+      key_mapping: null
+      mem: -l vmem={}gb
+      name: -N {}
+      nodes: -l nodes={}
+      queue: –partition={}
+      threads: -l ppn={} 
+      time: -l walltime={}
   cpupertask: 18
   mem: 180
   nodes: 1
   queue: scavenger
   system: slurm
   tasks: 1
-  time: 5000
+  time: 1400
 fastqc:
-  account: akrinos
   cpupertask: 5
   mem: 1
   queue: scavenger
   tasks: 1
   time: 720
 fastqc_trimmed:
-  account: akrinos
   cpupertask: 5
   mem: 1
   queue: scavenger
   tasks: 1
   time: 720
 required:
-  accountname: akrinos
   defaultqueue: scavenger
   maxcores: 1
   maxcpuspertask: 18
   maxmemory: 180
   maxtasks: 1
 transabyssmerge:
-  account: akrinos
   cpupertask: 18
   mem: 180
   nodes: 1
@@ -48,7 +53,6 @@ transabyssmerge:
   tasks: 1
   time: 10000
 trimmomatic:
-  account: akrinos
   cpupertask: 5
   mem: 48
   nodes: 1
@@ -56,15 +60,13 @@ trimmomatic:
   tasks: 1
   time: 1400
 trinity:
-  account: akrinos
-  cpupertask: 18
-  mem: 180
+  cpupertask: 20
+  mem: 500
   nodes: 1
-  queue: scavenger
+  queue: bigmem 
   tasks: 1
   time: 10000
 velvet:
-  account: akrinos
   cpupertask: 18
   mem: 180
   nodes: 1

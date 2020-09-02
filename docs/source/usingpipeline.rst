@@ -21,7 +21,7 @@ And then invoke::
 
     eukrhythmic <arguments>
 
-To run ``eukrhythmic`` on the provided sample data, simply invoke ``eukrhythmic`` on a clean install of the program without arguments. You can also run the sample data by using the argument ``--use-sample``, which will copy the relevant configuration entries. The exception is if you are running on an HPC system that uses the ``SLURM`` scheduler, invoke ``eukrhythmic`` with one argument: ``-l`` or ``--slurm`` to leverage your computing resources. In that case, you will also want to invoke ``sbatch eukrhythmic --slurm``, to avoid running any steps on your current remote machine. A list of additional arguments required commonly by users is given below: 
+To run ``eukrhythmic`` on the provided sample data, simply invoke ``eukrhythmic`` on a clean install of the program without arguments. You can also run the sample data by using the argument ``--use-sample``, which will copy the relevant configuration entries. The exception is if you are running on an HPC system that uses the ``SLURM`` scheduler, invoke ``eukrhythmic`` with one argument: ``-l`` or ``--slurm`` to leverage your computing resources. In that case, you will also want to invoke ``sbatch eukrhythmic --slurm``, to avoid running any steps on your current remote machine. You can also use the ``-np`` or ``--dry_run`` flag to run do a ``Snakemake`` dry run, to see whether the jobs to be run align with your expectation (you can do this whether or not you are using a scheduler). A list of additional arguments required commonly by users is given below: 
 
 .. list-table:: Title
    :widths: 25 25 50
@@ -95,9 +95,11 @@ To use the pipeline as a ``Snakemake`` workflow manually, the most important thi
 
 Once the pieces are in place, and you have either activated an environment using ``environment.yaml`` or otherwise installed ``snakemake``, you can run the pipeline using::
 
-    sbatch submit/snake_submit.sh
+    sbatch submit/snake_submit.sh <snakefile> <number of jobs> <optionally, --rerun-incomplete>
 
 If you are using the ``SLURM`` scheduler, you can run the pipeline by simply executing the ``submit/snake_submit.sh`` file in the ``eukrhythmic`` directory, after configuring options for your particular system (:ref:``slurm``), or by setting the ``rewritecluster`` configuration flag to 1, and specifying the options for all jobs in the ``required`` section of the ``cluster.yaml`` file. If you are not using a scheduler, or are logged into a computer with sufficient computational resources (e.g., a ``SLURM`` job run in interactive mode), you can execute ``Snakemake`` directly. 
+
+You can also do this using the ``submit/eukrhythmic`` script <Arianna needs to explain this script and the subroutines. She also needs to add ability to specify subroutines in the ``bin/eukrhythmic`` file.>
 
 .. _slurm:
 
