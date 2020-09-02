@@ -66,9 +66,13 @@ SCRATCHDIR = config["scratch"]
 KMERVALS = list(config['kmers'])
 KMERVAL = config['defaultkmer']
 MINCONTIGLENGTH = config["mincontig"]
-SPIKEFILE = config['spikefile']
+if "spikefile" in config:
+    SPIKEFILE = config['spikefile']
+else:
+    SPIKEFILE = ""
 DROPSPIKE = config['runbbmap']
-SPIKETABLE = config["spiketable"]
+if "spiketable" in config:
+    SPIKETABLE = config["spiketable"]
 TRANSDECODERORFSIZE = config["transdecodercutoff"]
 MINCOVERAGECLUST2 = config["transdecodercutoff"]
 ADAPTER = config["adapter"]
