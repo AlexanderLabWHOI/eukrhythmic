@@ -8,5 +8,5 @@ SNAKEFILE=$1 # to run all of eukrhythmic, this is "eukrhythmic"
 JOBS=$2 # should default to 500
 RERUN_INCOMPLETE=$3
 
-snakemake $RERUN_INCOMPLETE --jobs $JOBS --use-conda --cluster-config cluster-pbs.yaml --cluster 
+snakemake -s $SNAKEFILE $RERUN_INCOMPLETE --jobs $JOBS --use-conda --cluster-config cluster-pbs.yaml --cluster 
 "qsub -N $jobname.{rule}.{wildcards} -l vmem={cluster.mem}gb,walltime={cluster.time},nodes={cluster.nodes}:ppn={cluster.cpupertask}"
