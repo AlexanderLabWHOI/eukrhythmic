@@ -46,7 +46,7 @@ elif args.subroutine == "analysis-spike":
     snakefile = "eukrhythmic-analysis-spike"
 
 if args.np:
-    os.system(" ".join(["snakemake","-c",str(snakefile),"--rerun-incomplete","-np","--cores",str(1)]))
+    os.system(" ".join(["snakemake","-s",str(snakefile),"--rerun-incomplete","-np","--cores",str(1)]))
     sys.exit(0)  
  
 rerun_incomplete = ""

@@ -39,7 +39,7 @@ rule all:
                        folder = "by_assembly_group", assembly = assemblygroups),
         # DIAMOND ALIGNMENT AND KEGG ANNOTATION 
         kegg = expand(os.path.join("{base}", "kegg", "{folder}", "{assembly}_kegg.csv"), base = OUTPUTDIR, 
-                      folder = "by_assembly_group", assembly = assemblygroups)
+                      folder = "by_assembly_group", assembly = assemblygroups),
         # EUKULELE
         eukulele = expand(os.path.join(OUTPUTDIR, "eukulele_{folder}"), 
                         folder = "by_assembly_group",
