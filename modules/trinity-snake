@@ -10,7 +10,52 @@ from importworkspace import *
 
 def get_samples(assemblygroup):
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
+    
     return samplelist
+    
+def get_samples_commas(assemblygroup, dropspike, leftorright, commas = False):
+    samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
+    foldername = "bbmap"
+    extensionname = "clean"
+    if dropspike == 0:
+        foldername = "firsttrim"
+        extensionname = "trimmed"
+    if leftorright == "left":
+        samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
+                      for sample in samplelist]
+    else:
+        samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_2." + extensionname + ".fastq.gz") 
+                      for sample in samplelist]
+    if commas:
+        return ",".join(samplelist)
+    else:
+        return samplelist
+    
+def get_samples_(assemblygroup, dropspike, leftorright):
+    samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
+    foldername = "bbmap"
+    extensionname = "clean"
+    if dropspike == 0:
+        foldername = "firsttrim"
+        extensionname = "trimmed"
+    if leftorright == "left":
+        samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
+                      for sample in samplelist]
+    else:
+        samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_2." + extensionname + ".fastq.gz") 
+                      for sample in samplelist]
+    return samplelist
+    
+def getfoldername(dropspike):
+    if dropspike == 0:
+        return "firsttrim"
+    return "bbmap"
+
+def getextname(dropspike):
+    if dropspike == 0:
+        return "trimmed"
+    return "clean"
+
    
 print("CPUs in")
 print(MAXCPUSPERTASK * MAXTASKS)
@@ -28,15 +73,23 @@ else:
 # according to user specifications.  
 rule trinity:
     input:
-        left = LEFTFILE,
-        right = RIGHTFILE
+        left = lambda filename: get_samples_(filename.assembly, DROPSPIKE, "left"),
+        right = lambda filename: get_samples_(filename.assembly, DROPSPIKE, "right")
+        
+        #",".join([lambda filename: expand(os.path.join(OUTPUTDIR, {foldername}, 
+        ##        "{samples}_1.{extensionname}.fastq.gz"), 
+        #        samples = get_samples(filename.assembly), foldername = getfoldername(DROPSPIKE), 
+        #        extensionname = getextname(DROPSPIKE))]),
+        #right = [lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", 
+        #        "{samples}_2.clean.fastq.gz"), samples = get_samples(filename.assembly), 
+        #        foldername = getfoldername(DROPSPIKE), extensionname = getextname(DROPSPIKE))]
     output:
         os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}", "Trinity.fasta")
     params:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "trinity_results_assembly_{assembly}"),
-        left = LEFTFILE,
-        right = RIGHTFILE,
+        left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left"), #LEFTFILE,
+        right = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "right"), #RIGHTFILE,
         maxmem = MAXMEMORY,
         CPUs = MAXCPUSPERTASK * MAXTASKS #MAXTHREADS * MAXCORES
     log:

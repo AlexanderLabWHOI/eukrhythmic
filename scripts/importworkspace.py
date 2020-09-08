@@ -29,12 +29,13 @@ if (cluster != None):
                 print("Check that you have specified values in the cluster configuration file file. The missing entry that triggered this error was "  + str(offender) + ".")
                 sys.exit(1)
 
-DEFAULTQUEUE = cluster["required"]["defaultqueue"]
-DEFAULTUSER = cluster["required"]["accountname"]
-MAXMEMORY = cluster["required"]["maxmemory"]
-MAXTASKS = cluster["required"]["maxtasks"]
-MAXNODES = cluster["required"]["maxcores"]
-MAXCPUSPERTASK = cluster["required"]["maxcpuspertask"]
+if "required" in cluster:
+    DEFAULTQUEUE = cluster["required"]["defaultqueue"]
+    DEFAULTUSER = cluster["required"]["accountname"]
+    MAXMEMORY = cluster["required"]["maxmemory"]
+    MAXTASKS = cluster["required"]["maxtasks"]
+    MAXNODES = cluster["required"]["maxcores"]
+    MAXCPUSPERTASK = cluster["required"]["maxcpuspertask"]
     
 required_entries = ["metaT_sample","inputDIR","checkqual","spikefile","runbbmap",\
                     "kmers","assemblers","jobname","adapter","separategroups","outputDIR","scratch",\
