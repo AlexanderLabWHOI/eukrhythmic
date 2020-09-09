@@ -8,9 +8,23 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
     
-def get_samples(assemblygroup):
+def get_samples_commas(assemblygroup, dropspike, leftorright, commas = False):
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
-    return samplelist
+    foldername = "bbmap"
+    extensionname = "clean"
+    if dropspike == 0:
+        foldername = "firsttrim"
+        extensionname = "trimmed"
+    if leftorright == "left":
+        samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
+                      for sample in samplelist]
+    else:
+        samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_2." + extensionname + ".fastq.gz") 
+                      for sample in samplelist]
+    if commas:
+        return ",".join(samplelist)
+    else:
+        return samplelist
 
 MINKVAL = int(min(KMERVALS))
 MAXKVAL = int(max(KMERVALS))
@@ -32,12 +46,14 @@ else:
 
 rule megahit:
     input:
-        r1 = LEFTFILE,
-        r2 = RIGHTFILE
+        left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = False),
+        right = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "right", commas = False)
     output:
         megafile = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa")
     params:
         megadir = directory(os.path.join(OUTPUTDIR, "megahit", "{assembly}")),
+        left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = True),
+        right = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "right", commas = True),
         minkval = MINKVAL,
         maxkval = MAXKVAL
     log:
@@ -48,19 +64,20 @@ rule megahit:
         '''
         if [ -d {params.megadir} ]
         then
-            megahit --continue --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
+            megahit --continue --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -1 {params.r1} -2 {params.r2} -f -o {params.megadir} 2> {log.err} 1> {log.out}
         else
-            megahit --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -r {input.r1} -f -o {params.megadir} 2> {log.err} 1> {log.out}
+            megahit --k-min {params.minkval} --k-max {params.maxkval} -m 0.9 -t 8 -1 {params.r1} -2 {params.r2} -f -o {params.megadir} 2> {log.err} 1> {log.out}
         fi
         '''
         
 rule megahit_SE:
     input:
-        r1 = LEFTFILE
+        left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = False)
     output:
         megafile = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa")
     params:
-        megadir = directory(os.path.join(OUTPUTDIR, "megahit", "{assembly}")),
+        megadir = directory(os.path.join(OUTPUTDIR, "megahit", "{assembly}")), 
+        left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = True),
         minkval = MINKVAL,
         maxkval = MAXKVAL
     log:
