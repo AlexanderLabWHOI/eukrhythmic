@@ -12,7 +12,7 @@ __default__:
       threads: -n {}
       time: --time={}
     pbs: 
-      command: sbatch
+      command: qsub 
       key_mapping: null
       mem: -l vmem={}gb
       name: -N {}
@@ -24,21 +24,20 @@ __default__:
   mem: 180
   nodes: 1
   queue: scavenger
-  system: slurm
   tasks: 1
-  time: 1400
+  time: 14:00:00
 fastqc:
   cpupertask: 5
   mem: 1
   queue: scavenger
   tasks: 1
-  time: 720
+  time: 6:00:00
 fastqc_trimmed:
   cpupertask: 5
   mem: 1
   queue: scavenger
   tasks: 1
-  time: 720
+  time: 6:00:00
 required:
   defaultqueue: scavenger
   maxcores: 1
@@ -58,18 +57,18 @@ trimmomatic:
   nodes: 1
   queue: scavenger
   tasks: 1
-  time: 1400
+  time: 24:00:00
 trinity:
   cpupertask: 20
   mem: 500
   nodes: 1
   queue: bigmem 
   tasks: 1
-  time: 10000
+  time: 48:00:00
 velvet:
   cpupertask: 18
   mem: 180
   nodes: 1
   queue: scavenger
   tasks: 1
-  time: 10000
+  time: 48:00:00
