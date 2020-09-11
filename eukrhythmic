@@ -49,6 +49,7 @@ ruleorder: megahit > megahit_SE
 ruleorder: velvet > velvet_SE
 ruleorder: transdecoder_indiv > transdecoder_final_proteins > transdecoder > transdecoder_by_assembly
 ruleorder: salmon_indiv > salmon_clustering
+ruleorder: salmon_clustering > salmon_clustering_raw
 ruleorder: combinequastmerge > quast_merged_transdecoded
 ruleorder: clustering_mega_merge > clustering_by_assembly_group
 ruleorder: salmon_clustering_against_mega > salmon_clustering
@@ -106,14 +107,14 @@ rule all:
         # SALMON QUANTIFICATION OF RAW AGAINST MERGED BY ASSEMBLY GROUP
         salmon_by_assembly = expand(os.path.join("{base}", "salmon_{folder}", "salmon_quant_assembly_{assembly}",
                                     "quant.sf"), base = OUTPUTDIR, folder = "by_assembly_group", assembly = assemblygroups),
-        # SALMON QUANTIFICATION OF RAW AGAINST MEGA-MERGED ASSEMBLY
+        # SALMON QUANTIFICATION OF ALL RAW FILES AGAINST MEGA-MERGED ASSEMBLY
         salmon_mega_merge = expand(os.path.join("{base}", "salmon_{folder}", "salmon_quant_assembly_{assembly}", "quant.sf"), 
                                    base = OUTPUTDIR, folder = "mega_merge", assembly = "merged"),
-        # SALMON QUANTIFICATION OF MERGED BY ASSEMBLY GROUP AGAINST MEGA_MERGED
-        salmon_against_mega_merge = expand(os.path.join("{base}", "salmon_{folder}", "against_mega", 
-                                                        "salmon_quant_assembly_{assembly}", "quant.sf"), 
-                                                         base = OUTPUTDIR, folder = "mega_merge", 
-                                                         assembly = assemblygroups),
+        # SALMON QUANTIFICATION OF INDIVIDUAL RAW FILES FROM EACH AG AGAINST MEGA-MERGED ASSEMBLY
+        salmon_mega_merge_raw = expand(os.path.join("{base}", "salmon_{folder}", "raw_individual", 
+                                   "salmon_quant_assembly_{assembly}", "quant.sf"), 
+                                   base = OUTPUTDIR, folder = "mega_merge", assembly = assemblygroups),
+                                   
         # TRANSDECODER ON FINAL AND MEGA-MERGED ASSEMBLY
         transdecoder_mega_merge = expand(os.path.join("{base}", "transdecoder_{folder}_finalproteins", 
                                                       "{assembly}.fasta.transdecoder.cds"), 

@@ -112,11 +112,10 @@ rule all:
         # SALMON QUANTIFICATION OF RAW AGAINST MEGA-MERGED ASSEMBLY
         salmon_mega_merge = expand(os.path.join("{base}", "salmon_{folder}", "salmon_quant_assembly_{assembly}", "quant.sf"), 
                                    base = OUTPUTDIR, folder = "mega_merge", assembly = "merged"),
-        # SALMON QUANTIFICATION OF MERGED BY ASSEMBLY GROUP AGAINST MEGA_MERGED
-        salmon_against_mega_merge = expand(os.path.join("{base}", "salmon_{folder}", "against_mega", 
-                                                        "salmon_quant_assembly_{assembly}", "quant.sf"), 
-                                                         base = OUTPUTDIR, folder = "mega_merge", 
-                                                         assembly = assemblygroups),
+        # SALMON QUANTIFICATION OF INDIVIDUAL RAW FILES FROM EACH AG AGAINST MEGA-MERGED ASSEMBLY
+        salmon_mega_merge_raw = expand(os.path.join("{base}", "salmon_{folder}", "raw_individual", 
+                                   "salmon_quant_assembly_{assembly}", "quant.sf"), 
+                                   base = OUTPUTDIR, folder = "mega_merge", assembly = assemblygroups),
         # TRANSDECODER ON FINAL AND MEGA-MERGED ASSEMBLY
         transdecoder_mega_merge = expand(os.path.join("{base}", "transdecoder_{folder}_finalproteins", 
                                                       "{assembly}.fasta.transdecoder.cds"), 
