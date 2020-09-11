@@ -51,9 +51,8 @@ ruleorder: transdecoder_indiv > transdecoder_final_proteins > transdecoder > tra
 ruleorder: salmon_indiv > salmon_clustering
 ruleorder: combinequastmerge > quast_merged_transdecoded
 ruleorder: clustering_mega_merge > clustering_by_assembly_group
-ruleorder: salmon_clustering_against_mega > salmon_clustering
+ruleorder: salmon_clustering_raw > salmon_clustering
 ruleorder: merge_all > copies
-ruleorder: salmon_rename > salmon_clustering_against_mega
 ruleorder: salmon_rename > salmon_clustering
 
 rule all:
