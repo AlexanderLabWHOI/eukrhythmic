@@ -14,14 +14,14 @@ rule eukulele_run:
         pep = (lambda filename: expand(os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", 
                                                     "{assembly}.fasta.transdecoder.pep"), 
                assembly = assemblygroups, folder = filename.folder)),
-        salmon = (lambda filename: expand(os.path.join(OUTPUTDIR, "salmon_{folder}", "against_mega",
-                                                       "salmon_quant_assembly_{assembly}", "quant.sf"), 
+        salmon = (lambda filename: expand(os.path.join(OUTPUTDIR, "salmon_mega_merge",
+                                                       "salmon_quant_assembly_merged", "quant.sf"), 
                assembly = assemblygroups, folder = filename.folder))
     output:
         directory(os.path.join(OUTPUTDIR, "eukulele_{folder}"))
     params:
         sampledir = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins"),
-        salmondir = os.path.join(OUTPUTDIR, "salmon_{folder}", "against_mega")
+        salmondir = (lambda filename: expand(os.path.join(OUTPUTDIR, "salmon_mega_merge")
     conda:
         os.path.join("..","envs","eukulele-env.yaml")
     shell:

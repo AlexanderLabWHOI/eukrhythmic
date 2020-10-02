@@ -30,7 +30,6 @@ include: "modules/transabyss-snake"
 include: "modules/transabyss-merge-snake"
 include: "modules/quast-snake"
 
-ruleorder: trimmomatic > trimmomatic_SE
 ruleorder: trinity > trinity_SE
 ruleorder: megahit > megahit_SE
 ruleorder: velvet > velvet_SE

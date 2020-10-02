@@ -7,40 +7,23 @@ from snakemake.exceptions import print_exception, WorkflowError
 import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
-
-def get_samples(assemblygroup):
-    samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
-    if assemblygroup == "merged":
-        samplelist = list(SAMPLEINFO['SampleID'])
-    return samplelist
-    
-if DROPSPIKE == 0:
-    LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), 
-                                       samples = get_samples(filename.assembly))
-    RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), 
-                                        samples = get_samples(filename.assembly))
-else:
-    LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_1.clean.fastq.gz"), 
-                                       samples = get_samples(filename.assembly))
-    RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_2.clean.fastq.gz"), 
-                                        samples = get_samples(filename.assembly))
     
 def salmon_get_samples(assembly,left_or_right,list_format):
+    foldername = "bbmap"
+    extensionname = "clean"
+    if DROPSPIKE == 0:
+        foldername = "firsttrim"
+        extensionname = "trimmed"
+    samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assembly]['SampleID']) 
+    if assembly == "merged":
+        samplelist = list(SAMPLEINFO['SampleID'])
+
     if left_or_right == "left":
-        if DROPSPIKE == 0:
-            samples = get_samples(assembly)
-            filenames = [os.path.join(OUTPUTDIR, "firsttrim", curr + "_1.trimmed.fastq.gz") for curr in samples]
-        else:
-            samples = get_samples(assembly)
-            filenames = [os.path.join(OUTPUTDIR, "bbmap", curr + "_1.clean.fastq.gz") for curr in samples]
+        filenames = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
+                      for sample in samplelist]
     else:
-        if DROPSPIKE == 0:
-            samples = get_samples(assembly)
-            filenames = [os.path.join(OUTPUTDIR, "firsttrim", curr + "_2.trimmed.fastq.gz") for curr in samples]
-        else:
-            samples = get_samples(assembly)
-            filenames = [os.path.join(OUTPUTDIR, "bbmap", curr + "_2.clean.fastq.gz") for curr in samples]
-            
+        filenames = [os.path.join(OUTPUTDIR, foldername, sample + "_2." + extensionname + ".fastq.gz") 
+                      for sample in samplelist]
     if list_format:
         return filenames
     else:
@@ -49,8 +32,8 @@ def salmon_get_samples(assembly,left_or_right,list_format):
 rule salmon_indiv:
     input: 
         fastafile = os.path.join(OUTPUTDIR, "assembled", "{assembly}_{assembler}.fasta"),
-        left = LEFTFILE,
-        right = RIGHTFILE
+        left = lambda filename: salmon_get_samples(filename.assembly, "left", list_format = True),
+        right = lambda filename: salmon_get_samples(filename.assembly, "right", list_format = True)
     output:
         os.path.join(OUTPUTDIR, "indiv_salmon", "salmon_quant_assembly_{assembly}_{assembler}", "quant.sf")
     params:
@@ -58,10 +41,8 @@ rule salmon_indiv:
         indexname = os.path.join(OUTPUTDIR, "indiv_salmon", "salmon_index_assembly_{assembly}_{assembler}"),
         kval = 31,
         outdir = os.path.join(OUTPUTDIR, "indiv_salmon", "salmon_quant_assembly_{assembly}_{assembler}"),
-        left = lambda filename: expand("{sampnames}", sampnames = salmon_get_samples(filename.assembly, 
-                                                                                     "left", list_format = False)),
-        right = lambda filename: expand("{sampnames}", sampnames = salmon_get_samples(filename.assembly, 
-                                                                                      "right", list_format = False))
+        left = lambda filename: salmon_get_samples(filename.assembly, "left", list_format = False),
+        right = lambda filename: salmon_get_samples(filename.assembly, "right", list_format = False)
     log:
         err = os.path.join("logs","salmon","indiv_{assembly}_{assembler}_err.log"),
         out = os.path.join("logs","salmon","indiv_{assembly}_{assembler}_out.log")
@@ -75,8 +56,8 @@ rule salmon_indiv:
 rule salmon_merged:
     input: 
         fastafile = os.path.join(OUTPUTDIR, "merged", "{assembly}_merged.fasta"),
-        left = LEFTFILE,
-        right = RIGHTFILE
+        left = lambda filename: salmon_get_samples(filename.assembly, "left", list_format = True),
+        right = lambda filename: salmon_get_samples(filename.assembly, "right", list_format = True)
     output:
         os.path.join(OUTPUTDIR, "merged_salmon", "salmon_quant_assembly_{assembly}", "quant.sf")
     params:
@@ -97,8 +78,8 @@ rule salmon_merged:
 rule salmon_clustering:
     input: 
         assemblyfile = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_merged.fasta"),
-        left = LEFTFILE,
-        right = RIGHTFILE
+        left = lambda filename: salmon_get_samples(filename.assembly, "left", list_format = True),
+        right = lambda filename: salmon_get_samples(filename.assembly, "right", list_format = True)
     output:
         os.path.join(OUTPUTDIR, "salmon_{folder}", "salmon_quant_assembly_{assembly}", "quant.sf")
     params:
@@ -117,26 +98,27 @@ rule salmon_clustering:
         salmon index -t {input.assemblyfile} -i {params.indexname} -k {params.kval} 2> {log.err} 1> {log.out}
         salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {params.outdir} 2>> {log.err} 1>> {log.out}
         """
-
-rule salmon_clustering_against_mega:
+        
+rule salmon_clustering_raw:
     input: 
-        assemblyfile = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_merged.fasta"),
-        megamerge = os.path.join(OUTPUTDIR, "cluster_mega_merge", "merged_merged.fasta")
+        assemblyfile = os.path.join(OUTPUTDIR, "cluster_{folder}", "merged_merged.fasta"),
+        left = lambda filename: salmon_get_samples(filename.assembly, "left", list_format = True),
+        right = lambda filename: salmon_get_samples(filename.assembly, "right", list_format = True)
     output:
-        os.path.join(OUTPUTDIR, "salmon_{folder}", "against_mega", "salmon_quant_assembly_{assembly}", "quant.sf")
+        os.path.join(OUTPUTDIR, "salmon_{folder}", "raw_individual", "salmon_quant_assembly_{assembly}", "quant.sf")
     params:
         libtype = "A",
-        outdir = os.path.join(OUTPUTDIR, "salmon_{folder}", "against_mega", "salmon_quant_assembly_{assembly}"),
         indexname = os.path.join(OUTPUTDIR, "salmon_{folder}", "salmon_index_assembly_{assembly}"),
+        outdir = os.path.join(OUTPUTDIR, "salmon_{folder}", "raw_individual", "salmon_quant_assembly_{assembly}"),
         decoysfile = "decoys_{assembly}.txt",
         kval = 31
     log:
-        err = os.path.join("logs","salmon","{folder}_{assembly}_againstmega_err.log"),
-        out = os.path.join("logs","salmon","{folder}_{assembly}_againstmega_out.log")
+        err = os.path.join("logs","salmon","{folder}_{assembly}_err.log"),
+        out = os.path.join("logs","salmon","{folder}_{assembly}_out.log")
     conda:
         "../envs/salmon-env.yaml"
     shell:
         """
-        salmon index -t {input.megamerge} -i {params.indexname} -k {params.kval} 2> {log.err} 1> {log.out}
-        salmon quant -i {params.indexname} -l {params.libtype} -r {input.assemblyfile} --validateMappings -o {params.outdir} 2>> {log.err} 1>> {log.out}
+        salmon index -t {input.assemblyfile} -i {params.indexname} -k {params.kval} 2> {log.err} 1> {log.out}
+        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {params.outdir} 2>> {log.err} 1>> {log.out}
         """

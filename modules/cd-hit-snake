@@ -60,7 +60,7 @@ rule clustering_mega_merge:
         os.path.join(OUTPUTDIR, "cluster_{folder}", "merged_merged.fasta")
     params:
         threads = 10,
-        maxmemory = 15000, # -G o indicates local sequence identity.
+        maxmemory = 30000, # -G o indicates local sequence identity.
         identityparam = 1.00,
         mincoverageshorter = MINCOVERAGECLUST2,
         mincoveragelong = 0.005

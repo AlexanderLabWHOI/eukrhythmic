@@ -29,12 +29,13 @@ if (cluster != None):
                 print("Check that you have specified values in the cluster configuration file file. The missing entry that triggered this error was "  + str(offender) + ".")
                 sys.exit(1)
 
-DEFAULTQUEUE = cluster["required"]["defaultqueue"]
-DEFAULTUSER = cluster["required"]["accountname"]
-MAXMEMORY = cluster["required"]["maxmemory"]
-MAXTASKS = cluster["required"]["maxtasks"]
-MAXNODES = cluster["required"]["maxcores"]
-MAXCPUSPERTASK = cluster["required"]["maxcpuspertask"]
+if "required" in cluster:
+    DEFAULTQUEUE = cluster["required"]["defaultqueue"]
+    DEFAULTUSER = cluster["required"]["accountname"]
+    MAXMEMORY = cluster["required"]["maxmemory"]
+    MAXTASKS = cluster["required"]["maxtasks"]
+    MAXNODES = cluster["required"]["maxcores"]
+    MAXCPUSPERTASK = cluster["required"]["maxcpuspertask"]
     
 required_entries = ["metaT_sample","inputDIR","checkqual","spikefile","runbbmap",\
                     "kmers","assemblers","jobname","adapter","separategroups","outputDIR","scratch",\
@@ -66,9 +67,13 @@ SCRATCHDIR = config["scratch"]
 KMERVALS = list(config['kmers'])
 KMERVAL = config['defaultkmer']
 MINCONTIGLENGTH = config["mincontig"]
-SPIKEFILE = config['spikefile']
+if "spikefile" in config:
+    SPIKEFILE = config['spikefile']
+else:
+    SPIKEFILE = ""
 DROPSPIKE = config['runbbmap']
-SPIKETABLE = config["spiketable"]
+if "spiketable" in config:
+    SPIKETABLE = config["spiketable"]
 TRANSDECODERORFSIZE = config["transdecodercutoff"]
 MINCOVERAGECLUST2 = config["transdecodercutoff"]
 ADAPTER = config["adapter"]

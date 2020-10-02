@@ -11,7 +11,7 @@ sys.path.insert(1, '../scripts')
 from importworkspace import *
 
 def get_samples(assemblygroup):
-    samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID']) 
+    samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
     return samplelist
 
 if DROPSPIKE == 0:
