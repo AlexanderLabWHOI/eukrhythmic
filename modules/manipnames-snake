@@ -7,14 +7,12 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
 
-print(RENAMEDDIR)
-
 def getallmergedlist():
-    mergednames = [os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in SAMPLEINFO.AssemblyGroup]
+    mergednames = list(set([os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in SAMPLEINFO.AssemblyGroup]))
     return(mergednames)
     
 def getallmerged():
-    mergednames = [os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in SAMPLEINFO.AssemblyGroup]
+    mergednames = list(set([os.path.join(OUTPUTDIR, "merged", curr + "_merged.fasta") for curr in SAMPLEINFO.AssemblyGroup]))
     return(" ".join(mergednames))
     
 def combineassemblers(assembly):
