@@ -21,7 +21,7 @@ rule eukulele_run:
         directory(os.path.join(OUTPUTDIR, "eukulele_{folder}"))
     params:
         sampledir = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins"),
-        salmondir = (lambda filename: expand(os.path.join(OUTPUTDIR, "salmon_mega_merge")
+        salmondir = (lambda filename: expand(os.path.join(OUTPUTDIR, "salmon_mega_merge")))
     conda:
         os.path.join("..","envs","eukulele-env.yaml")
     shell:
