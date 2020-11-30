@@ -75,7 +75,7 @@ DROPSPIKE = config['runbbmap']
 if "spiketable" in config:
     SPIKETABLE = config["spiketable"]
 TRANSDECODERORFSIZE = config["transdecodercutoff"]
-MINCOVERAGECLUST2 = config["transdecodercutoff"]
+MINCOVERAGECLUST2 = config["secondclustercutoff"]
 ADAPTER = config["adapter"]
 if os.path.isfile(SPIKEFILE):
     ISFILESPIKE = 1
