@@ -59,9 +59,9 @@ rule copies:
         for i in params.IDs:
             df = (spike.loc[spike['ID'] == (i)])
             #Spike calculation reference: https://www.protocols.io/view/internal-genomic-dna-standard-for-quantitative-met-jxdcpi6?step=12
-            calc = (counts[i] * ((float((df['TotalReads'])) * 
+            calc = (counts[i] * ((float((df['bbmap'])) * 
                                   (params.spikecopies / (float((df['bbmap-total']))))) / 
-                                 (float((df['TotalReads']))))) / float((df['VolumeFiltered']))
+                                 (float((df['bbmap']))))) / float((df['VolumeFiltered']))
             colNames = calc.name
             rowNames = counts.iloc[:,0]
             calc.index = rowNames
