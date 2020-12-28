@@ -54,8 +54,8 @@ rule fastqc:
         fi
         mkdir -p {params.fastqdir}
         fastqc {input} -o {params.fastqdir} 2> {log.err} 1> {log.out}
-        mv {params.outname}_fastqc.html {output.html}
-        mv {params.outname}_fastqc.zip {output.zip}
+        #mv {params.outname}_fastqc.html {output.html} 2>/dev/null
+        #mv {params.outname}_fastqc.zip {output.zip} 2>/dev/null
         '''
         
 rule multiqc:

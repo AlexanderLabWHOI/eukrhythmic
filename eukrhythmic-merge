@@ -35,6 +35,7 @@ include: "modules/hardclean-snake"
 include: "modules/eukulele-snake"
 
 ruleorder: transdecoder_indiv > transdecoder_final_proteins > transdecoder > transdecoder_by_assembly
+ruleorder: transdecoder_indiv_clean > transdecoder_finalproteins_clean > transdecoder_clean > transdecoder_by_assembly_clean
 ruleorder: salmon_indiv > salmon_clustering
 ruleorder: combinequastmerge > quast_merged_transdecoded
 #ruleorder: clustering_mega_merge > clustering_by_assembly_group
@@ -79,8 +80,9 @@ rule all:
                                                       "{assembly}.fasta.transdecoder.cds"), 
                                        base = OUTPUTDIR, folder = "mega_merge", assembly = "merged"),
         trandecoder_by_assembly_group = expand(os.path.join("{base}", "transdecoder_{folder}_finalproteins", 
-                                                    "{assembly}.fasta.transdecoder.cds"), 
-                                       base = OUTPUTDIR, folder = "by_assembly_group", assembly = assemblygroups),
+                                                    "{assembly}.fasta.transdecoder.{tdextensions}"), 
+                                       base = OUTPUTDIR, folder = "by_assembly_group", assembly = assemblygroups,
+                                       tdextensions = TDEXTENSIONS),
         # QUAST QUALITY ASSESSMENT OF FINAL ASSEMBLY
         quastfinal = expand(os.path.join("{base}", "quast_{folder}", "{assembly}"), base = OUTPUTDIR, 
                             folder = "mega_merge", assembly = "merged"),

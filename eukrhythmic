@@ -48,6 +48,7 @@ ruleorder: trinity > trinity_SE
 ruleorder: megahit > megahit_SE
 ruleorder: velvet > velvet_SE
 ruleorder: transdecoder_indiv > transdecoder_final_proteins > transdecoder > transdecoder_by_assembly
+ruleorder: transdecoder_indiv_clean > transdecoder_finalproteins_clean > transdecoder_clean > transdecoder_by_assembly_clean
 ruleorder: salmon_indiv > salmon_clustering
 ruleorder: salmon_clustering > salmon_clustering_raw
 ruleorder: combinequastmerge > quast_merged_transdecoded
@@ -89,8 +90,9 @@ rule all:
         quastcombine = expand(os.path.join("{base}", "quast", "fullresults", "allresults.tsv"), base = OUTPUTDIR),
         # TRANSDECODER OUTPUTS - optionally, run TransDecoder on the individual assemblies
         transdecoder_indiv = expand(os.path.join("{base}", "transdecoder_indiv", 
-                                                 "{assembly}_{assembler}.fasta.transdecoder.cds"),  
-                                    base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
+                                                 "{assembly}_{assembler}.fasta.transdecoder.{tdextensions}"),  
+                                    base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS,
+                                    tdextensions = TDEXTENSIONS),
         # INDIVIDUAL CLUSTERING OUTPUTS
         clustering_each_assembler = expand(os.path.join("{base}", "cluster1", "{assembly}_{assembler}.fasta"), 
                                            base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
@@ -117,11 +119,13 @@ rule all:
                                    
         # TRANSDECODER ON FINAL AND MEGA-MERGED ASSEMBLY
         transdecoder_mega_merge = expand(os.path.join("{base}", "transdecoder_{folder}_finalproteins", 
-                                                      "{assembly}.fasta.transdecoder.cds"), 
-                                       base = OUTPUTDIR, folder = "mega_merge", assembly = "merged"),
+                                                      "{assembly}.fasta.transdecoder.{tdextensions}"), 
+                                       base = OUTPUTDIR, folder = "mega_merge", assembly = "merged",
+                                       tdextensions = TDEXTENSIONS),
         trandecoder_by_assembly_group = expand(os.path.join("{base}", "transdecoder_{folder}_finalproteins", 
-                                                    "{assembly}.fasta.transdecoder.cds"), 
-                                       base = OUTPUTDIR, folder = "by_assembly_group", assembly = assemblygroups),
+                                                    "{assembly}.fasta.transdecoder.{tdextensions}"), 
+                                       base = OUTPUTDIR, folder = "by_assembly_group",
+                                       assembly = assemblygroups, tdextensions = TDEXTENSIONS),
         # QUAST QUALITY ASSESSMENT OF FINAL ASSEMBLY
         quastfinal = expand(os.path.join("{base}", "quast_{folder}", "{assembly}"), base = OUTPUTDIR, 
                             folder = "mega_merge", assembly = "merged"),
