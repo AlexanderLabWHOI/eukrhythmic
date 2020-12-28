@@ -47,8 +47,8 @@ ruleorder: trimmomatic > trimmomatic_SE
 ruleorder: trinity > trinity_SE
 ruleorder: megahit > megahit_SE
 ruleorder: velvet > velvet_SE
-ruleorder: transdecoder_indiv > transdecoder_final_proteins > transdecoder > transdecoder_by_assembly
-ruleorder: transdecoder_indiv_clean > transdecoder_finalproteins_clean > transdecoder_clean > transdecoder_by_assembly_clean
+ruleorder: transdecoder_indiv > transdecoder_final_proteins > transdecoder_by_assembly
+ruleorder: transdecoder_indiv_clean > transdecoder_finalproteins_clean > transdecoder_by_assembly_clean
 ruleorder: salmon_indiv > salmon_clustering
 ruleorder: salmon_clustering > salmon_clustering_raw
 ruleorder: combinequastmerge > quast_merged_transdecoded

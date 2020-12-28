@@ -7,69 +7,6 @@ from snakemake.exceptions import print_exception, WorkflowError
 import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
-
-rule transdecoder:
-    input:
-        merged = os.path.join(OUTPUTDIR, "merged_all", "{assembly}.fasta")
-    output:
-        pep = os.path.join("{assembly}.fasta.transdecoder.pep"),
-        gff = os.path.join("{assembly}.fasta.transdecoder.gff3"),
-        cds = os.path.join("{assembly}.fasta.transdecoder.cds"),
-        bed = os.path.join("{assembly}.fasta.transdecoder.bed")
-    log:
-        err = os.path.join("logs","transdecoder","{assembly}_err.log"),
-        out = os.path.join("logs","transdecoder","{assembly}_out.log")
-    params:
-        merged = "{assembly}",
-        size = TRANSDECODERORFSIZE
-    conda: 
-        "../envs/transdecoder-env.yaml"
-    shell:
-        """
-        TransDecoder.LongOrfs -t {input.merged} -m {params.size} 2> {log.err} 1> {log.out}
-        TransDecoder.Predict -t {input.merged} --no_refine_starts 2>> {log.err} 1>> {log.out}
-        """
-        
-rule transdecoder_bed:
-    input:
-        merged = os.path.join(OUTPUTDIR, "merged_all", "{assembly}.fasta"),
-        assembly = "{assembly}.fasta.transdecoder.bed"
-    output:
-        cds = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.full.cds")
-    log:
-        err = os.path.join("logs","transdecoder","{folder}_{assembly}_bed_err.log"),
-        out = os.path.join("logs","transdecoder","{folder}_{assembly}_bed_out.log")
-    params:
-        merged = "{assembly}",
-        size = TRANSDECODERORFSIZE
-    shell:
-        """
-        bedtools getfasta -fi {input.merged} -bed {params.merged}.fasta.transdecoder.bed -fo {output.cds}
-        """
-        
-rule transdecoder_clean:
-    input:
-        pep = os.path.join("{assembly}.fasta.transdecoder.pep"),
-        gff = os.path.join("{assembly}.fasta.transdecoder.gff3"),
-        cds = os.path.join("{assembly}.fasta.transdecoder.cds"),
-        bed = os.path.join("{assembly}.fasta.transdecoder.bed")
-    output:
-        pep = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.pep"),
-        gff = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.gff3"),
-        cds = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.cds"),
-        bed = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.bed")
-    log:
-        err = os.path.join("logs","transdecoder","{folder}_{assembly}_clean_err.log"),
-        out = os.path.join("logs","transdecoder","{folder}_{assembly}_clean_out.log")
-    shell:
-        """
-        mv {params.merged}.fasta.transdecoder.pep {output.pep}
-        mv {params.merged}.fasta.transdecoder.cds {output.cds}
-        mv {params.merged}.fasta.transdecoder.gff3 {output.gff}
-        mv {params.merged}.fasta.transdecoder.bed {output.bed}
-        rm -rf {params.merged}.fasta.transdecoder_dir*
-        rm -rf pipeliner.*.cmds
-        """
   
 rule transdecoder_indiv:
     input:
@@ -184,6 +121,9 @@ rule transdecoder_by_assembly_clean:
         gff = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.gff3"),
         cds = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.cds"),
         bed = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.bed")
+    params:
+        merged = "{assembly}",
+        size = TRANSDECODERORFSIZE
     log:
         err = os.path.join("logs","transdecoder","byassembly_{folder}_{assembly}_clean_err.log"),
         out = os.path.join("logs","transdecoder","byassembly_{folder}_{assembly}_clean_out.log")
@@ -191,7 +131,7 @@ rule transdecoder_by_assembly_clean:
         """
         mv {input.pep} {output.pep}
         mv {input.cds} {output.cds}
-        mv {input.gff3} {output.gff}
+        mv {input.gff} {output.gff}
         mv {input.bed} {output.bed}
         rm -rf {params.merged}.fasta.transdecoder_dir*
         rm -rf pipeliner.*.cmds
@@ -247,6 +187,9 @@ rule transdecoder_finalproteins_clean:
         gff = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.gff3"),
         cds = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.cds"),
         bed = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.bed")
+    params:
+        merged = "{assembly}",
+        size = TRANSDECODERORFSIZE
     log:
         err = os.path.join("logs","transdecoder","finalproteins_{folder}_{assembly}_clean_err.log"),
         out = os.path.join("logs","transdecoder","finalproteins_{folder}_{assembly}_clean_out.log")
