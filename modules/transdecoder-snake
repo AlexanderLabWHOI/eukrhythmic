@@ -63,6 +63,9 @@ rule transdecoder_indiv_clean:
     log:
         err = os.path.join("logs","transdecoder","indiv_{assembly}_{assembler}_clean_err.log"),
         out = os.path.join("logs","transdecoder","indiv_{assembly}_{assembler}_clean_out.log")
+    params:
+        merged = "{assembly}_{assembler}",
+        size = TRANSDECODERORFSIZE
     shell:
         """
         mv {input.pep} {output.pep}
@@ -91,7 +94,7 @@ rule transdecoder_by_assembly:
         "../envs/transdecoder-env.yaml"
     shell:
         """
-	unset PERL5LIB
+        unset PERL5LIB
         TransDecoder.LongOrfs -t {input.merged} -m {params.size} 2> {log.err} 1> {log.out}
         TransDecoder.Predict -t {input.merged} --no_refine_starts 2>> {log.err} 1>> {log.out}
         """
@@ -110,7 +113,7 @@ rule transdecoder_by_assembly_bed:
         out = os.path.join("logs","transdecoder","byassembly_{folder}_{assembly}_bed_out.log")
     shell:
         """
-	unset PERL5LIB
+        unset PERL5LIB
         bedtools getfasta -fi {input.merged} -bed {params.merged}.fasta.transdecoder.bed -fo {output.cds}
         """
         
@@ -178,7 +181,7 @@ rule transdecoder_finalproteins_bed:
         out = os.path.join("logs","transdecoder","finalproteins_{folder}_{assembly}_bed_out.log")
     shell:
         """
-	unset PERL5LIB
+        unset PERL5LIB
         bedtools getfasta -fi {input.merged} -bed {params.merged}.fasta.transdecoder.bed -fo {output.cds}
         """
         
