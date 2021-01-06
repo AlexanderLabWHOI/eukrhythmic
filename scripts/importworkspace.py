@@ -86,6 +86,10 @@ SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
 ASSEMBLYDICT = dict(zip(list(SAMPLEINFO.AssemblyGroup), list(SAMPLEINFO.SampleName)))
 samplenames = list(SAMPLEINFO.SampleID);
 fastqnames = list(SAMPLEINFO.FastqFile);
+TDEXTENSIONS = ["cds"]
+if "usebedtools" in config:
+    if config["usebedtools"] == 1:
+        TDEXTENSIONS = ["cds","full.cds"]
 
 # Check to make sure the scratch directory exists; otherwise, create it.
 os.system("mkdir -p " + SCRATCHDIR)

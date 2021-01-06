@@ -65,5 +65,5 @@ metaT = pd.DataFrame({"SampleName": fastalist, \
               "SampleID": samplelist, \
               "AssemblyGroup": samplelist, \
               "FastqFile": fastalist,})
-
+print(outfilename)
 metaT.to_csv(path_or_buf = outfilename, index=False, sep = "\t")
