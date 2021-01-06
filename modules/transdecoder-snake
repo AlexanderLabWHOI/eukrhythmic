@@ -141,16 +141,16 @@ rule transdecoder_final_proteins:
     input:
         clustered = os.path.join(OUTPUTDIR, "cluster_{folder}", "{assembly}_merged.fasta")
     output:
-        pep = os.path.join("{assembly}_merged.finalproteins.fasta.transdecoder.pep"),
-        gff = os.path.join("{assembly}_merged.finalproteins.fasta.transdecoder.gff3"),
-        cds = os.path.join("{assembly}_merged.finalproteins.fasta.transdecoder.cds"),
-        bed = os.path.join("{assembly}_merged.finalproteins.fasta.transdecoder.bed")
+        pep = os.path.join("{assembly}_merged_{folder}.finalproteins.fasta.transdecoder.pep"),
+        gff = os.path.join("{assembly}_merged_{folder}.finalproteins.fasta.transdecoder.gff3"),
+        cds = os.path.join("{assembly}_merged_{folder}.finalproteins.fasta.transdecoder.cds"),
+        bed = os.path.join("{assembly}_merged_{folder}.finalproteins.fasta.transdecoder.bed")
     params:
         merged = "{assembly}_merged.finalproteins",
         size = TRANSDECODERORFSIZE
     log:
-        err = os.path.join("logs","transdecoder","finalproteins_{assembly}_err.log"),
-        out = os.path.join("logs","transdecoder","finalproteins_{assembly}_out.log")
+        err = os.path.join("logs","transdecoder","finalproteins_{assembly}_{folder}_err.log"),
+        out = os.path.join("logs","transdecoder","finalproteins_{assembly}_{folder}_out.log")
     conda: 
         "../envs/transdecoder-env.yaml"
     shell:
@@ -178,10 +178,10 @@ rule transdecoder_finalproteins_bed:
         
 rule transdecoder_finalproteins_clean:
     input:
-        pep = os.path.join("{assembly}_merged.finalproteins.fasta.transdecoder.pep"),
-        gff = os.path.join("{assembly}_merged.finalproteins.fasta.transdecoder.gff3"),
-        cds = os.path.join("{assembly}_merged.finalproteins.fasta.transdecoder.cds"),
-        bed = os.path.join("{assembly}_merged.finalproteins.fasta.transdecoder.bed")
+        pep = os.path.join("{assembly}_merged_{folder}.finalproteins.fasta.transdecoder.pep"),
+        gff = os.path.join("{assembly}_merged_{folder}.finalproteins.fasta.transdecoder.gff3"),
+        cds = os.path.join("{assembly}_merged_{folder}.finalproteins.fasta.transdecoder.cds"),
+        bed = os.path.join("{assembly}_merged_{folder}.finalproteins.fasta.transdecoder.bed")
     output:
         pep = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.pep"),
         gff = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.gff3"),
