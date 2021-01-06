@@ -54,12 +54,12 @@ rule transdecoder_indiv_clean:
         pep = os.path.join("{assembly}_{assembler}.indiv.fasta.transdecoder.pep"),
         gff = os.path.join("{assembly}_{assembler}.indiv.fasta.transdecoder.gff3"),
         cds = os.path.join("{assembly}_{assembler}.indiv.fasta.transdecoder.cds"),
-        bed = os.path.join("{assembly}_{assembler}}.indiv.fasta.transdecoder.bed")
+        bed = os.path.join("{assembly}_{assembler}.indiv.fasta.transdecoder.bed")
     output:
         pep = os.path.join(OUTPUTDIR, "transdecoder_indiv", "{assembly}_{assembler}.fasta.transdecoder.pep"),
         gff = os.path.join(OUTPUTDIR, "transdecoder_indiv", "{assembly}_{assembler}.fasta.transdecoder.gff3"),
         cds = os.path.join(OUTPUTDIR, "transdecoder_indiv", "{assembly}_{assembler}.fasta.transdecoder.cds"),
-        bed = os.path.join(OUTPUTDIR, "transdecoder_indiv", "{assembly}_{assembler}}.fasta.transdecoder.bed")
+        bed = os.path.join(OUTPUTDIR, "transdecoder_indiv", "{assembly}_{assembler}.fasta.transdecoder.bed")
     log:
         err = os.path.join("logs","transdecoder","indiv_{assembly}_{assembler}_clean_err.log"),
         out = os.path.join("logs","transdecoder","indiv_{assembly}_{assembler}_clean_out.log")
