@@ -95,7 +95,7 @@ rule transdecoder_by_assembly:
     shell:
         """
         unset PERL5LIB
-        mv {input.merged} {params.merged}.fasta
+        cp {input.merged} {params.merged}.fasta
         TransDecoder.LongOrfs -t {params.merged}.fasta -m {params.size} 2> {log.err} 1> {log.out}
         TransDecoder.Predict -t {params.merged}.fasta --no_refine_starts 2>> {log.err} 1>> {log.out}
         rm {params.merged}.fasta
@@ -165,7 +165,7 @@ rule transdecoder_final_proteins:
     shell:
         """
 	unset PERL5LIB
-        Tmv {input.clustered} {params.merged}.fasta
+        cp {input.clustered} {params.merged}.fasta
         TransDecoder.LongOrfs -t {params.merged}.fasta -m {params.size} 2> {log.err} 1> {log.out}
         TransDecoder.Predict -t {params.merged}.fasta --no_refine_starts 2>> {log.err} 1>> {log.out}
         rm {params.merged}.fasta
