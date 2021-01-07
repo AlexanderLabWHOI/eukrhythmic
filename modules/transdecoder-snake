@@ -174,7 +174,7 @@ rule transdecoder_finalproteins_bed:
     output:
         cds = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.full.cds")
     params:
-        merged = "{assembly}_merged_{folder}",
+        merged = "{assembly}_merged_{folder}.finalproteins",
         size = TRANSDECODERORFSIZE
     log:
         err = os.path.join("logs","transdecoder","finalproteins_{folder}_{assembly}_bed_err.log"),
@@ -197,7 +197,7 @@ rule transdecoder_finalproteins_clean:
         cds = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.cds"),
         bed = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", "{assembly}.fasta.transdecoder.bed")
     params:
-        merged = "{assembly}_merged_{folder}",
+        merged = "{assembly}_merged_{folder}.finalproteins",
         size = TRANSDECODERORFSIZE
     log:
         err = os.path.join("logs","transdecoder","finalproteins_{folder}_{assembly}_clean_err.log"),
