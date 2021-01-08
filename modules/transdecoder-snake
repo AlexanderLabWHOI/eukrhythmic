@@ -162,7 +162,7 @@ rule transdecoder_final_proteins:
         "../envs/transdecoder-env.yaml"
     shell:
         """
-	unset PERL5LIB
+        unset PERL5LIB
         TransDecoder.LongOrfs -t {input.clustered} -m {params.size} 2> {log.err} 1> {log.out}
         TransDecoder.Predict -t {input.clustered} --no_refine_starts 2>> {log.err} 1>> {log.out}
         """
