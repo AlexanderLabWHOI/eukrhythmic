@@ -11,7 +11,8 @@ from importworkspace import *
 # --auto-lineage-euk is better if you download SEPP
 rule busco:
     input:
-        outputassemblies = os.path.join(OUTPUTDIR, "transdecoder_{folder}", "{assembly}.fasta.transdecoder.pep")
+        outputassemblies = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins",\
+            "{assembly}.fasta.transdecoder.pep")
     output:
         directory(os.path.join("{base}", "busco", "{database}", "{folder}", "{assembly}"))
     params:
