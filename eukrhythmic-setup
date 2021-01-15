@@ -23,10 +23,10 @@ from checkrequirements import *
 ## CHECK THAT ALL REQUIREMENTS ARE SATISFIED BY EXECUTING checkrequirements() from `scripts/checkrequirements.py` ##
 checkrequirementsfct()
 
-include: "modules/fastqc-snake"
-include: "modules/bbmap-snake"
-include: "modules/trimmomatic-snake"
-include: "modules/fastqc-trimmed-snake"
+include: "rules/fastqc-snake.smk"
+include: "rules/bbmap-snake.smk
+include: "rules/trimmomatic-snake.smk"
+include: "rules/fastqc-trimmed-snake.smk"
 
 ruleorder: trimmomatic > trimmomatic_SE
 
