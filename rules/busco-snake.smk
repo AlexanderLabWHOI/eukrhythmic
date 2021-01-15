@@ -11,9 +11,10 @@ from importworkspace import *
 # --auto-lineage-euk is better if you download SEPP
 rule busco:
     input:
-        outputassemblies = os.path.join(OUTPUTDIR, "cluster3", "{assembly}_transdecoded.fasta")
+        outputassemblies = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins",\
+            "{assembly}.fasta.transdecoder.pep")
     output:
-        directory(os.path.join(OUTPUTDIR, "busco", "{assembly}"))
+        directory(os.path.join("{base}", "busco", "{database}", "{folder}", "{assembly}"))
     params:
         assembly = "{assembly}"
     conda:

@@ -23,12 +23,12 @@ from checkrequirements import *
 ## CHECK THAT ALL REQUIREMENTS ARE SATISFIED BY EXECUTING checkrequirements() from `scripts/checkrequirements.py` ##
 checkrequirementsfct()
 
-include: "modules/trinity-snake"
-include: "modules/velvet-snake"
-include: "modules/megahit-snake"
-include: "modules/transabyss-snake"
-include: "modules/transabyss-merge-snake"
-include: "modules/quast-snake"
+include: "rules/trinity-snake.smk"
+include: "rules/velvet-snake.smk"
+include: "rules/megahit-snake.smk"
+include: "rules/transabyss-snake.smk"
+include: "rules/transabyss-merge.smk"
+include: "rules/quast-snake.smk"
 
 ruleorder: trinity > trinity_SE
 ruleorder: megahit > megahit_SE

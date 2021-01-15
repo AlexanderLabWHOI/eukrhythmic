@@ -23,16 +23,16 @@ from checkrequirements import *
 ## CHECK THAT ALL REQUIREMENTS ARE SATISFIED BY EXECUTING checkrequirements() from `scripts/checkrequirements.py` ##
 checkrequirementsfct()
 
-include: "modules/quast-snake"
-#include: "modules/cd-hit-snake"
-include: "modules/mmseqs-snake"
-include: "modules/manipnames-snake"
-include: "modules/transdecoder-snake"
-include: "modules/busco-snake"
-include: "modules/salmon-snake"
-include: "modules/annotate-snake"
-include: "modules/hardclean-snake"
-include: "modules/eukulele-snake"
+include: "rules/quast-snake.smk"
+#include: "rules/cd-hit-snake.smk"
+include: "rules/mmseqs-snake.smk"
+include: "rules/manipnames-snake.smk"
+include: "rules/transdecoder-snake.smk"
+include: "rules/busco-snake.smk"
+include: "rules/salmon-snake.smk"
+include: "rules/annotate-snake.smk"
+include: "rules/hardclean-snake.smk"
+include: "rules/eukulele-snake.smk"
 
 ruleorder: transdecoder_indiv > transdecoder_final_proteins > transdecoder_by_assembly
 ruleorder: transdecoder_indiv_clean > transdecoder_finalproteins_clean > transdecoder_by_assembly_clean
@@ -49,9 +49,10 @@ rule all:
         # COMBINE QUAST OUTPUTS
         quastcombine = expand(os.path.join("{base}", "quast", "fullresults", "allresults.tsv"), base = OUTPUTDIR),
         # TRANSDECODER OUTPUTS - optionally, run TransDecoder on the individual assemblies
-        transdecoder_indiv = expand(os.path.join("{base}", "transdecoder_indiv", 
-                                                 "{assembly}_{assembler}.fasta.transdecoder.cds"),  
-                                    base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
+        transdecoder_indiv = expand(os.path.join("{base}", "transdecoder_indiv",
+                                                 "{assembly}_{assembler}.fasta.transdecoder.{tdextensions}"),
+                                    base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS,
+                                    tdextensions = TDEXTENSIONS),
         # INDIVIDUAL CLUSTERING OUTPUTS
         clustering_each_assembler = expand(os.path.join("{base}", "cluster1", "{assembly}_{assembler}.fasta"), 
                                            base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
@@ -76,13 +77,14 @@ rule all:
                                    "salmon_quant_assembly_{assembly}", "quant.sf"), 
                                    base = OUTPUTDIR, folder = "mega_merge", assembly = assemblygroups),
         # TRANSDECODER ON FINAL AND MEGA-MERGED ASSEMBLY
-        transdecoder_mega_merge = expand(os.path.join("{base}", "transdecoder_{folder}_finalproteins", 
-                                                      "{assembly}.fasta.transdecoder.cds"), 
-                                       base = OUTPUTDIR, folder = "mega_merge", assembly = "merged"),
-        trandecoder_by_assembly_group = expand(os.path.join("{base}", "transdecoder_{folder}_finalproteins", 
-                                                    "{assembly}.fasta.transdecoder.{tdextensions}"), 
-                                       base = OUTPUTDIR, folder = "by_assembly_group", assembly = assemblygroups,
+        transdecoder_mega_merge = expand(os.path.join("{base}", "transdecoder_{folder}_finalproteins",
+                                                      "{assembly}.fasta.transdecoder.{tdextensions}"),
+                                       base = OUTPUTDIR, folder = "mega_merge", assembly = "merged",
                                        tdextensions = TDEXTENSIONS),
+        trandecoder_by_assembly_group = expand(os.path.join("{base}", "transdecoder_{folder}_finalproteins",
+                                                    "{assembly}.fasta.transdecoder.{tdextensions}"),
+                                       base = OUTPUTDIR, folder = "by_assembly_group",
+                                       assembly = assemblygroups, tdextensions = TDEXTENSIONS),
         # QUAST QUALITY ASSESSMENT OF FINAL ASSEMBLY
         quastfinal = expand(os.path.join("{base}", "quast_{folder}", "{assembly}"), base = OUTPUTDIR, 
                             folder = "mega_merge", assembly = "merged"),

@@ -23,12 +23,12 @@ from checkrequirements import *
 ## CHECK THAT ALL REQUIREMENTS ARE SATISFIED BY EXECUTING checkrequirements() from `scripts/checkrequirements.py` ##
 checkrequirementsfct()
 
-include: "modules/busco-snake"
-include: "modules/salmon-snake"
-include: "modules/annotate-snake"
-include: "modules/hardclean-snake"
-include: "modules/spike-snake"
-include: "modules/eukulele-snake"
+include: "rules/busco-snake.smk"
+include: "rules/salmon-snake.smk"
+include: "rules/annotate-snake.smk"
+include: "rules/hardclean-snake.smk"
+include: "rules/spike-snake.smk"
+include: "rules/eukulele-snake.smk"
 
 ruleorder: merge_all > copies
 ruleorder: salmon_rename > salmon_clustering_against_mega
