@@ -50,9 +50,9 @@ def checkrequirementsfct():
         for assembler_ind in range(0,len(ASSEMBLERS)):
             assembler = ASSEMBLERS[assembler_ind]
             try:
-                assemblerrules = os.listdir("modules/")
-                if assembler + "-snake" not in assemblerrules:
-                    if assembler.lower() + "-snake" in assemblerrules:
+                assemblerrules = os.listdir("rules/")
+                if assembler + "-snake.smk" not in assemblerrules:
+                    if assembler.lower() + "-snake.smk" in assemblerrules:
                         ASSEMBLERS[assembler_ind] = assembler.lower()
                     else:
                         raise ValueError
