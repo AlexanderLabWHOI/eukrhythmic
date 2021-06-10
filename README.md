@@ -37,7 +37,7 @@ conda env create metatrans --file environment.yaml
 
 ## <a name="schematic"></a> Pipeline schematic
 
-![Schematic](/.infrastructure/eukrhythmic_revised.png)
+![Schematic](/.infrastructure/eukrhythmic_Mar2021.png)
 
 ## <a name="naming"></a>  File naming
 

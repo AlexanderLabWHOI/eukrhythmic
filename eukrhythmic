@@ -57,6 +57,7 @@ ruleorder: salmon_clustering_raw > salmon_clustering
 ruleorder: merge_all > copies
 #ruleorder: salmon_rename > salmon_clustering_against_mega
 ruleorder: salmon_rename > salmon_clustering
+ruleorder: run_busco > busco
 
 rule all:
     input:

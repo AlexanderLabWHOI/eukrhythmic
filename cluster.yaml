@@ -44,7 +44,15 @@ transabyssmerge:
   cpupertask: 18
   mem: 180
   nodes: 1
-  queue: scavenger
+  queue: compute
+  tasks: 1
+  time: 10000
+transabyss:
+  account: akrinos
+  cpupertask: 36
+  mem: 180
+  nodes: 1
+  queue: compute
   tasks: 1
   time: 10000
 trimmomatic:
@@ -57,17 +65,17 @@ trimmomatic:
   time: 1400
 trinity:
   account: akrinos
-  cpupertask: 18
-  mem: 180
+  cpupertask: 72
+  mem: 800
   nodes: 1
-  queue: scavenger
+  queue: bigmem
   tasks: 1
   time: 10000
 velvet:
   account: akrinos
-  cpupertask: 18
-  mem: 180
+  cpupertask: 72
+  mem: 800
   nodes: 1
-  queue: scavenger
+  queue: bigmem
   tasks: 1
-  time: 10000
+  time: 15000

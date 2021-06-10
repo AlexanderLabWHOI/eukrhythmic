@@ -32,6 +32,7 @@ def getalloutputs():
         listqc.extend([os.path.join(OUTPUTDIR, "qc", "fastqc", s + "_1_fastqc.html"), os.path.join(OUTPUTDIR, "qc", "fastqc", s + "_2_fastqc.html")])
     return listqc
     
+#os.path.join(INPUTDIR, "{sample}_R{num}_001.fastq.gz")
 rule fastqc:
     input:
         (lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"), sampnames = get_filenames(filename.sample, filename.num)))
@@ -54,8 +55,8 @@ rule fastqc:
         fi
         mkdir -p {params.fastqdir}
         fastqc {input} -o {params.fastqdir} 2> {log.err} 1> {log.out}
-        #mv {params.outname}_fastqc.html {output.html} 2>/dev/null
-        #mv {params.outname}_fastqc.zip {output.zip} 2>/dev/null
+        mv {params.outname}_fastqc.html {output.html} 2>/dev/null
+        mv {params.outname}_fastqc.zip {output.zip} 2>/dev/null
         '''
         
 rule multiqc:

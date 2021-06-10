@@ -21,10 +21,28 @@ else:
     LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_1.clean.fastq.gz"), samples = get_samples(filename.assembly))
     RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_2.clean.fastq.gz"), samples = get_samples(filename.assembly))
     
+def get_samples_commas(assemblygroup, dropspike, leftorright, commas = False):
+    samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
+    foldername = "bbmap"
+    extensionname = "clean"
+    if dropspike == 0:
+        foldername = "firsttrim"
+        extensionname = "trimmed"
+    if leftorright == "left":
+        samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
+                      for sample in samplelist]
+    else:
+        samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_2." + extensionname + ".fastq.gz") 
+                      for sample in samplelist]
+    if commas:
+        return ",".join(samplelist)
+    else:
+        return samplelist
+    
 rule velvet:
     input:
-        r1 = LEFTFILE,
-        r2 = RIGHTFILE
+        r1 = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = False),
+        r2 = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "right", commas = False)
     output:
         velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa"),
         metavelvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "meta-velvetg.contigs.fa")
@@ -45,7 +63,8 @@ rule velvet:
         
 rule velvet_SE:
     input:
-        r1 = LEFTFILE
+        r1 = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = False)
+        #r1 = LEFTFILE
     output:
         velvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "contigs.fa"),
         metavelvetfile = os.path.join(OUTPUTDIR, "velvet", "{assembly}", "meta-velvetg.contigs.fa")

@@ -11,27 +11,39 @@ from importworkspace import *
 def get_samples(assemblygroup):
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
     return samplelist
-
-if DROPSPIKE == 0:
-    LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_1.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
-    RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "firsttrim", "{samples}_2.trimmed.fastq.gz"), samples = get_samples(filename.assembly))
-else:
-    LEFTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_1.clean.fastq.gz"), samples = get_samples(filename.assembly))
-    RIGHTFILE = lambda filename: expand(os.path.join(OUTPUTDIR, "bbmap", "{samples}_2.clean.fastq.gz"), samples = get_samples(filename.assembly))
     
+def get_samples_commas_TA(assemblygroup, dropspike, leftorright, commas = False):
+    samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
+    foldername = "bbmap"
+    extensionname = "clean"
+    if dropspike == 0:
+        foldername = "firsttrim"
+        extensionname = "trimmed"
+    if leftorright == "left":
+        samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
+                      for sample in samplelist]
+    else:
+        samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_2." + extensionname + ".fastq.gz") 
+                      for sample in samplelist]
+    if commas:
+        return ",".join(samplelist)
+    else:
+        return samplelist
+    
+
+#left = LEFTFILE,
+#right = RIGHTFILE
 rule transabyss:
     input:
-        left = LEFTFILE,
-        right = RIGHTFILE
+        left = lambda filename: get_samples_commas_TA(filename.assembly, DROPSPIKE, "left", commas = False),
+        right = lambda filename: get_samples_commas_TA(filename.assembly, DROPSPIKE, "right", commas = False)
     output:
         os.path.join(OUTPUTDIR, "transabyss_{k}_{assembly}", "{assembly}_{k}_transabyss.fasta-final.fa")
     params:
         extra = "",
         kval = "{k}",
         fastaname = "{assembly}_{k}_transabyss.fasta",
-        outdir = os.path.join(OUTPUTDIR, "transabyss_{k}_{assembly}"),
-        left = LEFTFILE,
-        right = RIGHTFILE
+        outdir = os.path.join(OUTPUTDIR, "transabyss_{k}_{assembly}")
     threads: 4
     log:
         err = os.path.join("logs","transabyss","outputlog_{assembly}_{k}_err.log"),

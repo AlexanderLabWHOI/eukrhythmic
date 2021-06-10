@@ -139,5 +139,5 @@ rule run_hmmer:
         "../envs/annotate-env.yaml"
     shell:
         '''
-        hmmsearch --tblout {output.hmmer_res} {input.pfam_file} {input.fasta_file}
+        hmmsearch --tblout -cpu {params.CPUs} {output.hmmer_res} {input.pfam_file} {input.fasta_file}
         '''
