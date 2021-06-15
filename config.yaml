@@ -27,7 +27,7 @@ checkqual: 1
 kmers:
     - 20
     - 50
-    - 110
+#    - 110
 assemblers:
     - megahit
 #    - velvet

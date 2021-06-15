@@ -2,12 +2,14 @@ The ``eukrhythmic`` Sample File
 ===============================
 
 .. _naming: 
+
 File naming
 -----------
 
 Your file names should not subset one another. So if one file is called "supercool_sample", another should not be called "supercool_sample_2". However, if the two were called "supercool_sample_1" and "supercool_sample_2", this would be fine, because neither name is *entirely* found within the other.
 
 .. _sample:
+
 The ``metaT_sample`` file
 -------------------------
 
@@ -18,6 +20,7 @@ Depending on the application, some columns of this file must be added or may not
 As detailed in `scripts/make_sampleinfo.ipynb`, the minimum required to run the general (default) pipeline without any comparative analysis between samples are the "SampleName", "SampleID" and the "FastqFileNames". SampleName and SampleID can be identical if no such distinction exists in your sample. However, strictly, "SampleName" is a descriptive name for your samples, whereas "SampleID" is how the samples will be named throughout the pipeline, thus is is preferable to minimize special characters and length in the "SampleID" column, whereas "SampleName" may be more verbose.
 
 .. _fullauto:
+
 Autogeneration of full ``metaT_sample`` file
 --------------------------------------------
 
@@ -30,6 +33,7 @@ So within the base ``eukrhythmic`` directory, the following command may be run::
 Optionally, additional parameters may be provided. The second optional parameter is a file extension, which defaults to "fastq.gz". The third and fourth optional parameters are labels for forward and reverse reads (defaults to "\_1" and "\_2", respectively), and the fifth optional parameter is an additional file suffix used to split the filename (e.g. 001; defaults to the file extension; specifically important for single-end reads). 
 
 .. _fastqauto:
+
 Autogeneration of "FastqFileNames" column with "SampleID" column
 ----------------------------------------------------------------
 
@@ -38,6 +42,7 @@ In /scripts/, there is a Python script called ``make_sample_file.py`` that will 
 If you use this script, all of the files with the fastq extension listed in your ``INPUTDIR`` that have a match to entries in your SampleID column will be included. Optionally, the script accepts up to two input arguments that specify how forward/reverse reads are labeled. By default, "\_R", "\_1", and "\_2" are searched for.
 
 .. _manual:
+
 Notes about manually creating ``metaT_sample``
 ----------------------------------------------
 

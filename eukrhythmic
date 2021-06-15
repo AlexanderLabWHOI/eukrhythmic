@@ -33,7 +33,8 @@ include: "rules/megahit-snake.smk"
 include: "rules/transabyss-snake.smk"
 include: "rules/transabyss-merge-snake.smk"
 include: "rules/quast-snake.smk"
-include: "rules/cd-hit-snake.smk"
+#include: "rules/cd-hit-snake.smk"
+include: "rules/mmseqs-snake.smk"
 include: "rules/manipnames-snake.smk"
 include: "rules/transdecoder-snake.smk"
 include: "rules/busco-snake.smk"
@@ -52,7 +53,8 @@ ruleorder: transdecoder_indiv_clean > transdecoder_finalproteins_clean > transde
 ruleorder: salmon_indiv > salmon_clustering
 ruleorder: salmon_clustering > salmon_clustering_raw
 ruleorder: combinequastmerge > quast_merged_transdecoded
-ruleorder: clustering_mega_merge > clustering_by_assembly_group
+#ruleorder: clustering_mega_merge > clustering_by_assembly_group
+ruleorder: clustering_mega_merge_mmseqs > clustering_by_assembly_group_mmseqs
 ruleorder: salmon_clustering_raw > salmon_clustering
 ruleorder: merge_all > copies
 #ruleorder: salmon_rename > salmon_clustering_against_mega
@@ -95,8 +97,8 @@ rule all:
                                     base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS,
                                     tdextensions = TDEXTENSIONS),
         # INDIVIDUAL CLUSTERING OUTPUTS
-        clustering_each_assembler = expand(os.path.join("{base}", "cluster1", "{assembly}_{assembler}.fasta"), 
-                                           base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
+#        clustering_each_assembler = expand(os.path.join("{base}", "cluster1", "{assembly}_{assembler}.fasta"), 
+#                                           base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
         # MERGED CLUSTERING OUTPUTS - cluster on merged samples by assembly group and mega
         clustering_by_assembly_group = expand(os.path.join("{base}", "cluster_{folder}", "{assembly}_merged.fasta"), 
                                               base = OUTPUTDIR, folder = "by_assembly_group", assembly = assemblygroups),
