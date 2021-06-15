@@ -11,6 +11,39 @@ def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID']) 
     return samplelist
 
+rule clustering_one:
+    input: 
+        infiles = os.path.join(OUTPUTDIR, "assembled", "{assembly}_{assembler}.fasta")
+    output:
+        outfasta = os.path.join(OUTPUTDIR, "cluster1", "{assembly}_{assembler}.fasta"),
+        outtsv = os.path.join(OUTPUTDIR, "cluster1", "{assembly}_{assembler}.tsv")
+    params:
+        threads = 10,
+        maxmemory = 15000, # -G o indicates local sequence identity.
+        identityparam = 1.00,
+        mincoverageshorter = MINCOVERAGECLUST2,
+        mincoveragelong = 0.005,
+        name_db = "cluster1_{assembly}_{assembler}",
+        name_intermed = "cluster1__clustered_{assembly}_{assembler}",
+        name_subdb = "cluster1_subdb_{assembly}_{assembler}",
+        tmp_fold = "cluster1_{assembly}_{assembler}_tmp"
+    log:
+        err = os.path.join("logs","mmseq","one_{assembly}_{assembler}_err.log"),
+        out = os.path.join("logs","mmseq","one_{assembly}_{assembler}_out.log")
+    conda:
+        "../envs/mmseq-env.yaml"
+    shell:
+        '''
+        mmseqs createdb {input.infiles} {params.name_db} 
+        mmseqs linclust {params.name_db} {params.name_intermed} tmp --min-seq-id {params.identityparam} --cov-mode 1 -c {params.mincoverageshorter} --remove-tmp-files 2> {log.err} 1> {log.out}
+        mmseqs createsubdb {params.name_intermed} {params.name_db} {params.name_subdb}
+        mmseqs convert2fasta {params.name_subdb} {output.outfasta}
+        mmseqs createtsv {params.name_db} {params.name_db} {params.name_intermed} {output.outtsv}
+        rm -f {params.name_db}*
+        rm -f {params.name_intermed}*
+        rm -f {params.name_subdb}*
+        '''
+        
 rule clustering_by_assembly_group_mmseqs:
     input: 
         infiles = os.path.join(OUTPUTDIR, "merged", "{assembly}_merged.fasta")
@@ -34,7 +67,7 @@ rule clustering_by_assembly_group_mmseqs:
     shell:
         '''
         mmseqs createdb {input.infiles} {params.name_db} 
-        mmseqs linclust {params.name_db} {params.name_intermed} tmp --min-seq-id {params.identityparam} --cov-mode 1 -c {params.mincoverageshorter} --remove-temp-files 2> {log.err} 1> {log.out}
+        mmseqs linclust {params.name_db} {params.name_intermed} tmp --min-seq-id {params.identityparam} --cov-mode 1 -c {params.mincoverageshorter} --remove-tmp-files 2> {log.err} 1> {log.out}
         mmseqs createsubdb {params.name_intermed} {params.name_db} {params.name_subdb}
         mmseqs convert2fasta {params.name_subdb} {output.outfasta}
         mmseqs createtsv {params.name_db} {params.name_db} {params.name_intermed} {output.outtsv}
@@ -67,7 +100,7 @@ rule clustering_mega_merge_mmseqs:
     shell:
         '''
         mmseqs createdb {input.infiles} {params.name_db} 
-        mmseqs linclust {params.name_db} {params.name_intermed} tmp --min-seq-id {params.identityparam} --cov-mode 1 -c {params.mincoverageshorter} --remove-temp-files 2> {log.err} 1> {log.out}
+        mmseqs linclust {params.name_db} {params.name_intermed} tmp --min-seq-id {params.identityparam} --cov-mode 1 -c {params.mincoverageshorter} --remove-tmp-files 2> {log.err} 1> {log.out}
         mmseqs createsubdb {params.name_intermed} {params.name_db} {params.name_subdb}
         mmseqs convert2fasta {params.name_subdb} {output.outfasta}
         mmseqs createtsv {params.name_db} {params.name_db} {params.name_intermed} {output.outtsv}

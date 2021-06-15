@@ -2,6 +2,7 @@ Adding Assemblers
 =================
 
 .. _assemblers: 
+
 Adding new assemblers
 ---------------------
 

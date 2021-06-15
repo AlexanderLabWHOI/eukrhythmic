@@ -51,9 +51,9 @@ transabyss:
   account: akrinos
   cpupertask: 36
   mem: 180
-  nodes: 1
+  nodes: 3
   queue: compute
-  tasks: 1
+  tasks: 3
   time: 10000
 trimmomatic:
   account: akrinos

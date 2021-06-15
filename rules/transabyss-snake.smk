@@ -13,7 +13,7 @@ def get_samples(assemblygroup):
     return samplelist
     
 def get_samples_commas_TA(assemblygroup, dropspike, leftorright, commas = False):
-    samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
+    samplelist = list(set(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']))
     foldername = "bbmap"
     extensionname = "clean"
     if dropspike == 0:
