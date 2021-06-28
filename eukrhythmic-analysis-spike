@@ -27,6 +27,7 @@ include: "rules/busco-snake.smk"
 include: "rules/salmon-snake.smk"
 include: "rules/annotate-snake.smk"
 include: "rules/hardclean-snake.smk"
+include: "rules/spades-snake.smk"
 include: "rules/spike-snake.smk"
 include: "rules/eukulele-snake.smk"
 

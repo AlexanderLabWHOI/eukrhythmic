@@ -26,6 +26,7 @@ checkrequirementsfct()
 include: "rules/trinity-snake.smk"
 include: "rules/velvet-snake.smk"
 include: "rules/megahit-snake.smk"
+include: "rules/spades-snake.smk"
 include: "rules/transabyss-snake.smk"
 include: "rules/transabyss-merge.smk"
 include: "rules/quast-snake.smk"

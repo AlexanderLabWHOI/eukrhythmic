@@ -24,7 +24,7 @@ rule clustering_one:
         mincoverageshorter = MINCOVERAGECLUST2,
         mincoveragelong = 0.005,
         name_db = "cluster1_{assembly}_{assembler}",
-        name_intermed = "cluster1__clustered_{assembly}_{assembler}",
+        name_intermed = "cluster1_clustered_{assembly}_{assembler}",
         name_subdb = "cluster1_subdb_{assembly}_{assembler}",
         tmp_fold = "cluster1_{assembly}_{assembler}_tmp"
     log:
@@ -56,9 +56,9 @@ rule clustering_by_assembly_group_mmseqs:
         identityparam = 1.00,
         mincoverageshorter = MINCOVERAGECLUST2,
         mincoveragelong = 0.005,
-        name_db = "byassemblygroup_{assembly}",
-        name_intermed = "byassemblygroup_clustered_{assembly}",
-        name_subdb = "byassemblygroup_subdb_{assembly}"
+        name_db = "byassemblygroup_{folder}_{assembly}",
+        name_intermed = "byassemblygroup_clustered_{folder}_{assembly}",
+        name_subdb = "byassemblygroup_subdb_{folder}_{assembly}"
     log:
         err = os.path.join("logs","mmseq","{folder}_{assembly}_err.log"),
         out = os.path.join("logs","mmseq","{folder}_{assembly}_out.log")
