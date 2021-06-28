@@ -25,13 +25,14 @@ runbbmap: 0
 # flag to be used to decide whether QUAST/salmon quantification performed
 checkqual: 1
 kmers:
-    - 20
+    - 31
     - 50
 #    - 110
 assemblers:
     - megahit
 #    - velvet
-#    - trinity
+    - spades
+    - trinity
     - transabyss
 separategroups: 1
 
