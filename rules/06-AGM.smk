@@ -34,7 +34,7 @@ rule merge:
     input:
         assemblyfiles = lambda wildcards: combineassemblerslist(wildcards.assembly)
     output:
-        os.path.join(OUTPUTDIR, "02-assembly", "06-AGM", "{assembly}_merged.fasta")
+        os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly", "06-AGM", "{assembly}_merged.fasta")
     params:
         assemblyfiles = lambda wildcards: combineassemblers(wildcards.assembly)
     shell:

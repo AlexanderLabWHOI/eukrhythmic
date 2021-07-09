@@ -16,9 +16,11 @@ def combineassemblerslist(assembly):
  
 rule metaquast:
     input:
-        outputassemblies = lambda wildcards: combineassemblerslist(wildcards.assembly) 
+        outputassemblies = os.path.join(OUTPUTDIR, "intermediate-files",\
+                                        "03-merge", "12-MAD", "cluster_{folder}", "MAD.fasta")
     output:
-        directory(os.path.join(OUTPUTDIR, "04-compare", "15-MAD-quality", "{assembly}"))
+        directory(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
+                               "15-MAD-quality", "{assembly}"))
     params:
         assemblers = ",".join(ASSEMBLERS),
         outputassemblies = lambda wildcards: combineassemblers(wildcards.assembly) 
@@ -34,13 +36,16 @@ rule metaquast:
         
 rule combinequast:
     input:
-        quastdir = [os.path.join(OUTPUTDIR, "04-compare", "10-CAG-quality", curr) for curr in assemblygroups]
+        quastdir = [os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
+                                 "15-MAD-quality", curr) for curr in assemblygroups]
     output:
-        os.path.join(OUTPUTDIR, "04-compare", "10-CAG-quality", "combined", "all.tsv")
+        os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
+                     "15-MAD-quality", "combined", "all.tsv")
     params:
-        outputfile = os.path.join(OUTPUTDIR, "04-compare", "10-CAG-quality", "combined", "all.tsv"),
+        outputfile = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
+                                  "15-MAD-quality", "combined", "all.tsv"),
         assemblers = ",".join(ASSEMBLERS),
-        quastdir = os.path.join(OUTPUTDIR, "04-compare", "10-CAG-quality") 
+        quastdir = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "15-MAD-quality") 
     run:
         quastfiles = os.listdir(params.quastdir)
         if len(quastfiles) > 0:

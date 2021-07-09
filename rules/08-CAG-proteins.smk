@@ -10,7 +10,7 @@ from importworkspace import *
 
 rule transdecoder_CAG:
     input:
-        fastafile = os.path.join(OUTPUTDIR, "03-merge", "07-CAG",\
+        fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "07-CAG",\
                                  "{folder}", "{assembly}_merged.fasta")
     output:
         pep = os.path.join("{assembly}_CAG.fasta.transdecoder.pep"),
@@ -21,8 +21,8 @@ rule transdecoder_CAG:
         merged = "{assembly}_CAG",
         size = TRANSDECODERORFSIZE
     log:
-        err = os.path.join(OUTPUTDIR, "logs", "transdecoder", "{assembly}.err"),
-        out = os.path.join(OUTPUTDIR, "logs", "transdecoder", "{assembly}.log")
+        err = os.path.join(OUTPUTDIR, "logs", "08-CAG-proteins", "{assembly}.err"),
+        out = os.path.join(OUTPUTDIR, "logs", "08-CAG-proteins", "{assembly}.log")
     conda: 
         os.path.join("..", "envs", "05-compare-env.yaml")
     shell:
@@ -41,10 +41,14 @@ rule transdecoder_CAG_clean:
         cds = os.path.join("{assembly}_CAG.fasta.transdecoder.cds"),
         bed = os.path.join("{assembly}_CAG.fasta.transdecoder.bed")
     output:
-        pep = os.path.join(OUTPUTDIR, "04-compare", "08-CAG-proteins", "{assembly}.fasta.transdecoder.pep"),
-        gff = os.path.join(OUTPUTDIR, "04-compare", "08-CAG-proteins", "{assembly}.fasta.transdecoder.gff3"),
-        cds = os.path.join(OUTPUTDIR, "04-compare", "08-CAG-proteins", "{assembly}.fasta.transdecoder.cds"),
-        bed = os.path.join(OUTPUTDIR, "04-compare", "08-CAG-proteins", "{assembly}.fasta.transdecoder.bed")
+        pep = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
+                           "08-CAG-proteins", "{assembly}.fasta.transdecoder.pep"),
+        gff = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
+                           "08-CAG-proteins", "{assembly}.fasta.transdecoder.gff3"),
+        cds = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
+                           "08-CAG-proteins", "{assembly}.fasta.transdecoder.cds"),
+        bed = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
+                           "08-CAG-proteins", "{assembly}.fasta.transdecoder.bed")
     params:
         merged = "{assembly}_CAG",
         size = TRANSDECODERORFSIZE

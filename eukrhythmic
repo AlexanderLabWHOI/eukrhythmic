@@ -45,12 +45,13 @@ include: "rules/12-MAD.smk"
 include: "rules/13-MAD-proteins.smk"
 include: "rules/14-MAD-mapping.smk"
 include: "rules/15-MAD-quality.smk"
+include: "rules/16-MAD-taxonomy.smk"
+include: "rules/17-MAD-function.smk"
 
 include: "rules/busco-snake.smk"
 include: "rules/annotate-snake.smk"
 include: "rules/hardclean-snake.smk"
 #include: "rules/spike-snake.smk"
-include: "rules/eukulele-snake.smk"
 
 ruleorder: trimmomatic > trimmomatic_SE
 ruleorder: trinity > trinity_SE

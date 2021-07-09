@@ -11,12 +11,14 @@ def get_samples(assemblygroup):
     samplelist = list(ASSEMBLYFILE.loc[ASSEMBLYFILE['AssemblyGroup'] == assemblygroup]['SampleID']) 
     return samplelist
 
-rule clustering_mega_merge_mmseqs:
+rule mad_mmseqs:
     input: 
-        infiles = os.path.join(OUTPUTDIR, "02-assembly", "11-SWAM", "merged.fasta")
+        infiles = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly", "11-SWAM", "merged.fasta")
     output:
-        outfasta = os.path.join(OUTPUTDIR, "03-merge", "12-MAD", "cluster_{folder}", "MAD.fasta"),
-        outtsv = os.path.join(OUTPUTDIR, "03-merge", "12-MAD", "cluster_{folder}", "MAD.tsv")
+        outfasta = os.path.join(OUTPUTDIR, "intermediate-files",\
+                                "03-merge", "12-MAD", "cluster_{folder}", "MAD.fasta"),
+        outtsv = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge",\
+                              "12-MAD", "cluster_{folder}", "MAD.tsv")
     params:
         threads = 10,
         maxmemory = 30000, # -G o indicates local sequence identity.
@@ -28,7 +30,7 @@ rule clustering_mega_merge_mmseqs:
         name_subdb = "MAD_3_{folder}"
     log:
         err = os.path.join(OUTPUTDIR, "logs", "12-MAD", "{folder}.err"),
-        out = os.path.join(OUTPUTDIR, "logs", "12-MAD", "{folder}s.log")
+        out = os.path.join(OUTPUTDIR, "logs", "12-MAD", "{folder}.log")
     conda:
         os.path.join("..", "envs", "03-merge-env.yaml")
     shell:

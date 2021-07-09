@@ -13,12 +13,15 @@ def get_samples(assemblygroup):
         
 rule clustering_agm:
     input:
-        infiles = os.path.join(OUTPUTDIR, "02-assembly", "06-AGM", "{assembly}_merged.fasta")
+        infiles = os.path.join(OUTPUTDIR, "intermediate-files",\
+                               "02-assembly", "06-AGM", "{assembly}_merged.fasta")
     output:
-        outfasta = os.path.join(OUTPUTDIR, "03-merge", "07-CAG",\
+        outfasta = os.path.join(OUTPUTDIR, "intermediate-files",\
+                                "03-merge", "07-CAG",\
                                 "{folder}",\
                                 "{assembly}_merged.fasta"),
-        outtsv = os.path.join(OUTPUTDIR, "03-merge", "07-CAG",\
+        outtsv = os.path.join(OUTPUTDIR, "intermediate-files",\
+                              "03-merge", "07-CAG",\
                               "{folder}",\
                               "{assembly}_merged.tsv")
     params:

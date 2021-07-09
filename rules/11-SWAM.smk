@@ -8,13 +8,13 @@ sys.path.insert(1, '../scripts')
 from importworkspace import *
 
 def getallmergedlist():
-    mergednames = list(set([os.path.join(OUTPUTDIR, "03-merge", "07-CAG",\
+    mergednames = list(set([os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "07-CAG",\
                                          "{folder}", curr + "_merged.fasta") \
                             for curr in SAMPLEINFO.AssemblyGroup]))
     return(mergednames)
     
 def getallmerged():
-    mergednames = list(set([os.path.join(OUTPUTDIR, "03-merge", "07-CAG",\
+    mergednames = list(set([os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "07-CAG",\
                                          "{folder}", curr + "_merged.fasta") \
                             for curr in SAMPLEINFO.AssemblyGroup]))
     return(" ".join(mergednames))
@@ -24,7 +24,7 @@ rule merge_all:
     input:
         assemblyfiles = getallmergedlist()
     output:
-        os.path.join(OUTPUTDIR, "02-assembly", "11-SWAM", "merged.fasta")
+        os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly", "11-SWAM", "merged.fasta")
     params:
         assemblyfiles = getallmerged()
     shell:
