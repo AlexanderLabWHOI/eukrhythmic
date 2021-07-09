@@ -1,0 +1,9 @@
+name: setup
+channels:
+    - bioconda
+    - conda-forge
+dependencies:
+    - bbmap
+    - fastqc
+    - multiqc
+    - trimmomatic

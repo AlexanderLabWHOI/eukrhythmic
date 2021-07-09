@@ -1,0 +1,6 @@
+name: merge
+channels:
+    - bioconda
+    - conda-forge
+dependencies:
+    - mmseqs2
