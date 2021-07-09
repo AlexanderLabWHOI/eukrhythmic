@@ -1,0 +1,8 @@
+name: compare
+channels:
+    - bioconda
+    - conda-forge
+dependencies:
+    - salmon
+    - transdecoder
+    - quast
