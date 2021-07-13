@@ -18,11 +18,9 @@ rule clustering_agm:
     output:
         outfasta = os.path.join(OUTPUTDIR, "intermediate-files",\
                                 "03-merge", "07-CAG",\
-                                "{folder}",\
                                 "{assembly}_merged.fasta"),
         outtsv = os.path.join(OUTPUTDIR, "intermediate-files",\
                               "03-merge", "07-CAG",\
-                              "{folder}",\
                               "{assembly}_merged.tsv")
     params:
         threads = 10,
@@ -30,12 +28,12 @@ rule clustering_agm:
         identityparam = 1.00,
         mincoverageshorter = MINCOVERAGECLUST2,
         mincoveragelong = 0.005,
-        name_db = "CAG_{folder}_{assembly}",
-        name_intermed = "CAG_2_{folder}_{assembly}",
-        name_subdb = "CAG_3__{folder}_{assembly}"
+        name_db = "CAG_{assembly}",
+        name_intermed = "CAG_2_{assembly}",
+        name_subdb = "CAG_3_{assembly}"
     log:
-        err = os.path.join(OUTPUTDIR, "logs", "07-CAG", "{folder}_{assembly}.err"),
-        out = os.path.join(OUTPUTDIR, "logs", "07-CAG", "{folder}_{assembly}.log")
+        err = os.path.join(OUTPUTDIR, "logs", "07-CAG", "{assembly}.err"),
+        out = os.path.join(OUTPUTDIR, "logs", "07-CAG", "{assembly}.log")
     conda:
         os.path.join("..", "envs", "03-merge-env.yaml")
     shell:

@@ -13,12 +13,13 @@ rule eukulele_run:
     input:
         pep = (lambda filename: expand(os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", 
                                                     "{assembly}.fasta.transdecoder.pep"), 
-               assembly = assemblygroups, folder = filename.folder)),
+               assembly = assemblygroups)),
         salmon = (lambda filename: expand(os.path.join(OUTPUTDIR, "salmon_mega_merge",
                                                        "salmon_quant_assembly_merged", "quant.sf"), 
                assembly = assemblygroups, folder = filename.folder))
     output:
-        directory(os.path.join(OUTPUTDIR, "eukulele_{folder}"))
+        eukulele_directory = directory(os.path.join(OUTPUTDIR, "eukulele_{folder}")),
+        tax_est = os.path.join(OUTPUTDIR, "eukulele_{folder}", "taxonomy_estimation", )
     params:
         sampledir = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins"),
         salmondir = (lambda filename: expand(os.path.join(OUTPUTDIR, "salmon_mega_merge")))

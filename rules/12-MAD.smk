@@ -16,21 +16,21 @@ rule mad_mmseqs:
         infiles = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly", "11-SWAM", "merged.fasta")
     output:
         outfasta = os.path.join(OUTPUTDIR, "intermediate-files",\
-                                "03-merge", "12-MAD", "cluster_{folder}", "MAD.fasta"),
+                                "03-merge", "12-MAD", "MAD.fasta"),
         outtsv = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge",\
-                              "12-MAD", "cluster_{folder}", "MAD.tsv")
+                              "12-MAD", "MAD.tsv")
     params:
         threads = 10,
         maxmemory = 30000, # -G o indicates local sequence identity.
         identityparam = 1.00,
         mincoverageshorter = MINCOVERAGECLUST2,
         mincoveragelong = 0.005,
-        name_db = "MAD_{folder}",
-        name_intermed = "MAD_2_{folder}",
-        name_subdb = "MAD_3_{folder}"
+        name_db = "MAD",
+        name_intermed = "MAD_2",
+        name_subdb = "MAD_3"
     log:
-        err = os.path.join(OUTPUTDIR, "logs", "12-MAD", "{folder}.err"),
-        out = os.path.join(OUTPUTDIR, "logs", "12-MAD", "{folder}.log")
+        err = os.path.join(OUTPUTDIR, "logs", "12-MAD", "MAD.err"),
+        out = os.path.join(OUTPUTDIR, "logs", "12-MAD", "MAD.log")
     conda:
         os.path.join("..", "envs", "03-merge-env.yaml")
     shell:

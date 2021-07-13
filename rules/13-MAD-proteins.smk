@@ -10,19 +10,18 @@ from importworkspace import *
 
 rule transdecoder_MAD:
     input:
-        fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD",\
-                                 "cluster_{folder}", "MAD.fasta")
+        fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD", "MAD.fasta")
     output:
-        pep = os.path.join("{assembly}_MAD.fasta.transdecoder.pep"),
-        gff = os.path.join("{assembly}_MAD.fasta.transdecoder.gff3"),
-        cds = os.path.join("{assembly}_MAD.fasta.transdecoder.cds"),
-        bed = os.path.join("{assembly}_MAD.fasta.transdecoder.bed")
+        pep = os.path.join("MAD.fasta.transdecoder.pep"),
+        gff = os.path.join("MAD.fasta.transdecoder.gff3"),
+        cds = os.path.join("MAD.fasta.transdecoder.cds"),
+        bed = os.path.join("MAD.fasta.transdecoder.bed")
     params:
-        merged = "{assembly}_MAD",
+        merged = "TD_MAD",
         size = TRANSDECODERORFSIZE
     log:
-        err = os.path.join(OUTPUTDIR, "logs", "13-MAD-proteins", "{assembly}.err"),
-        out = os.path.join(OUTPUTDIR, "logs", "13-MAD-proteins", "{assembly}.log")
+        err = os.path.join(OUTPUTDIR, "logs", "13-MAD-proteins", "MAD.err"),
+        out = os.path.join(OUTPUTDIR, "logs", "13-MAD-proteins", "MAD.log")
     conda: 
         os.path.join("..", "envs", "05-compare-env.yaml")
     shell:
@@ -36,21 +35,21 @@ rule transdecoder_MAD:
         
 rule transdecoder_MAD_clean:
     input:
-        pep = os.path.join("{assembly}_MAD.fasta.transdecoder.pep"),
-        gff = os.path.join("{assembly}_MAD.fasta.transdecoder.gff3"),
-        cds = os.path.join("{assembly}_MAD.fasta.transdecoder.cds"),
-        bed = os.path.join("{assembly}_MAD.fasta.transdecoder.bed")
+        pep = os.path.join("MAD.fasta.transdecoder.pep"),
+        gff = os.path.join("MAD.fasta.transdecoder.gff3"),
+        cds = os.path.join("MAD.fasta.transdecoder.cds"),
+        bed = os.path.join("MAD.fasta.transdecoder.bed")
     output:
         pep = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "13-MAD-proteins", "{assembly}.fasta.transdecoder.pep"),
+                           "13-MAD-proteins", "MAD.fasta.transdecoder.pep"),
         gff = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "13-MAD-proteins", "{assembly}.fasta.transdecoder.gff3"),
+                           "13-MAD-proteins", "MAD.fasta.transdecoder.gff3"),
         cds = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "13-MAD-proteins", "{assembly}.fasta.transdecoder.cds"),
+                           "13-MAD-proteins", "MAD.fasta.transdecoder.cds"),
         bed = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "13-MAD-proteins", "{assembly}.fasta.transdecoder.bed")
+                           "13-MAD-proteins", "MAD.fasta.transdecoder.bed")
     params:
-        merged = "{assembly}_MAD",
+        merged = "TD_MAD",
         size = TRANSDECODERORFSIZE
     shell:
         """

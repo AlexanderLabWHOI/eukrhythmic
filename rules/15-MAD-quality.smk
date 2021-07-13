@@ -17,44 +17,21 @@ def combineassemblerslist(assembly):
 rule metaquast:
     input:
         outputassemblies = os.path.join(OUTPUTDIR, "intermediate-files",\
-                                        "03-merge", "12-MAD", "cluster_{folder}", "MAD.fasta")
+                                        "03-merge", "12-MAD", "MAD.fasta")
     output:
-        directory(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                               "15-MAD-quality", "{assembly}"))
+        outdir = directory(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
+                               "15-MAD-quality", "quast")),
+        report = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
+                               "15-MAD-quality", "quast", "report.tsv")
     params:
         assemblers = ",".join(ASSEMBLERS),
         outputassemblies = lambda wildcards: combineassemblers(wildcards.assembly) 
     log:
-        err = os.path.join(OUTPUTDIR, "logs", "15-MAD-quality", "{assembly}.err"),
-        out = os.path.join(OUTPUTDIR, "logs", "15-MAD-quality", "{assembly}.out")
+        err = os.path.join(OUTPUTDIR, "logs", "15-MAD-quality", "quast.err"),
+        out = os.path.join(OUTPUTDIR, "logs", "15-MAD-quality", "quast.out")
     conda:
         os.path.join("..", "envs", "04-compare-env.yaml")
     shell:
         '''
         python metaquast {params.outputassemblies} -o {output} --threads 8 --labels {params.assemblers} 2> {log.err} 1> {log.out}
         '''
-        
-rule combinequast:
-    input:
-        quastdir = [os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                                 "15-MAD-quality", curr) for curr in assemblygroups]
-    output:
-        os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                     "15-MAD-quality", "combined", "all.tsv")
-    params:
-        outputfile = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                                  "15-MAD-quality", "combined", "all.tsv"),
-        assemblers = ",".join(ASSEMBLERS),
-        quastdir = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "15-MAD-quality") 
-    run:
-        quastfiles = os.listdir(params.quastdir)
-        if len(quastfiles) > 0:
-            outputassemblers = pd.DataFrame()
-            for r in quastfiles:
-                if os.path.isfile(os.path.join(params.quastdir, r, "report.tsv")):
-                    currentreport = pd.read_csv(os.path.join(params.quastdir, r, "report.tsv"), index_col = 0, sep = "\t")
-                    for c in range(0,len(currentreport.columns)):
-                        currentreport = currentreport.rename(columns={currentreport.columns[c]: (currentreport.columns[c] + 
-                                                                                                 "_" + str(r))})
-                    outputassemblers = pd.concat([outputassemblers,currentreport], axis = 1)
-        outputassemblers.to_csv(path_or_buf = params.outputfile, sep = "\t")

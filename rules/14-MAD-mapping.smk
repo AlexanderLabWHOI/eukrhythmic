@@ -33,22 +33,22 @@ def salmon_get_samples(assembly,left_or_right,list_format):
 rule salmon_MAD:
     input: 
         fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD",\
-                                 "cluster_{folder}", "MAD.fasta"),
+                                 "MAD.fasta"),
         left = lambda filename: salmon_get_samples(filename.assembly, "left", list_format = True),
         right = lambda filename: salmon_get_samples(filename.assembly, "right", list_format = True)
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
-                     "salmon", "{assembly}_index", "quant.sf")
+                     "salmon", "MAD_index", "quant.sf")
     params:
         libtype = "A",
         indexname = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
-                     "salmon", "{assembly}_index"),
+                     "salmon", "MAD_index"),
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
-                     "salmon", "{assembly}_quant"),
+                     "salmon", "MAD_quant"),
         kval = 31
     log:
-        err = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "{assembly}.err"),
-        out = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "{assembly}.log")
+        err = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "MAD_salmon.err"),
+        out = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "MAD_salmon.log")
     conda: os.path.join("..", "envs", "04-compare-env.yaml")
     shell:
         """
