@@ -36,7 +36,7 @@ rule transabyssmerge:
          out = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                                         "05-assembly", "05c-transabyss", "{assembly}",\
                                         "outputlog_{assembly}_merge.out") 
-    conda: os.path.join("..","envs","02-assembly-env.yaml")
+    conda: os.path.join("..","..","envs","02-assembly-env.yaml")
     shell:
         '''
         transabyss-merge {input.files} --mink {params.minkval} --maxk {params.maxkval} --prefixes {params.prefixks} --out {output} 2> {log.err} 1> {log.out}
@@ -53,7 +53,7 @@ rule transabyssmerge_cleanup:
         mergefile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                      "05-assembly", "05c-transabyss",\
                      "{assembly}_transabyss.fasta"),
-        outdir = os.path.join(os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
+        outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                               "05-assembly", "05c-transabyss", "transabyss_*_{assembly}"),
         scratch = os.path.join(SCRATCHDIR, "transabyss")
     shell:

@@ -47,7 +47,7 @@ rule velvet:
     log:
         err = os.path.join(OUTPUTDIR, "logs", "05e-velvet", "{assembly}.err"),
         out = os.path.join(OUTPUTDIR, "logs", "05e-velvet", "{assembly}.out")
-    conda: os.path.join("..", "envs", "02-assembly-env.yaml")
+    conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")
     shell:
         '''
         velveth {params.velvetdir} {params.kmerval} -strand_specific -shortPaired -fastq {input.r1} {input.r2} 2> {log.err} 1> {log.out}
@@ -71,7 +71,7 @@ rule velvet_SE:
     log:
         err = os.path.join(OUTPUTDIR, "logs", "05e-velvet", "{assembly}.err"),
         out = os.path.join(OUTPUTDIR, "logs", "05e-velvet", "{assembly}.log")
-    conda: os.path.join("..", "envs", "02-assembly-env.yaml")
+    conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")
     shell:
         '''
         velveth {params.velvetdir} {params.kmerval} -strand_specific -short -fastq {input.r1} 2> {log.err} 1> {log.out}

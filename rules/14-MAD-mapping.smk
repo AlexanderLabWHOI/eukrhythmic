@@ -9,10 +9,12 @@ sys.path.insert(1, '../scripts')
 from importworkspace import *
     
 def salmon_get_samples(assembly,left_or_right,list_format):
-    foldername = "bbmap"
+    foldername = os.path.join("intermediate-files", "01-setup",\
+                          "03-alignment-spike")
     extensionname = "clean"
     if DROPSPIKE == 0:
-        foldername = "firsttrim"
+        foldername = os.path.join("intermediate-files", "01-setup",\
+                          "02-trim")
         extensionname = "trimmed"
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assembly]['SampleID']) 
     if assembly == "merged":
@@ -38,17 +40,17 @@ rule salmon_MAD:
         right = lambda filename: salmon_get_samples(filename.assembly, "right", list_format = True)
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
-                     "salmon", "MAD_index", "quant.sf")
+                     "salmon", "{assembly}_index", "quant.sf")
     params:
         libtype = "A",
         indexname = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
-                     "salmon", "MAD_index"),
+                     "salmon", "{assembly}_index"),
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
-                     "salmon", "MAD_quant"),
+                     "salmon", "{assembly}_quant"),
         kval = 31
     log:
-        err = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "MAD_salmon.err"),
-        out = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "MAD_salmon.log")
+        err = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "{assembly}_salmon.err"),
+        out = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "{assembly}_salmon.log")
     conda: os.path.join("..", "envs", "04-compare-env.yaml")
     shell:
         """

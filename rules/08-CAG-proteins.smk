@@ -11,7 +11,7 @@ from importworkspace import *
 rule transdecoder_CAG:
     input:
         fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "07-CAG",\
-                                 "{folder}", "{assembly}_merged.fasta")
+                                 "{assembly}_merged.fasta")
     output:
         pep = os.path.join("{assembly}_CAG.fasta.transdecoder.pep"),
         gff = os.path.join("{assembly}_CAG.fasta.transdecoder.gff3"),
@@ -24,11 +24,11 @@ rule transdecoder_CAG:
         err = os.path.join(OUTPUTDIR, "logs", "08-CAG-proteins", "{assembly}.err"),
         out = os.path.join(OUTPUTDIR, "logs", "08-CAG-proteins", "{assembly}.log")
     conda: 
-        os.path.join("..", "envs", "05-compare-env.yaml")
+        os.path.join("..", "envs", "04-compare-env.yaml")
     shell:
         """
         unset PERL5LIB
-        cp {input.merged} {params.merged}.fasta
+        cp {input.fastafile} {params.merged}.fasta
         TransDecoder.LongOrfs -t {params.merged}.fasta -m {params.size} 2> {log.err} 1> {log.out}
         TransDecoder.Predict -t {params.merged}.fasta --no_refine_starts 2>> {log.err} 1>> {log.out}
         rm {params.merged}.fasta

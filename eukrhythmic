@@ -49,24 +49,12 @@ include: "rules/16-MAD-taxonomy.smk"
 include: "rules/17-MAD-function.smk"
 
 include: "rules/busco-snake.smk"
-include: "rules/annotate-snake.smk"
 include: "rules/hardclean-snake.smk"
 
 ruleorder: trimmomatic > trimmomatic_SE
 ruleorder: trinity > trinity_SE
 ruleorder: megahit > megahit_SE
 ruleorder: velvet > velvet_SE
-ruleorder: transdecoder_indiv > transdecoder_final_proteins > transdecoder_by_assembly
-ruleorder: transdecoder_indiv_clean > transdecoder_finalproteins_clean > transdecoder_by_assembly_clean
-ruleorder: salmon_indiv > salmon_clustering
-ruleorder: salmon_clustering > salmon_clustering_raw
-ruleorder: combinequastmerge > quast_merged_transdecoded
-#ruleorder: clustering_mega_merge > clustering_by_assembly_group
-ruleorder: clustering_mega_merge_mmseqs > clustering_by_assembly_group_mmseqs
-ruleorder: salmon_clustering_raw > salmon_clustering
-#ruleorder: merge_all > copies
-#ruleorder: salmon_rename > salmon_clustering_against_mega
-#ruleorder: salmon_rename > salmon_clustering
 ruleorder: run_busco > busco
 
 rule all:
@@ -122,7 +110,7 @@ rule all:
         # GET SALMON MAPPING FROM CLUSTERED ASSEMBLY GROUP OUTPUT
         cagmapping08 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
                                            "09-CAG-mapping", "salmon", "{assembly}_index", "quant.sf"),
-                                            assembly = assemblygroups),
+                                            assembly = filenames),
         # GET QUAST RESULTS FROM CLUSTERED ASSEMBLY GROUP OUTPUT
         cagquality08 = os.path.join(OUTPUTDIR, "04-compare", "intermediate-files",
                                     "10-CAG-quality", "combined", "all.tsv"),
@@ -130,13 +118,13 @@ rule all:
         swam11 = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly", "11-SWAM", "merged.fasta"),
         # CLUSTER MERGED BY SAMPLES
         mad12 = os.path.join(OUTPUTDIR, "intermediate-files",
-                            "03-merge", "12-MAD", "MAD.fasta")
+                            "03-merge", "12-MAD", "MAD.fasta"),
         # TRANSDECODER MERGED BY SAMPLES
         madproteins13 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
                                      "13-MAD-proteins", "MAD.fasta.transdecoder.pep"),
         # MAPPING MERGED BY SAMPLES
-        madmapping14 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",
-                                    "salmon", "MAD_index", "quant.sf"),
+        madmapping14 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",
+                                    "salmon", "{assembly}_index", "quant.sf"), assembly = [filenames,"merged"]),
         # QUALITY MERGED BY SAMPLES
         madquality15 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
                                "15-MAD-quality", "quast", "report.tsv")

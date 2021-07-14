@@ -53,7 +53,7 @@ rule trinity:
                            "05-assembly", "05a-trinity", "outputlog_{assembly}.err"),
         out = os.path.join(OUTPUTDIR, "logs", "02-assembly",\
                            "05-assembly", "05a-trinity", "outputlog_{assembly}.log")
-    conda: os.path.join("..", "envs", "02-assembly-env.yaml")
+    conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")
     shell:
         '''
         echo {params.left}

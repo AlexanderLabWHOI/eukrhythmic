@@ -9,13 +9,13 @@ from importworkspace import *
 
 def getallmergedlist():
     mergednames = list(set([os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "07-CAG",\
-                                         "{folder}", curr + "_merged.fasta") \
+                                         curr + "_merged.fasta") \
                             for curr in SAMPLEINFO.AssemblyGroup]))
     return(mergednames)
     
 def getallmerged():
     mergednames = list(set([os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "07-CAG",\
-                                         "{folder}", curr + "_merged.fasta") \
+                                         curr + "_merged.fasta") \
                             for curr in SAMPLEINFO.AssemblyGroup]))
     return(" ".join(mergednames))
     

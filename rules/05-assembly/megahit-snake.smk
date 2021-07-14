@@ -54,7 +54,7 @@ rule megahit:
                           "05-assembly", "05b-megahit", "{assembly}", "outputlog_{assembly.err"),
         out = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                           "05-assembly", "05b-megahit", "{assembly}", "outputlog_{assembly}.out")
-    conda: os.path.join("..", "envs", "02-assembly-env.yaml")
+    conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")
     shell:
         '''
         if [ -d {params.megadir} ]
@@ -82,7 +82,7 @@ rule megahit_SE:
                           "05-assembly", "05b-megahit", "{assembly}", "outputlog_{assembly.err"),
         out = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                           "05-assembly", "05b-megahit", "{assembly}", "outputlog_{assembly}.out")
-    conda: os.path.join("..", "envs", "02-assembly-env.yaml")
+    conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")
     shell:
         '''
         if [ -d {params.megadir} ]

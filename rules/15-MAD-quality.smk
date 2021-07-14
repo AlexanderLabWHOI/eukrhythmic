@@ -14,18 +14,17 @@ def combineassemblers(assembly):
 def combineassemblerslist(assembly):
     return([os.path.join(ASSEMBLEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS])
  
-rule metaquast:
+rule metaquast_mad:
     input:
         outputassemblies = os.path.join(OUTPUTDIR, "intermediate-files",\
                                         "03-merge", "12-MAD", "MAD.fasta")
     output:
-        outdir = directory(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                               "15-MAD-quality", "quast")),
         report = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
                                "15-MAD-quality", "quast", "report.tsv")
     params:
         assemblers = ",".join(ASSEMBLERS),
-        outputassemblies = lambda wildcards: combineassemblers(wildcards.assembly) 
+        outdir = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
+                               "15-MAD-quality", "quast")
     log:
         err = os.path.join(OUTPUTDIR, "logs", "15-MAD-quality", "quast.err"),
         out = os.path.join(OUTPUTDIR, "logs", "15-MAD-quality", "quast.out")
@@ -33,5 +32,5 @@ rule metaquast:
         os.path.join("..", "envs", "04-compare-env.yaml")
     shell:
         '''
-        python metaquast {params.outputassemblies} -o {output} --threads 8 --labels {params.assemblers} 2> {log.err} 1> {log.out}
+        python metaquast {input.outputassemblies} -o {params.outdir} --threads 8 --labels {params.assemblers} 2> {log.err} 1> {log.out}
         '''

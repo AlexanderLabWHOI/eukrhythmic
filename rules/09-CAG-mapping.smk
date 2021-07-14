@@ -9,10 +9,12 @@ sys.path.insert(1, '../scripts')
 from importworkspace import *
     
 def salmon_get_samples(assembly,left_or_right,list_format):
-    foldername = "bbmap"
+    foldername = os.path.join("intermediate-files", "01-setup",\
+                          "03-alignment-spike")
     extensionname = "clean"
     if DROPSPIKE == 0:
-        foldername = "firsttrim"
+        foldername = os.path.join("intermediate-files", "01-setup",\
+                          "02-trim")
         extensionname = "trimmed"
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assembly]['SampleID']) 
     if assembly == "merged":
@@ -33,7 +35,7 @@ def salmon_get_samples(assembly,left_or_right,list_format):
 rule salmon_CAG:
     input: 
         fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "07-CAG",\
-                                 "{folder}", "{assembly}_merged.fasta"),
+                                 "{assembly}_merged.fasta"),
         left = lambda filename: salmon_get_samples(filename.assembly, "left", list_format = True),
         right = lambda filename: salmon_get_samples(filename.assembly, "right", list_format = True)
     output:

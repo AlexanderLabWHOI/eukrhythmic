@@ -46,9 +46,9 @@ rule spades:
         maxmem = MAXMEMORY,
         CPUs = MAXCPUSPERTASK * MAXTASKS
     log:
-        err = os.path.join("logs","spades","outputlog_{assembly}_err.log"),
-        out = os.path.join("logs","spades","outputlog_{assembly}_out.log")
-    conda: '../envs/spades-env.yaml'
+        err = os.path.join("logs","spades","outputlog_{assembly}.err"),
+        out = os.path.join("logs","spades","outputlog_{assembly}.out")
+    conda: os.path.join("..", "..", "envs", "spades-env.yaml")
     shell:
         '''
         echo {params.left}

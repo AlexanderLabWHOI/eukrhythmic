@@ -2,13 +2,13 @@
 ## INPUT DATA AND FORMATTING ##
 # formatted input file; described in README
 jobname: sample
-metaT_sample: input/metaT_wap.txt #input/sampledata.txt
+metaT_sample: input/sampledata_MMETSP_2.txt #input/sampledata.txt
 spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
 spiketable: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/percentmapped_bbmap_volumes.tab
 adapter: static/adapters.fa
 ## DIRECTORIES DURING PROCESSING ##
-inputDIR: /vortexfs1/omics/alexander/data/WAP
-outputDIR: ../WAP_5May2021
+inputDIR: /vortexfs1/omics/alexander/akrinos/2021-testing-eukrhythmic/mock-metatranscriptomes/new_mock_simreads
+outputDIR: ../mock_test
 assembledDIR: assembled
 renamedDIR: renamed
 # this is where all the intermediate outputs will go.
@@ -30,8 +30,7 @@ kmers:
 #    - 110
 assemblers:
     - megahit
-#    - velvet
-    - spades
+    - rnaspades
     - trinity
     - transabyss
 separategroups: 1

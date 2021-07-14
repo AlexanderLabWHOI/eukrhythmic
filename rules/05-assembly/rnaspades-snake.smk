@@ -54,7 +54,7 @@ rule rnaspades:
          out = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                             "05-assembly", "05d-rnaspades", "{assembly}",\
                             "outputlog_{assembly}_merge.out") 
-    conda: os.path.join("..", "envs", "02-assembly-env.yaml")
+    conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")
     shell:
         '''
         echo {params.left}
