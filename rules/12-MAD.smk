@@ -25,9 +25,9 @@ rule mad_mmseqs:
         identityparam = 1.00,
         mincoverageshorter = MINCOVERAGECLUST2,
         mincoveragelong = 0.005,
-        name_db = "MAD",
-        name_intermed = "MAD_2",
-        name_subdb = "MAD_3"
+        name_db = "MAD_mmseqs",
+        name_intermed = "MAD_mmseqs_2",
+        name_subdb = "MAD_mmseqs_3"
     log:
         err = os.path.join(OUTPUTDIR, "logs", "12-MAD", "MAD.err"),
         out = os.path.join(OUTPUTDIR, "logs", "12-MAD", "MAD.log")
@@ -36,7 +36,7 @@ rule mad_mmseqs:
     shell:
         '''
         mmseqs createdb {input.infiles} {params.name_db} 
-        mmseqs linclust {params.name_db} {params.name_intermed} tmp --min-seq-id {params.identityparam} --cov-mode 1 -c {params.mincoverageshorter} --remove-tmp-files 2> {log.err} 1> {log.out}
+        mmseqs linclust {params.name_db} {params.name_intermed} tmp --min-seq-id {params.identityparam} --cov-mode 1 -c {params.mincoverageshorter} --split-memory-limit 120G --remove-tmp-files 2> {log.err} 1> {log.out}
         mmseqs createsubdb {params.name_intermed} {params.name_db} {params.name_subdb}
         mmseqs convert2fasta {params.name_subdb} {output.outfasta}
         mmseqs createtsv {params.name_db} {params.name_db} {params.name_intermed} {output.outtsv}

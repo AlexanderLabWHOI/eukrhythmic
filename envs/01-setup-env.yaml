@@ -6,4 +6,6 @@ dependencies:
     - bbmap
     - fastqc
     - multiqc
+    - decorator
+    - networkx
     - trimmomatic

@@ -37,16 +37,15 @@ rule transabyss:
         left = lambda filename: get_samples_commas_TA(filename.assembly, DROPSPIKE, "left", commas = False),
         right = lambda filename: get_samples_commas_TA(filename.assembly, DROPSPIKE, "right", commas = False)
     output:
-         os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                      "05-assembly", "05c-transabyss", "transabyss_{k}_{assembly}",\
-                      "{assembly}_{k}_transabyss.fasta-final.fa")
+         os.path.join(ASSEMBLEDDIR, "05c-transabyss", "transabyss_{k}_{assembly}",\
+                      "TA-{assembly}_{k}_transabyss.fasta-final.fa")
     params:
         extra = "",
         kval = "{k}",
-        fastaname = "{assembly}_{k}_transabyss.fasta",
+        fastaname = "TA-{assembly}_{k}_transabyss.fasta",
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                               "05-assembly", "05c-transabyss", "transabyss_{k}_{assembly}",\
-                              "transabyss_{k}_{assembly}")
+                              "TA-transabyss_{k}_{assembly}")
     threads: 4
     log:
         err = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\

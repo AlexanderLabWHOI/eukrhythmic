@@ -12,7 +12,6 @@ def combineassemblers(assembly):
   
 def combineassemblerslist(assembly):
     return([os.path.join(ASSEMBLEDDIR, assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS])
-
 # this rule is meant to change the name of the headers for the FASTA files for each of the assemblies so that 
 # we can track where each of the headers originally came from
 

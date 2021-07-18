@@ -30,17 +30,50 @@ def salmon_get_samples(assembly,left_or_right,list_format):
         return filenames
     else:
         return " ".join(filenames)
+
+rule convert_mad_no_space:
+    input:
+        fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD",\
+                                 "MAD.fasta")
+    output:
+        fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD",\
+                                 "MAD.nospace.fasta")
+    shell:
+        '''
+        sed 's, ,_,g' {input.fastafile} > {output.fastafile}
+        '''
         
 
-rule salmon_MAD:
+rule salmon_MAD_index:
     input: 
         fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD",\
-                                 "MAD.fasta"),
+                                 "MAD.nospace.fasta")
+    output:
+        os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
+                     "salmon", "MAD_index", "versionInfo.json")
+    params:
+        libtype = "A",
+        indexname = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
+                     "salmon", "MAD_index"),
+        kval = 31
+    log:
+        err = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "MAD_salmon_ind.err"),
+        out = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "MAD_salmon_ind.out")
+    conda: os.path.join("..", "envs", "04-compare-env.yaml")
+    shell:
+        """
+        salmon index -t {input.fastafile} -i {params.indexname} -k {params.kval} 2> {log.err} 1> {log.out}
+        """
+        
+rule salmon_MAD:
+    input: 
+        indexname = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
+                     "salmon", "MAD_index", "versionInfo.json"),
         left = lambda filename: salmon_get_samples(filename.assembly, "left", list_format = True),
         right = lambda filename: salmon_get_samples(filename.assembly, "right", list_format = True)
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
-                     "salmon", "{assembly}_index", "quant.sf")
+                     "salmon", "{assembly}_quant", "quant.sf")
     params:
         libtype = "A",
         indexname = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
@@ -50,10 +83,9 @@ rule salmon_MAD:
         kval = 31
     log:
         err = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "{assembly}_salmon.err"),
-        out = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "{assembly}_salmon.log")
+        out = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "{assembly}_salmon.out")
     conda: os.path.join("..", "envs", "04-compare-env.yaml")
     shell:
         """
-        salmon index -t {input.fastafile} -i {params.indexname} -k {params.kval} 2> {log.err} 1> {log.out}
-        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {params.outdir} 2>> {log.err} 1>> {log.out}
+        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {params.outdir} 2> {log.err} 1> {log.out}
         """

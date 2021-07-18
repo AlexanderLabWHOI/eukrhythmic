@@ -29,5 +29,10 @@ rule merge_all:
         assemblyfiles = getallmerged()
     shell:
         '''
-        cat {params.assemblyfiles} > {output}
+        echo "" > {output}
+        for assemblyfile in {params.assemblyfiles}; do
+            currvar=$(echo $assemblyfile | cut -f6 -d\/)
+            sed 's/>.*/&_'"$currvar"'/' $assemblyfile >> {output}
+        done
+        #cat {params.assemblyfiles} > {output}
         '''

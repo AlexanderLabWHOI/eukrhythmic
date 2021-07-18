@@ -22,19 +22,19 @@ from checkrequirements import *
 
 ## CHECK THAT ALL REQUIREMENTS ARE SATISFIED BY EXECUTING checkrequirements() from `scripts/checkrequirements.py` ##
 checkrequirementsfct()
+print(ASSEMBLEDDIR)
 
 include: "rules/01-quality.smk"
 include: "rules/02-trim.smk"
 include: "rules/03-alignment-spike.smk"
 include: "rules/04-quality.smk"
-include: "rules/05-assembly/trinity-snake.smk"
-include: "rules/05-assembly/megahit-snake.smk"
+#include: "rules/05-assembly/trinity-snake.smk"
+#include: "rules/05-assembly/megahit-snake.smk"
 include: "rules/05-assembly/transabyss-snake.smk"
-include: "rules/05-assembly/transabyss-merge-snake.smk"
-include: "rules/05-assembly/velvet-snake.smk"
-include: "rules/05-assembly/spades-snake.smk"
-include: "rules/05-assembly/rnaspades-snake.smk"
-include: "rules/05-assembly/velvet-snake.smk"
+#include: "rules/05-assembly/transabyss-merge-snake.smk"
+#include: "rules/05-assembly/spades-snake.smk"
+#include: "rules/05-assembly/rnaspades-snake.smk"
+#include: "rules/05-assembly/velvet-snake.smk"
 include: "rules/06-AGM.smk"
 include: "rules/07-CAG.smk"
 include: "rules/08-CAG-proteins.smk"
@@ -52,11 +52,12 @@ include: "rules/busco-snake.smk"
 include: "rules/hardclean-snake.smk"
 
 ruleorder: trimmomatic > trimmomatic_SE
-ruleorder: trinity > trinity_SE
-ruleorder: megahit > megahit_SE
-ruleorder: velvet > velvet_SE
+#ruleorder: trinity > trinity_SE
+#ruleorder: megahit > megahit_SE
+#ruleorder: velvet > velvet_SEs
 ruleorder: run_busco > busco
 
+print(ASSEMBLERS)
 rule all:
     input:
         # FASTQC OUTPUTS
@@ -66,8 +67,9 @@ rule all:
                         "01-quality", "01a-fastqc", "{sample}_{num}_fastqc.zip")], zip, 
                         base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # MULTIQC OUTPUTS
-        qual01_multiqc = expand(os.path.join(OUTPUTDIR, "01-setup", "01-quality",\
-                                            "01b-multiqc", "multiqc_report.html"), zip,
+        qual01_multiqc = expand(os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                                            "01-quality", "01b-multiqc",\
+                                            "multiqc_report.html"), zip,
                                             base = OUTPUTDIR),
         # TRIMMOMATIC OUTPUTS
         trim02 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
@@ -91,12 +93,12 @@ rule all:
                                   "multiqc_report.html"), zip,\
                           base = OUTPUTDIR),
         # ASSEMBLER OUTPUTS
-        assembly05 = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"), 
-                               base = ASSEMBLEDDIR,
-                               assembly = assemblygroups, assembler = ASSEMBLERS), 
+        #assembly05 = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"),
+        #                       base = ASSEMBLEDDIR,
+        #                       assembly = assemblygroups, assembler = ASSEMBLERS), 
         # MERGE BY ASSEMBLY GROUP
         agm06 = expand(os.path.join(OUTPUTDIR, "intermediate-files", 
-                                    "02-assembly", "06-AGM", "{assembly}_merged.fasta"),
+                                    "02-assembly", "06-AGM", "{assembly}_merged.fasta"), zip,
                                     assembly = assemblygroups),
         # CLUSTER MERGED ASSEMBLY GROUPS
         cag07 = expand(os.path.join(OUTPUTDIR, "intermediate-files",\
@@ -109,10 +111,10 @@ rule all:
                                             assembly = assemblygroups),
         # GET SALMON MAPPING FROM CLUSTERED ASSEMBLY GROUP OUTPUT
         cagmapping08 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
-                                           "09-CAG-mapping", "salmon", "{assembly}_index", "quant.sf"),
+                                           "09-CAG-mapping", "salmon", "{assembly}_quant", "quant.sf"),
                                             assembly = filenames),
         # GET QUAST RESULTS FROM CLUSTERED ASSEMBLY GROUP OUTPUT
-        cagquality08 = os.path.join(OUTPUTDIR, "04-compare", "intermediate-files",
+        cagquality08 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
                                     "10-CAG-quality", "combined", "all.tsv"),
         # MERGE ACROSS ALL SAMPLES
         swam11 = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly", "11-SWAM", "merged.fasta"),
@@ -123,8 +125,10 @@ rule all:
         madproteins13 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
                                      "13-MAD-proteins", "MAD.fasta.transdecoder.pep"),
         # MAPPING MERGED BY SAMPLES
-        madmapping14 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",
-                                    "salmon", "{assembly}_index", "quant.sf"), assembly = [filenames,"merged"]),
+        #madmapping14 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",
+        #                            "salmon", "{assembly}_quant", "quant.sf"), assembly = filenames),
+        #madmapping14_merged = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",
+        #                            "salmon", "{assembly}_quant", "quant.sf"), assembly = "merged"),
         # QUALITY MERGED BY SAMPLES
         madquality15 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
                                "15-MAD-quality", "quast", "report.tsv")

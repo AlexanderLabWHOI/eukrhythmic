@@ -32,6 +32,17 @@ def getalloutputs():
         listqc.extend([os.path.join(OUTPUTDIR, "qc", "fastqc", s + "_1_fastqc.html"),\
         os.path.join(OUTPUTDIR, "qc", "fastqc", s + "_2_fastqc.html")])
     return listqc
+
+def getalloutputs():
+    listqc = []
+    for s in SAMPLEINFO.SampleID:
+        listqc.extend([os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                                    "01-quality",\
+                                    s + "_1_fastqc.html"),\
+                       os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                                    "01-quality",\
+                                    s + "_2_fastqc.html")])
+    return listqc
     
 rule fastqc:
     input:
@@ -72,12 +83,12 @@ rule multiqc:
     input:
         fastqcfiles = getalloutputs()
     output:
-        htmlreport = os.path.join(OUTPUTDIR, "01-setup", "01-quality",\
+        htmlreport = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup", "01-quality",\
                      "01b-multiqc", "multiqc_report.html")
     params:
-        fastqcdir = os.path.join(OUTPUTDIR, "01-setup", "01-quality",\
+        fastqcdir = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup", "01-quality",\
                     "01a-fastqc"),
-        multiqc = os.path.join(OUTPUTDIR, "01-setup", "01-quality",\
+        multiqc = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup", "01-quality",\
                   "01b-multiqc")
     conda: os.path.join("..", "envs", "01-setup-env.yaml")
     shell:

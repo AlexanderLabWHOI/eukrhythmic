@@ -30,7 +30,7 @@ rule metaquast:
         os.path.join("..", "envs", "04-compare-env.yaml")
     shell:
         '''
-        python metaquast {params.outputassemblies} -o {output} --threads 8 --labels {params.assemblers} 2> {log.err} 1> {log.out}
+        metaquast -o {output} --threads 8 --labels {params.assemblers} {params.outputassemblies} 2> {log.err} 1> {log.out}
         '''
         
 rule combinequast:
@@ -38,7 +38,7 @@ rule combinequast:
         quastdir = [os.path.join(OUTPUTDIR, "intermediate-files",\
                                  "04-compare", "10-CAG-quality", curr) for curr in assemblygroups]
     output:
-        os.path.join(OUTPUTDIR, "04-compare", "intermediate-files", "10-CAG-quality", "combined", "all.tsv")
+        os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "10-CAG-quality", "combined", "all.tsv")
     params:
         outputfile = os.path.join(OUTPUTDIR, "intermediate-files",\
                         "04-compare", "10-CAG-quality", "combined", "all.tsv"),

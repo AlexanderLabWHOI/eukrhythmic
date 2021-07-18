@@ -39,11 +39,11 @@ rule trinity:
                                                     "right", commas = False)
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                          "05-assembly", "05a-trinity", "{assembly}", "Trinity.fasta")
+                          "05-assembly", "05a-trinity", "trinity_{assembly}", "Trinity.fasta")
     params:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                          "05-assembly", "05a-trinity", "{assembly}"),
+                          "05-assembly", "05a-trinity", "trinity_{assembly}"),
         left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = True),
         right = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "right", commas = True),
         maxmem = MAXMEMORY,
@@ -65,11 +65,11 @@ rule trinity_SE:
         single = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = False)
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                          "05-assembly", "05a-trinity", "{assembly}", "Trinity.fasta")
+                          "05-assembly", "05a-trinity", "trinity_{assembly}", "Trinity.fasta")
     params:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                          "05-assembly", "05a-trinity", "{assembly}"),
+                          "05-assembly", "05a-trinity", "trinity_{assembly}"),
         single = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = True),
         maxmem = MAXMEMORY,
         CPUs = MAXCPUSPERTASK * MAXTASKS
@@ -87,19 +87,19 @@ rule trinity_SE:
 rule trinity_cleanup:
     input:
         trinityfile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                          "05-assembly", "05a-trinity", "{assembly}", "Trinity.fasta")
+                          "05-assembly", "05a-trinity", "trinity_{assembly}", "Trinity.fasta")
     output:
         assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_trinity.fasta"),
         jellyfish = os.path.join(OUTPUTDIR, "intermediate-file", "02-assembly",\
-                                 "05-assembly", "05a-trinity", "{assembly}", "jellyfish_25.fasta"),
+                                 "05-assembly", "05a-trinity", "trinity_{assembly}", "jellyfish_25.fasta"),
         scratchout = directory(os.path.join(SCRATCHDIR, "trinity_results_assembly_{assembly}")) 
     params:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                          "05-assembly", "05a-trinity", "{assembly}"),
+                          "05-assembly", "05a-trinity", "trinity_{assembly}"),
         scratch = os.path.join(SCRATCHDIR),
         jellyfile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                          "05-assembly", "05a-trinity", "{assembly}", "jellyfish.kmers.25.asm.fa")
+                          "05-assembly", "05a-trinity", "trinity_s{assembly}", "jellyfish.kmers.25.asm.fa")
     shell:
         '''
         mkdir -p {params.scratch}

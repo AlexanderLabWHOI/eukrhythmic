@@ -27,6 +27,8 @@ def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = Fa
         return ",".join(samplelist)
     else:
         return samplelist
+    
+print(get_samples_commas_spades("SH402", DROPSPIKE, "left", commas = False))
        
 # This module needs to grab all of the list of the individual files associated with the specified
 # assembly group, after the scripts/make-assembly-file.py script builds said assembly groups 
@@ -38,20 +40,20 @@ rule rnaspades:
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                      "05-assembly", "05d-rnaspades",\
-                     "{assembly}", "transcripts.fasta")
+                     "rna_{assembly}", "transcripts.fasta")
     params:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                     "05-assembly", "05d-rnaspades", "{assembly}"),
+                     "05-assembly", "05d-rnaspades", "rna_{assembly}"),
         left = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "left", commas = True),
         right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = True),
         maxmem = MAXMEMORY,
         CPUs = MAXCPUSPERTASK * MAXTASKS
     log:
-        err = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
+        err = os.path.join(OUTPUTDIR, "logs",\
                            "05-assembly", "05d-rnaspades", "{assembly}",\
                            "outputlog_{assembly}_merge.err"),
-         out = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
+         out = os.path.join(OUTPUTDIR, "logs",\
                             "05-assembly", "05d-rnaspades", "{assembly}",\
                             "outputlog_{assembly}_merge.out") 
     conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")
@@ -65,7 +67,7 @@ rule rnaspades_cleanup:
     input:
         spadesfile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                      "05-assembly", "05d-rnaspades",\
-                     "{assembly}", "transcripts.fasta")
+                     "rna_{assembly}", "transcripts.fasta")
     output:
         assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_rnaspades.fasta")
     params:

@@ -40,7 +40,7 @@ rule salmon_CAG:
         right = lambda filename: salmon_get_samples(filename.assembly, "right", list_format = True)
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "09-CAG-mapping",\
-                     "salmon", "{assembly}_index", "quant.sf")
+                     "salmon", "{assembly}_quant", "quant.sf")
     params:
         libtype = "A",
         indexname = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "09-CAG-mapping",\

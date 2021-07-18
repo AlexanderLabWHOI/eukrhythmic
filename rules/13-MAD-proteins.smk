@@ -10,12 +10,12 @@ from importworkspace import *
 
 rule transdecoder_MAD:
     input:
-        fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD", "MAD.fasta")
+        fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD", "MAD.nospace.fasta")
     output:
-        pep = os.path.join("MAD.fasta.transdecoder.pep"),
-        gff = os.path.join("MAD.fasta.transdecoder.gff3"),
-        cds = os.path.join("MAD.fasta.transdecoder.cds"),
-        bed = os.path.join("MAD.fasta.transdecoder.bed")
+        pep = os.path.join("TD_MAD.fasta.transdecoder.pep"),
+        gff = os.path.join("TD_MAD.fasta.transdecoder.gff3"),
+        cds = os.path.join("TD_MAD.fasta.transdecoder.cds"),
+        bed = os.path.join("TD_MAD.fasta.transdecoder.bed")
     params:
         merged = "TD_MAD",
         size = TRANSDECODERORFSIZE
@@ -35,10 +35,10 @@ rule transdecoder_MAD:
         
 rule transdecoder_MAD_clean:
     input:
-        pep = os.path.join("MAD.fasta.transdecoder.pep"),
-        gff = os.path.join("MAD.fasta.transdecoder.gff3"),
-        cds = os.path.join("MAD.fasta.transdecoder.cds"),
-        bed = os.path.join("MAD.fasta.transdecoder.bed")
+        pep = os.path.join("TD_MAD.fasta.transdecoder.pep"),
+        gff = os.path.join("TD_MAD.fasta.transdecoder.gff3"),
+        cds = os.path.join("TD_MAD.fasta.transdecoder.cds"),
+        bed = os.path.join("TD_MAD.fasta.transdecoder.bed")
     output:
         pep = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
                            "13-MAD-proteins", "MAD.fasta.transdecoder.pep"),

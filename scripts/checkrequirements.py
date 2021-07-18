@@ -29,7 +29,7 @@ else:
 if 'assembledDIR' in config:
     ASSEMBLEDDIR = os.path.join(OUTPUTDIR, config['assembledDIR'])
 else:
-    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, "02-assembly", "05-assembly")
+    ASSEMBLEDDIR = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly", "05-assembly")
 directories = [ASSEMBLEDDIR,INPUTDIR,OUTPUTDIR,SCRATCHDIR,RENAMEDDIR]
 ## END SECTION TO BE DELETED ##
 

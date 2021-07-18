@@ -15,14 +15,12 @@ PREFIXKS = " ".join([".k" + str(curr) for curr in KMERVALS])
     
 rule transabyssmerge:
     input:
-        files = [os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                              "05-assembly", "05c-transabyss",\
+        files = [os.path.join(ASSEMBLEDDIR, "05c-transabyss",\
                               "transabyss_" + str(curr) + "_{assembly}",\
-                              "{assembly}_" + str(curr) + \
+                              "TA-{assembly}_" + str(curr) + \
                               "_transabyss.fasta-final.fa") for curr in KMERVALS]
     output:
-        os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                     "05-assembly", "05c-transabyss",\
+        os.path.join(ASSEMBLEDDIR, "05c-transabyss","transabyss_{assembly}",\
                      "{assembly}_transabyss.fasta")
     params:
         extra = "",
@@ -30,12 +28,12 @@ rule transabyssmerge:
         maxkval = MAXKVAL,
         prefixks = PREFIXKS
     log:
-         err = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                                         "05-assembly", "05c-transabyss", "{assembly}",\
-                                         "outputlog_{assembly}_merge.err"),
-         out = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                                        "05-assembly", "05c-transabyss", "{assembly}",\
-                                        "outputlog_{assembly}_merge.out") 
+         err = os.path.join(OUTPUTDIR, "logs", "05-assembly",
+                            "05c-transabyss", "{assembly}",
+                            "outputlog_{assembly}_merge.err"),
+         out = os.path.join(OUTPUTDIR, "logs",
+                            "05-assembly", "05c-transabyss", "{assembly}",\
+                            "outputlog_{assembly}_merge.out") 
     conda: os.path.join("..","..","envs","02-assembly-env.yaml")
     shell:
         '''
@@ -44,17 +42,14 @@ rule transabyssmerge:
 
 rule transabyssmerge_cleanup:
     input:
-        transabyssfile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                     "05-assembly", "05c-transabyss",\
+        transabyssfile = os.path.join(ASSEMBLEDDIR, "05c-transabyss", "transabyss_{assembly}",\
                      "{assembly}_transabyss.fasta")
     output:
         assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_transabyss.fasta")
     params:
-        mergefile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                     "05-assembly", "05c-transabyss",\
+        mergefile = os.path.join(ASSEMBLEDDIR, "05c-transabyss",\
                      "{assembly}_transabyss.fasta"),
-        outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                              "05-assembly", "05c-transabyss", "transabyss_*_{assembly}"),
+        outdir = os.path.join(ASSEMBLEDDIR, "05c-transabyss", "transabyss_*_{assembly}"),
         scratch = os.path.join(SCRATCHDIR, "transabyss")
     shell:
         '''
