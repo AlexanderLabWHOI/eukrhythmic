@@ -99,7 +99,7 @@ rule trinity_cleanup:
                           "05-assembly", "05a-trinity", "trinity_{assembly}"),
         scratch = os.path.join(SCRATCHDIR),
         jellyfile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                          "05-assembly", "05a-trinity", "trinity_s{assembly}", "jellyfish.kmers.25.asm.fa")
+                          "05-assembly", "05a-trinity", "trinity_{assembly}", "jellyfish.kmers.25.asm.fa")
     shell:
         '''
         mkdir -p {params.scratch}

@@ -122,13 +122,13 @@ rule all:
         mad12 = os.path.join(OUTPUTDIR, "intermediate-files",
                             "03-merge", "12-MAD", "MAD.fasta"),
         # TRANSDECODER MERGED BY SAMPLES
-        #madproteins13 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
-        #                             "13-MAD-proteins", "MAD.fasta.transdecoder.pep"),
+        madproteins13 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
+                                     "13-MAD-proteins", "MAD.fasta.transdecoder.pep"),
         # MAPPING MERGED BY SAMPLES
-        madmapping14 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",
-                                    "salmon", "{assembly}_quant", "quant.sf"), assembly = filenames),
-        madmapping14_merged = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",
-                                    "salmon", "{assembly}_quant", "quant.sf"), assembly = "merged"),
+        #madmapping14 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",
+        #                            "salmon", "{assembly}_quant", "quant.sf"), assembly = filenames),
+        #madmapping14_merged = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",
+        #                            "salmon", "{assembly}_quant", "quant.sf"), assembly = "merged"),
         # QUALITY MERGED BY SAMPLES
         madquality15 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
                                "15-MAD-quality", "quast", "report.tsv")
