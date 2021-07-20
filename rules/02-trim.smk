@@ -47,10 +47,10 @@ rule trimmomatic:
                           "02-trim",\
                           "{sample}_2.unpaired.fastq.gz")
     log:
-        err = os.path.join(OUTPUTDIR, "logs", "intermediate-files", 
+        err = os.path.join(OUTPUTDIR, "logs",\ 
                            "01-setup", "02-trim",\ 
                            "PE_{sample}_err.log"),
-        out = os.path.join(OUTPUTDIR, "logs", "intermediate-files",
+        out = os.path.join(OUTPUTDIR, "logs",\
                            "01-setup", "02-trim",\
                            "PE_{sample}_out.log")
     conda: os.path.join("..", "envs", "01-setup-env.yaml")
@@ -72,10 +72,10 @@ rule trimmomatic_SE:
                           "02-trim",\
                           "{sample}_1.unpaired.fastq.gz")
     log:
-        err = os.path.join(OUTPUTDIR, "logs", "intermediate-files",
+        err = os.path.join(OUTPUTDIR, "logs",\
                            "01-setup", "02-trim",\
                            "SE_{sample}_err.log"),
-        out = os.path.join(OUTPUTDIR, "logs", "intermediate-files",\
+        out = os.path.join(OUTPUTDIR, "logs",\
                            "01-setup", "02-trim",\
                            "SE_{sample}_out.log")
     conda: os.path.join("..", "envs", "01-setup-env.yaml")
