@@ -1,7 +1,7 @@
 ### Parameters expected to be changed under normal use ###
 ## INPUT DATA AND FORMATTING ##
 # formatted input file; described in README
-jobname: sample
+jobname: WAP
 metaT_sample: input/metaT_wap.txt #input/sampledata.txt
 spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
 spiketable: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/percentmapped_bbmap_volumes.tab

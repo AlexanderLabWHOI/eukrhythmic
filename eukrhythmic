@@ -107,7 +107,7 @@ rule all:
         # GET PROTEINS FROM CLUSTERED ASSEMBLY GROUP OUTPUT
         cagproteins08 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
                                             "08-CAG-proteins",
-                                            "{assembly}.fasta.transdecoder.cds"),
+                                            "{assembly}_CAG.fasta.transdecoder.cds"),
                                             assembly = assemblygroups),
         # GET SALMON MAPPING FROM CLUSTERED ASSEMBLY GROUP OUTPUT
         cagmapping08 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
