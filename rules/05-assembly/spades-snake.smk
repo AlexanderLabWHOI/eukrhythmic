@@ -64,5 +64,5 @@ rule spades_cleanup:
         extra = ""
     shell:
         '''
-        cp {spadesfile} {output.assembled}
+        cp {input.spadesfile} {output.assembled}
         '''

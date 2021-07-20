@@ -77,7 +77,7 @@ rule salmon_MAD:
     params:
         libtype = "A",
         indexname = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
-                     "salmon", "{assembly}_index"),
+                     "salmon", "MAD_index"),
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
                      "salmon", "{assembly}_quant"),
         kval = 31
@@ -87,5 +87,5 @@ rule salmon_MAD:
     conda: os.path.join("..", "envs", "04-compare-env.yaml")
     shell:
         """
-        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {params.outdir} 2> {log.err} 1> {log.out}
+        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} -p 20 --validateMappings -o {params.outdir} 2> {log.err} 1> {log.out}
         """

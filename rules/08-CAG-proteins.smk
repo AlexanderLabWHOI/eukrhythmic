@@ -8,21 +8,19 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
 
-(cd SOME_PATH && exec_some_command)
-
 rule transdecoder_CAG_simple:
     input:
         fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "07-CAG",\
                                  "{assembly}_merged.fasta")
     output:
         pep = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "08-CAG-proteins", "{assembly}.old.fasta.transdecoder.pep"),
+                           "08-CAG-proteins", "{assembly}.fasta.transdecoder.pep"),
         gff = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "08-CAG-proteins", "{assembly}.old.fasta.transdecoder.gff3"),
+                           "08-CAG-proteins", "{assembly}.fasta.transdecoder.gff3"),
         cds = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "08-CAG-proteins", "{assembly}.old.fasta.transdecoder.cds"),
+                           "08-CAG-proteins", "{assembly}.fasta.transdecoder.cds"),
         bed = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "08-CAG-proteins", "{assembly}.old.fasta.transdecoder.bed")
+                           "08-CAG-proteins", "{assembly}.fasta.transdecoder.bed")
     params:
         merged = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
                            "08-CAG-proteins","{assembly}_CAG","{assembly}_CAG"),

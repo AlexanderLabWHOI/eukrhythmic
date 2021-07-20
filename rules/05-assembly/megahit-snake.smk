@@ -50,9 +50,9 @@ rule megahit:
         minkval = MINKVAL,
         maxkval = MAXKVAL
     log:
-        err = os.path.join(OUTPUTDIR, "log",\
+        err = os.path.join(OUTPUTDIR, "logs",\
                           "05-assembly", "05b-megahit", "megahit_{assembly}", "outputlog_{assembly.err"),
-        out = os.path.join(OUTPUTDIR, "log",\
+        out = os.path.join(OUTPUTDIR, "logs",\
                           "05-assembly", "05b-megahit", "megahit_{assembly}", "outputlog_{assembly}.out")
     conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")
     shell:
@@ -78,9 +78,9 @@ rule megahit_SE:
         minkval = MINKVAL,
         maxkval = MAXKVAL
     log:
-        err = os.path.join(OUTPUTDIR, "log",\
+        err = os.path.join(OUTPUTDIR, "logs",\
                           "05-assembly", "05b-megahit", "megahit_{assembly}", "outputlog_{assembly.err"),
-        out = os.path.join(OUTPUTDIR, "log",\
+        out = os.path.join(OUTPUTDIR, "logs",\
                           "05-assembly", "05b-megahit", "megahit_{assembly}", "outputlog_{assembly}.out")
     conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")
     shell:
@@ -98,8 +98,7 @@ rule megahit_cleanup:
         megahitfile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                           "05-assembly", "05b-megahit", "megahit_{assembly}", "final.contigs.fa")
     output:
-        assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_megahit.fasta"),
-        scratchout = directory(os.path.join(SCRATCHDIR, "megahit", "{assembly}"))
+        assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_megahit.fasta")
     params:
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                           "05-assembly", "05b-megahit"),
