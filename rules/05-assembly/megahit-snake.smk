@@ -101,8 +101,8 @@ rule megahit_cleanup:
         assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_megahit.fasta")
     params:
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                          "05-assembly", "05b-megahit"),
-        scratch = os.path.join(SCRATCHDIR, "megahit")
+                          "05-assembly", "05b-megahit", "megahit_{assembly}"),
+        scratch = os.path.join(SCRATCHDIR, "02-assembly", "05-assembly", "05b-megahit", "{assembly}")
     shell:
         '''
         mkdir -p {params.scratch}
