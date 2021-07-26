@@ -89,22 +89,24 @@ rule trinity_cleanup:
         trinityfile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                           "05-assembly", "05a-trinity", "trinity_{assembly}", "Trinity.fasta")
     output:
-        assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_trinity.fasta"),
-        jellyfish = os.path.join(OUTPUTDIR, "intermediate-file", "02-assembly",\
-                                 "05-assembly", "05a-trinity", "trinity_{assembly}", "jellyfish_25.fasta"),
-        scratchout = directory(os.path.join(SCRATCHDIR, "trinity_results_assembly_{assembly}")) 
+        assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_trinity.fasta")
     params:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                           "05-assembly", "05a-trinity", "trinity_{assembly}"),
-        scratch = os.path.join(SCRATCHDIR),
+        scratch = os.path.join(SCRATCHDIR, "02-assembly", "05-assembly", "05a-trinity", "trinity_{assembly}"),
         jellyfile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                          "05-assembly", "05a-trinity", "trinity_{assembly}", "jellyfish.kmers.25.asm.fa")
+                          "05-assembly", "05a-trinity", "trinity_{assembly}", "jellyfish.kmers.25.asm.fa"),
+        jellyfish_final = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
+                                 "05-assembly", "05a-trinity-jellyfish", "jellyfish_25.fasta"),
+        jellyfish_dir =  os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
+                                 "05-assembly", "05a-trinity-jellyfish")
     shell:
         '''
         mkdir -p {params.scratch}
         cp {input.trinityfile} {output.assembled}
-        mv {params.jellyfile} {output.jellyfish}
+        mkdir -p {params.jellyfish_dir}
+        mv {params.jellyfile} {params.jellyfish_final}
         if [ {params.outdir} != {params.scratch} ]
         then
             mv {params.outdir} {params.scratch}

@@ -28,7 +28,7 @@ rule fastqc_trimmed:
         html = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
                             "04-quality",\
                             "{sample}_{num}.trimmed_fastqc.html"),
-        zip = os.path.join(OUTPUTDIR, OUTPUTDIR, "intermediate-files", "01-setup",\
+        zip = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
                            "04-quality", "{sample}_{num}.trimmed_fastqc.zip")
     params: 
         fastqdir = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
