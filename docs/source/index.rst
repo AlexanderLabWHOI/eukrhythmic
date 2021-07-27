@@ -9,12 +9,13 @@ Welcome to eukrhythmic's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-       installation
-       usingpipeline
-       samplefile
-       configuration
-       addingassemblers
-       cleanup
+   
+   installation.rst
+   usingpipeline.rst
+   samplefile.rst
+   configuration.rst
+   addingassemblers.rst
+   cleanup.rst
        
 Source Code
 -----------
