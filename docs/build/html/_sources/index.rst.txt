@@ -6,11 +6,16 @@
 Welcome to eukrhythmic's documentation!
 =======================================
 
+.. image:: eukrhythmic_copepod_transparent.png
+  :width: 400
+  :alt: eukrhythmic logo
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
    
    installation.rst
+   eukrhythmicoverview.rst
    usingpipeline.rst
    samplefile.rst
    configuration.rst

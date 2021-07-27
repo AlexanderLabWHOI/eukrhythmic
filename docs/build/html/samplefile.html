@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>The eukrhythmic Sample File &mdash; eukrhythmic  documentation</title>
+  <title>Sample file specification &mdash; eukrhythmic  documentation</title>
   
 
   
@@ -38,7 +38,9 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Configuring eukrhythmic" href="configuration.html" />
+    <link rel="prev" title="Using eukrhythmic" href="usingpipeline.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -83,18 +85,24 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">The <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> Sample File</a><ul>
-<li><a class="reference internal" href="#file-naming">File naming</a></li>
-<li><a class="reference internal" href="#the-metat-sample-file">The <code class="docutils literal notranslate"><span class="pre">metaT_sample</span></code> file</a></li>
-<li><a class="reference internal" href="#autogeneration-of-full-metat-sample-file">Autogeneration of full <code class="docutils literal notranslate"><span class="pre">metaT_sample</span></code> file</a></li>
-<li><a class="reference internal" href="#autogeneration-of-fastqfilenames-column-with-sampleid-column">Autogeneration of “FastqFileNames” column with “SampleID” column</a></li>
-<li><a class="reference internal" href="#notes-about-manually-creating-metat-sample">Notes about manually creating <code class="docutils literal notranslate"><span class="pre">metaT_sample</span></code></a></li>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing eukrhythmic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eukrhythmicoverview.html">Execution flowchart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usingpipeline.html">Using eukrhythmic</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Sample file specification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#file-naming">File naming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-metat-sample-file">The <code class="docutils literal notranslate"><span class="pre">metaT_sample</span></code> file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#autogeneration-of-full-metat-sample-file">Autogeneration of full <code class="docutils literal notranslate"><span class="pre">metaT_sample</span></code> file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#autogeneration-of-fastqfilenames-column-with-sampleid-column">Autogeneration of “FastqFileNames” column with “SampleID” column</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#notes-about-manually-creating-metat-sample">Notes about manually creating <code class="docutils literal notranslate"><span class="pre">metaT_sample</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuring <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="addingassemblers.html">Adding assemblers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cleanup.html">Intermediate files and cleanup</a></li>
 </ul>
-</div>
+
             
           
         </div>
@@ -141,7 +149,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>The <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> Sample File</li>
+      <li>Sample file specification</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -160,8 +168,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="the-eukrhythmic-sample-file">
-<h1>The <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> Sample File<a class="headerlink" href="#the-eukrhythmic-sample-file" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="sample-file-specification">
+<h1>Sample file specification<a class="headerlink" href="#sample-file-specification" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="file-naming">
 <span id="naming"></span><h2>File naming<a class="headerlink" href="#file-naming" title="Permalink to this headline">¶</a></h2>
 <p>Your file names should not subset one another. So if one file is called “supercool_sample”, another should not be called “supercool_sample_2”. However, if the two were called “supercool_sample_1” and “supercool_sample_2”, this would be fine, because neither name is <em>entirely</em> found within the other.</p>
@@ -199,6 +207,10 @@
            
           </div>
           <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="configuration.html" class="btn btn-neutral float-right" title="Configuring eukrhythmic" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="usingpipeline.html" class="btn btn-neutral float-left" title="Using eukrhythmic" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 

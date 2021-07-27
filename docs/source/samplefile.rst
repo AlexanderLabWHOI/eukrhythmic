@@ -1,5 +1,5 @@
-The Sample File
-===============================
+Sample file specification
+=========================
 
 .. _naming: 
 
