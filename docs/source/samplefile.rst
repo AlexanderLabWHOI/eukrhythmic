@@ -1,4 +1,4 @@
-The ``eukrhythmic`` Sample File
+The Sample File
 ===============================
 
 .. _naming: 

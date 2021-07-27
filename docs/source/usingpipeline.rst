@@ -1,5 +1,5 @@
-Using the Pipeline
-==================
+Using eukrhythmic
+=================
 
 How to use the pipeline
 -----------------------
@@ -96,6 +96,12 @@ To use the pipeline as a ``Snakemake`` workflow manually, the most important thi
 Once the pieces are in place, and you have either activated an environment using ``environment.yaml`` or otherwise installed ``snakemake``, you can run the pipeline using::
 
     sbatch submit/snake_submit.sh <snakefile> <number of jobs> <optionally, --rerun-incomplete>
+    
+Or, wrapping this command with the ability to specify ``eukrhythmic`` subroutines rather than selecting a configuration file, you can invoke ``eukrhythmic`` with::
+
+    python submit/eukrhythmic <subroutine>
+    
+Where "<subroutine>" is the subset of eukrhythmic functionality that you wish to use for this run. In most cases, you'll write "all" here, to indicate that you wish to run all of the steps of the pipeline sequentially.
 
 If you are using the ``SLURM`` scheduler, you can run the pipeline by simply executing the ``submit/snake_submit.sh`` file in the ``eukrhythmic`` directory, after configuring options for your particular system (:ref:``slurm``), or by setting the ``rewritecluster`` configuration flag to 1, and specifying the options for all jobs in the ``required`` section of the ``cluster.yaml`` file. If you are not using a scheduler, or are logged into a computer with sufficient computational resources (e.g., a ``SLURM`` job run in interactive mode), you can execute ``Snakemake`` directly. 
 

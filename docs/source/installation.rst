@@ -1,12 +1,12 @@
 Installing eukrhythmic
 ======================
 
-Initializing the pipeline
--------------------------
+Setting up a `conda` environment for running `Snakemake`
+--------------------------------------------------------
 
 Initialize the pipeline by setting up a ``conda`` environment, such that all the requested packages are loaded.::
 
-    conda env create metatrans --file environment.yaml
+    conda env create eukrhythmic --file environment.yaml
     
 Downloading eukrhythmic
 -----------------------
