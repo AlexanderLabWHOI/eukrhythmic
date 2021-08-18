@@ -24,7 +24,7 @@ from checkrequirements import *
 checkrequirementsfct()
 
 include: "rules/fastqc-snake.smk"
-include: "rules/bbmap-snake.smk
+include: "rules/bbmap-snake.smk"
 include: "rules/trimmomatic-snake.smk"
 include: "rules/fastqc-trimmed-snake.smk"
 
