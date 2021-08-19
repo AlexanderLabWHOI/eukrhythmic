@@ -32,5 +32,5 @@ rule metaquast_mad:
         os.path.join("..", "envs", "04-compare-env.yaml")
     shell:
         '''
-        python metaquast {input.outputassemblies} -o {params.outdir} --threads 8 --labels {params.assemblers} 2> {log.err} 1> {log.out}
+        metaquast {input.outputassemblies} -o {params.outdir} --threads 8 --labels {params.assemblers} 2> {log.err} 1> {log.out}
         '''

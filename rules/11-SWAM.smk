@@ -31,7 +31,7 @@ rule merge_all:
         '''
         echo "" > {output}
         for assemblyfile in {params.assemblyfiles}; do
-            currvar=$(echo $assemblyfile | cut -f6 -d\/)
+            currvar=$(echo $assemblyfile | rev | cut -f1 -d\/ | rev)
             sed 's/>.*/&_'"$currvar"'/' $assemblyfile >> {output}
         done
         #cat {params.assemblyfiles} > {output}

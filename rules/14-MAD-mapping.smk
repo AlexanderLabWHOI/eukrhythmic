@@ -77,7 +77,7 @@ rule salmon_MAD:
     params:
         libtype = "A",
         indexname = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
-                     "salmon", "{assembly}_index"),
+                     "salmon", "MAD_index"),
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
                      "salmon", "{assembly}_quant"),
         kval = 31

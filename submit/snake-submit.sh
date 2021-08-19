@@ -12,4 +12,4 @@ JOBS=$2 # should default to 500
 RERUN_INCOMPLETE=$3
 
 snakemake  \
-    -s $SNAKEFILE $RERUN_INCOMPLETE --jobs $JOBS --use-conda --cluster-config cluster.yaml --cluster "sbatch --parsable --qos=unlim --partition={cluster.queue} --job-name=${jobname}.{rule}.{wildcards} --mem={cluster.mem}gb --time={cluster.time} --ntasks={cluster.tasks} --nodes={cluster.nodes} --cpus-per-task={cluster.cpupertask} --requeue"
+    -s $SNAKEFILE $RERUN_INCOMPLETE --jobs $JOBS --conda-frontend mamba --use-conda --cluster-config cluster.yaml --cluster "sbatch --parsable --qos=unlim --partition={cluster.queue} --job-name=${jobname}.{rule}.{wildcards} --mem={cluster.mem}gb --time={cluster.time} --ntasks={cluster.tasks} --nodes={cluster.nodes} --cpus-per-task={cluster.cpupertask} --requeue"

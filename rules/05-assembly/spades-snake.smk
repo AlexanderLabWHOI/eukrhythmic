@@ -37,10 +37,14 @@ rule spades:
         left = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "left", commas = False),
         right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = False)
     output:
-        os.path.join(OUTPUTDIR, "metaspades_{assembly}", "contigs.fasta")
+        os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
+                     "05-assembly", "05f-metaspades",\
+                     "metaspades_{assembly}", "contigs.fasta")
     params:
         extra = "",
-        outdir = os.path.join(OUTPUTDIR, "metaspades_{assembly}"),
+        outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
+                     "05-assembly", "05f-metaspades",\
+                     "metaspades_{assembly}"),
         left = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "left", commas = True),
         right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = True),
         maxmem = MAXMEMORY,
@@ -52,17 +56,19 @@ rule spades:
     shell:
         '''
         echo {params.left}
-        spades --meta -1 {params.left} -2 {params.right} -o {params.outdir} 2> {log.err} 1> {log.out}
+        spades.py --meta -1 {params.left} -2 {params.right} -o {params.outdir} 2> {log.err} 1> {log.out}
         '''
    
 rule spades_cleanup:
     input:
-        spadesfile = os.path.join(OUTPUTDIR, "metaspades_{assembly}", "contigs.fasta")
+        spadesfile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
+                                  "05-assembly", "05f-metaspades",\
+                                  "metaspades_{assembly}", "contigs.fasta")
     output:
         assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_spades.fasta")
     params:
         extra = ""
     shell:
         '''
-        cp {spadesfile} {output.assembled}
+        cp {input.spadesfile} {output.assembled}
         '''

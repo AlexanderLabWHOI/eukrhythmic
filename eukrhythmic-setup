@@ -23,33 +23,44 @@ from checkrequirements import *
 ## CHECK THAT ALL REQUIREMENTS ARE SATISFIED BY EXECUTING checkrequirements() from `scripts/checkrequirements.py` ##
 checkrequirementsfct()
 
-include: "rules/fastqc-snake.smk"
-include: "rules/bbmap-snake.smk
-include: "rules/trimmomatic-snake.smk"
-include: "rules/fastqc-trimmed-snake.smk"
+include: "rules/01-quality.smk"
+include: "rules/02-trim.smk"
+include: "rules/03-alignment-spike.smk"
+include: "rules/04-quality.smk"
 
 ruleorder: trimmomatic > trimmomatic_SE
 
 rule all:
     input:
         # FASTQC OUTPUTS
-        fastqc1 = expand([os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.html"), 
-                          os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.zip")], zip, 
-                         base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        qual01_fastqc = expand([os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                        "01-quality", "01a-fastqc", "{sample}_{num}_fastqc.html"),
+                        os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                        "01-quality", "01a-fastqc", "{sample}_{num}_fastqc.zip")], zip, 
+                        base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # MULTIQC OUTPUTS
-        multiqc1 = expand(os.path.join("{base}", "qc", "multiqc", "firstqcreport", "multiqc_report.html"), zip, 
-                          base = OUTPUTDIR),
-        # BBMAP OUTPUTS
-        bbmap = expand(os.path.join("{base}", "bbmap", "{sample}_{num}.clean.fastq.gz"), zip, base = OUTPUTDIR, 
-                       sample = filenames, num = singleorpaired),
+        qual01_multiqc = expand(os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                                            "01-quality", "01b-multiqc",\
+                                            "multiqc_report.html"), zip,
+                                            base = OUTPUTDIR),
         # TRIMMOMATIC OUTPUTS
-        trimmed = expand([os.path.join("{base}", "firsttrim", "{sample}_1.trimmed.fastq.gz"), 
-                          os.path.join("{base}", "firsttrim", "{sample}_2.trimmed.fastq.gz")], zip, 
+        trim02 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                          "02-trim",\
+                          "{sample}_1.trimmed.fastq.gz"), zip, 
                          base = OUTPUTDIR, sample = filenames),
+        # BBMAP OUTPUTS
+        alignment03 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                          "03-alignment-spike", "{sample}_{num}.clean.fastq.gz"),\
+                          zip, base = OUTPUTDIR,
+                          sample = filenames, num = singleorpaired),
         # FASTQC 2 OUTPUTS (trimmed)
-        fastqc2 = expand([os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.html"), 
-                          os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.zip")], 
-                         zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        qual04_fastqc = expand([os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                                "04-quality","{sample}_{num}.trimmed_fastqc.html"),\
+                                os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                                "04-quality", "{sample}_{num}.trimmed_fastqc.zip")],
+                                zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # MULTIQC 2 OUTPUTS
-        multiqc2 = expand(os.path.join("{base}", "qc", "multiqc", "trimmedqcreport", "multiqc_report.html"), zip, 
+        qual04_multiqc = expand(os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                                  "04-quality", "multiqc",\
+                                  "multiqc_report.html"), zip,\
                           base = OUTPUTDIR)

@@ -30,7 +30,8 @@ rule clustering_agm:
         mincoveragelong = 0.005,
         name_db = "CAG_{assembly}",
         name_intermed = "CAG_2_{assembly}",
-        name_subdb = "CAG_3_{assembly}"
+        name_subdb = "CAG_3_{assembly}",
+        tmp_dir = "CAG_tmp_{assembly}"
     log:
         err = os.path.join(OUTPUTDIR, "logs", "07-CAG", "{assembly}.err"),
         out = os.path.join(OUTPUTDIR, "logs", "07-CAG", "{assembly}.log")
@@ -39,11 +40,12 @@ rule clustering_agm:
     shell:
         '''
         mmseqs createdb {input.infiles} {params.name_db} 
-        mmseqs linclust {params.name_db} {params.name_intermed} tmp --min-seq-id {params.identityparam} --cov-mode 1 -c {params.mincoverageshorter} --remove-tmp-files 2> {log.err} 1> {log.out}
+        mmseqs linclust {params.name_db} {params.name_intermed} {params.tmp_dir} --min-seq-id {params.identityparam} --cov-mode 1 -c {params.mincoverageshorter} 2> {log.err} 1> {log.out}
         mmseqs createsubdb {params.name_intermed} {params.name_db} {params.name_subdb}
         mmseqs convert2fasta {params.name_subdb} {output.outfasta}
         mmseqs createtsv {params.name_db} {params.name_db} {params.name_intermed} {output.outtsv}
-        rm -f {params.name_db}*
-        rm -f {params.name_intermed}*
-        rm -f {params.name_subdb}*
+        rm -rf {params.name_db}*
+        rm -rf {params.name_intermed}*
+        rm -rf {params.name_subdb}*
+        rm -rf {params.tmp_dir}
         '''

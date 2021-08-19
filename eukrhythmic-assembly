@@ -23,14 +23,16 @@ from checkrequirements import *
 ## CHECK THAT ALL REQUIREMENTS ARE SATISFIED BY EXECUTING checkrequirements() from `scripts/checkrequirements.py` ##
 checkrequirementsfct()
 
-include: "rules/trinity-snake.smk"
-include: "rules/velvet-snake.smk"
-include: "rules/megahit-snake.smk"
-include: "rules/spades-snake.smk"
-include: "rules/transabyss-snake.smk"
-include: "rules/transabyss-merge.smk"
-include: "rules/quast-snake.smk"
+include: "rules/02-trim.smk"
+include: "rules/05-assembly/trinity-snake.smk"
+include: "rules/05-assembly/megahit-snake.smk"
+include: "rules/05-assembly/transabyss-snake.smk"
+include: "rules/05-assembly/transabyss-merge-snake.smk"
+include: "rules/05-assembly/spades-snake.smk"
+include: "rules/05-assembly/rnaspades-snake.smk"
+include: "rules/05-assembly/velvet-snake.smk"
 
+ruleorder: trimmomatic > trimmomatic_SE
 ruleorder: trinity > trinity_SE
 ruleorder: megahit > megahit_SE
 ruleorder: velvet > velvet_SE
@@ -38,13 +40,14 @@ ruleorder: velvet > velvet_SE
 rule all:
     input:
         # TRIMMOMATIC OUTPUTS
-        trimmed = expand([os.path.join("{base}", "firsttrim", "{sample}_1.trimmed.fastq.gz"), 
-                          os.path.join("{base}", "firsttrim", "{sample}_2.trimmed.fastq.gz")], zip, 
+        trimmed = expand([os.path.join("{base}", "intermediate-files", "01-setup",\
+                          "02-trim",\
+                          "{filenames}_1.trimmed.fastq.gz"), 
+                          os.path.join("{base}", "intermediate-files", "01-setup",\
+                          "02-trim",\
+                          "{filenames}_2.trimmed.fastq.gz")], zip, 
                          base = OUTPUTDIR, sample = filenames),
         # ASSEMBLER OUTPUTS
-        assemblersout = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"), 
-                               base = ASSEMBLEDDIR, assembly = assemblygroups, assembler = ASSEMBLERS), 
-        # QUAST OUTPUTS
-        quast = expand(os.path.join("{base}", "quast", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
-        # COMBINE QUAST OUTPUTS
-        quastcombine = expand(os.path.join("{base}", "quast", "fullresults", "allresults.tsv"), base = OUTPUTDIR),
+        assembly05 = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"),
+                               base = ASSEMBLEDDIR,
+                               assembly = assemblygroups, assembler = ASSEMBLERS)

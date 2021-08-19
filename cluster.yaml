@@ -27,8 +27,8 @@ fastqc:
   time: 720
 salmon_MAD_index:
   account: akrinos
-  queue: bigmem
-  mem: 500
+  queue: compute
+  mem: 180
   time: 5000
   tasks: 1
 fastqc_trimmed:
@@ -71,12 +71,12 @@ trimmomatic:
   time: 1400
 trinity:
   account: akrinos
-  cpupertask: 72
-  mem: 800
+  cpupertask: 25
+  mem: 180
   nodes: 1
-  queue: bigmem
+  queue: compute
   tasks: 1
-  time: 10000
+  time: 5000
 velvet:
   account: akrinos
   cpupertask: 72

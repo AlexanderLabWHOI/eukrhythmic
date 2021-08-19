@@ -12,16 +12,19 @@ KMERVALS = list(config['kmers'])
 MINKVAL = int(min(KMERVALS))
 MAXKVAL = int(max(KMERVALS))
 PREFIXKS = " ".join([".k" + str(curr) for curr in KMERVALS])
+
+def get_samples_kmers(assembly):
+    return [os.path.join(ASSEMBLEDDIR, "05c-transabyss",
+                         "TA-transabyss",\
+                         "TA-" + str(assembly) + "_" + str(curr) + "_transabyss.fasta-final.fa") for curr in KMERVALS]
+                        
     
 rule transabyssmerge:
     input:
-        files = [os.path.join(ASSEMBLEDDIR, "05c-transabyss",\
-                              "transabyss_" + str(curr) + "_{assembly}",\
-                              "TA-{assembly}_" + str(curr) + \
-                              "_transabyss.fasta-final.fa") for curr in KMERVALS]
+        files = lambda filename: get_samples_kmers(filename.assembly)
     output:
         os.path.join(ASSEMBLEDDIR, "05c-transabyss","transabyss_{assembly}",\
-                     "{assembly}_transabyss.fasta")
+                     "merged_{assembly}_transabyss_merged.fasta")
     params:
         extra = "",
         minkval = MINKVAL,
@@ -43,7 +46,7 @@ rule transabyssmerge:
 rule transabyssmerge_cleanup:
     input:
         transabyssfile = os.path.join(ASSEMBLEDDIR, "05c-transabyss", "transabyss_{assembly}",\
-                     "{assembly}_transabyss.fasta")
+                     "merged_{assembly}_transabyss_merged.fasta")
     output:
         assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_transabyss.fasta")
     params:

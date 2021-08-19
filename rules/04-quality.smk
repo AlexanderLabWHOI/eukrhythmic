@@ -28,7 +28,7 @@ rule fastqc_trimmed:
         html = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
                             "04-quality",\
                             "{sample}_{num}.trimmed_fastqc.html"),
-        zip = os.path.join(OUTPUTDIR, OUTPUTDIR, "intermediate-files", "01-setup",\
+        zip = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
                            "04-quality", "{sample}_{num}.trimmed_fastqc.zip")
     params: 
         fastqdir = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
@@ -37,10 +37,10 @@ rule fastqc_trimmed:
                                "04-quality", "{sample}_{num}")
     conda: os.path.join("..", "envs", "01-setup-env.yaml")
     log: 
-        err = os.path.join(OUTPUTDIR, "logs", OUTPUTDIR, "intermediate-files",\
+        err = os.path.join(OUTPUTDIR, "logs",\
                            "01-setup", "04-quality",\
                            "{sample}_{num}_trimmed_err.log"),
-        out = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup", "04-quality",\
+        out = os.path.join(OUTPUTDIR, "logs", "01-setup", "04-quality",\
                            "{sample}_{num}_trimmed_out.log")
     shell:
         '''

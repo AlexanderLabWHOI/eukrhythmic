@@ -37,10 +37,10 @@ def getalloutputs():
     listqc = []
     for s in SAMPLEINFO.SampleID:
         listqc.extend([os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
-                                    "01-quality",\
+                                    "01-quality", "01a-fastqc",\
                                     s + "_1_fastqc.html"),\
                        os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
-                                    "01-quality",\
+                                    "01-quality",  "01a-fastqc",\
                                     s + "_2_fastqc.html")])
     return listqc
     

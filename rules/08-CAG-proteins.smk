@@ -8,26 +8,25 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
 
-(cd SOME_PATH && exec_some_command)
-
 rule transdecoder_CAG_simple:
     input:
         fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "07-CAG",\
                                  "{assembly}_merged.fasta")
     output:
         pep = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "08-CAG-proteins", "{assembly}.old.fasta.transdecoder.pep"),
+                           "08-CAG-proteins", "{assembly}_CAG.fasta.transdecoder.pep"),
         gff = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "08-CAG-proteins", "{assembly}.old.fasta.transdecoder.gff3"),
+                           "08-CAG-proteins", "{assembly}_CAG.fasta.transdecoder.gff3"),
         cds = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "08-CAG-proteins", "{assembly}.old.fasta.transdecoder.cds"),
+                           "08-CAG-proteins", "{assembly}_CAG.fasta.transdecoder.cds"),
         bed = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "08-CAG-proteins", "{assembly}.old.fasta.transdecoder.bed")
+                           "08-CAG-proteins", "{assembly}_CAG.fasta.transdecoder.bed")
     params:
         merged = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "08-CAG-proteins","{assembly}_CAG","{assembly}_CAG"),
-        wd_path = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
                            "08-CAG-proteins","{assembly}_CAG"),
+        filename = "{assembly}_CAG",
+        wd_path = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
+                           "08-CAG-proteins"),
         size = TRANSDECODERORFSIZE
     log:
         err = os.path.join(OUTPUTDIR, "logs", "08-CAG-proteins", "{assembly}.err"),
@@ -37,10 +36,12 @@ rule transdecoder_CAG_simple:
     shell:
         """
         unset PERL5LIB
+        mkdir -p {params.wd_path}
         cp {input.fastafile} {params.merged}.fasta
-        (cd {params.wd_path} && TransDecoder.LongOrfs -t {params.merged}.fasta -m {params.size} 2> {log.err} 1> {log.out})
-        (cd {params.wd_path} && TransDecoder.Predict -t {params.merged}.fasta --no_refine_starts 2>> {log.err} 1>> {log.out})
+        (cd {params.wd_path} && TransDecoder.LongOrfs -t {params.filename}.fasta -m {params.size}) 2> {log.err} 1> {log.out}
+        (cd {params.wd_path} && TransDecoder.Predict -t {params.filename}.fasta --no_refine_starts) 2>> {log.err} 1>> {log.out}
         rm {params.merged}.fasta
+        sleep 10
         """
 
 rule transdecoder_CAG:
@@ -48,10 +49,10 @@ rule transdecoder_CAG:
         fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "07-CAG",\
                                  "{assembly}_merged.fasta")
     output:
-        pep = os.path.join("{assembly}_CAG.fasta.transdecoder.pep"),
-        gff = os.path.join("{assembly}_CAG.fasta.transdecoder.gff3"),
-        cds = os.path.join("{assembly}_CAG.fasta.transdecoder.cds"),
-        bed = os.path.join("{assembly}_CAG.fasta.transdecoder.bed")
+        pep = os.path.join("old.{assembly}_CAG.fasta.transdecoder.pep"),
+        gff = os.path.join("old.{assembly}_CAG.fasta.transdecoder.gff3"),
+        cds = os.path.join("old.{assembly}_CAG.fasta.transdecoder.cds"),
+        bed = os.path.join("old.{assembly}_CAG.fasta.transdecoder.bed")
     params:
         merged = "{assembly}_CAG",
         size = TRANSDECODERORFSIZE
@@ -71,10 +72,10 @@ rule transdecoder_CAG:
         
 rule transdecoder_CAG_clean:
     input:
-        pep = os.path.join("{assembly}_CAG.fasta.transdecoder.pep"),
-        gff = os.path.join("{assembly}_CAG.fasta.transdecoder.gff3"),
-        cds = os.path.join("{assembly}_CAG.fasta.transdecoder.cds"),
-        bed = os.path.join("{assembly}_CAG.fasta.transdecoder.bed")
+        pep = os.path.join("old.{assembly}_CAG.fasta.transdecoder.pep"),
+        gff = os.path.join("old.{assembly}_CAG.fasta.transdecoder.gff3"),
+        cds = os.path.join("old.{assembly}_CAG.fasta.transdecoder.cds"),
+        bed = os.path.join("old.{assembly}_CAG.fasta.transdecoder.bed")
     output:
         pep = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
                            "08-CAG-proteins", "{assembly}.old.fasta.transdecoder.pep"),
