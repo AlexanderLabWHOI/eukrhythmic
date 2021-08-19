@@ -45,6 +45,20 @@ required:
   maxcpuspertask: 18
   maxmemory: 180
   maxtasks: 1
+transdecoder_MAD_simple:
+  account: akrinos
+  queue: bigmem
+  mem: 600
+  time: 5000
+  tasks: 1
+  cpupertask: 40
+salmon_MAD:
+  account: akrinos
+  queue: compute
+  mem: 180
+  time: 5000
+  tasks: 1
+  cpupertask: 34
 transabyssmerge:
   account: akrinos
   cpupertask: 18

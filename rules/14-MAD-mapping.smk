@@ -87,5 +87,5 @@ rule salmon_MAD:
     conda: os.path.join("..", "envs", "04-compare-env.yaml")
     shell:
         """
-        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} --validateMappings -o {params.outdir} 2> {log.err} 1> {log.out}
+        salmon quant -i {params.indexname} -l {params.libtype} -1 {input.left} -2 {input.right} -p 20 --validateMappings -o {params.outdir} 2> {log.err} 1> {log.out}
         """

@@ -1,4 +1,4 @@
-Adding Assemblers
+Adding assemblers
 =================
 
 .. _assemblers: 

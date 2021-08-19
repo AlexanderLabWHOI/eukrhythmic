@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Using the Pipeline &mdash; eukrhythmic  documentation</title>
+  <title>Using eukrhythmic &mdash; eukrhythmic  documentation</title>
   
 
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -30,13 +33,14 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Sample file specification" href="samplefile.html" />
+    <link rel="prev" title="Execution flowchart" href="eukrhythmicoverview.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -50,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> eukrhythmic
+            <a href="index.html" class="icon icon-home"> eukrhythmic
           
 
           
@@ -81,19 +85,25 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Using the Pipeline</a><ul>
-<li><a class="reference internal" href="#how-to-use-the-pipeline">How to use the pipeline</a></li>
-<li><a class="reference internal" href="#running-the-pipeline-from-the-command-line">Running the pipeline from the command line</a></li>
-<li><a class="reference internal" href="#running-the-pipeline-directly-with-snakemake">Running the pipeline directly with Snakemake</a></li>
-<li><a class="reference internal" href="#running-the-pipeline-manually">Running the pipeline manually</a></li>
-<li><a class="reference internal" href="#running-the-pipeline-with-slurm">Running the pipeline with <code class="docutils literal notranslate"><span class="pre">SLURM</span></code></a></li>
-<li><a class="reference internal" href="#setting-cpus-and-memory-requirements">Setting CPUs and memory requirements</a></li>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing eukrhythmic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eukrhythmicoverview.html">Execution flowchart</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Using eukrhythmic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-use-the-pipeline">How to use the pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-pipeline-from-the-command-line">Running the pipeline from the command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-pipeline-directly-with-snakemake">Running the pipeline directly with Snakemake</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-pipeline-manually">Running the pipeline manually</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-pipeline-with-slurm">Running the pipeline with <code class="docutils literal notranslate"><span class="pre">SLURM</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setting-cpus-and-memory-requirements">Setting CPUs and memory requirements</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="samplefile.html">Sample file specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuring <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="addingassemblers.html">Adding assemblers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cleanup.html">Intermediate files and cleanup</a></li>
 </ul>
-</div>
+
             
           
         </div>
@@ -132,18 +142,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Using the Pipeline</li>
+      <li>Using eukrhythmic</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/usingpipeline.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -157,8 +169,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="using-the-pipeline">
-<h1>Using the Pipeline<a class="headerlink" href="#using-the-pipeline" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="using-eukrhythmic">
+<h1>Using eukrhythmic<a class="headerlink" href="#using-eukrhythmic" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="how-to-use-the-pipeline">
 <h2>How to use the pipeline<a class="headerlink" href="#how-to-use-the-pipeline" title="Permalink to this headline">¶</a></h2>
 <p>There are three main options for using the pipeline: you can run the pipeline directly using command-line arguments (:ref:<code class="docutils literal notranslate"><span class="pre">commandline</span></code>), you can set up a simple batch script with those command line options, and run it via <code class="docutils literal notranslate"><span class="pre">SLURM</span></code> (:ref:<code class="docutils literal notranslate"><span class="pre">snake</span></code>), or you can treat the pipeline as a normal <code class="docutils literal notranslate"><span class="pre">Snakemake</span></code> workflow, and edit its components manually (:ref:<code class="docutils literal notranslate"><span class="pre">pipeline</span></code>) by changing the configuration file.</p>
@@ -258,6 +270,11 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sbatch</span> <span class="n">submit</span><span class="o">/</span><span class="n">snake_submit</span><span class="o">.</span><span class="n">sh</span> <span class="o">&lt;</span><span class="n">snakefile</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">number</span> <span class="n">of</span> <span class="n">jobs</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">optionally</span><span class="p">,</span> <span class="o">--</span><span class="n">rerun</span><span class="o">-</span><span class="n">incomplete</span><span class="o">&gt;</span>
 </pre></div>
 </div>
+<p>Or, wrapping this command with the ability to specify <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> subroutines rather than selecting a configuration file, you can invoke <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">submit</span><span class="o">/</span><span class="n">eukrhythmic</span> <span class="o">&lt;</span><span class="n">subroutine</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Where “&lt;subroutine&gt;” is the subset of eukrhythmic functionality that you wish to use for this run. In most cases, you’ll write “all” here, to indicate that you wish to run all of the steps of the pipeline sequentially.</p>
 <p>If you are using the <code class="docutils literal notranslate"><span class="pre">SLURM</span></code> scheduler, you can run the pipeline by simply executing the <code class="docutils literal notranslate"><span class="pre">submit/snake_submit.sh</span></code> file in the <code class="docutils literal notranslate"><span class="pre">eukrhythmic</span></code> directory, after configuring options for your particular system (:ref:<code class="docutils literal notranslate"><span class="pre">slurm</span></code>), or by setting the <code class="docutils literal notranslate"><span class="pre">rewritecluster</span></code> configuration flag to 1, and specifying the options for all jobs in the <code class="docutils literal notranslate"><span class="pre">required</span></code> section of the <code class="docutils literal notranslate"><span class="pre">cluster.yaml</span></code> file. If you are not using a scheduler, or are logged into a computer with sufficient computational resources (e.g., a <code class="docutils literal notranslate"><span class="pre">SLURM</span></code> job run in interactive mode), you can execute <code class="docutils literal notranslate"><span class="pre">Snakemake</span></code> directly.</p>
 <p>You can also do this using the <code class="docutils literal notranslate"><span class="pre">submit/eukrhythmic</span></code> script &lt;Arianna needs to explain this script and the subroutines. She also needs to add ability to specify subroutines in the <code class="docutils literal notranslate"><span class="pre">bin/eukrhythmic</span></code> file.&gt;</p>
 </div>
@@ -282,28 +299,29 @@
            
           </div>
           <footer>
-  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="samplefile.html" class="btn btn-neutral float-right" title="Sample file specification" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="eukrhythmicoverview.html" class="btn btn-neutral float-left" title="Execution flowchart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Arianna Krinos
+        &#169; Copyright 2020, Arianna Krinos.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

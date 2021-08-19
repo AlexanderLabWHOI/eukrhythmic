@@ -1,5 +1,5 @@
-The ``eukrhythmic`` Sample File
-===============================
+Sample file specification
+=========================
 
 .. _naming: 
 
