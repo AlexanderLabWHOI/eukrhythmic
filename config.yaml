@@ -7,12 +7,12 @@ spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
 spiketable: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/percentmapped_bbmap_volumes.tab
 adapter: static/adapters.fa
 ## DIRECTORIES DURING PROCESSING ##
-inputDIR: ../eukrhythmic_paper_trials/jEUKebox-Trial2-100k/07-simulated_raw_reads
-outputDIR: ../eukrhythmic_paper_trials/jEUKebox-Trial2-100k/eukrhythmic_assembly
+inputDIR: ../eukrhythmic_paper_trials/jEUKebox-Trial2-5k/07-simulated_raw_reads
+outputDIR: ../eukrhythmic_paper_trials/jEUKebox-Trial2-5k/eukrhythmic_assembly
 assembledDIR: intermediate-files/02-assembly/05-assembly
 renamedDIR: renamed
 # this is where all the intermediate outputs will go.
-scratch: ../100ktrial2scratch
+scratch: ../5ktrial2scratch
 ## ANALYSIS OPTIONS ##
 kegg: /vortexfs1/omics/alexander/data/KEGG
 kegg_prot_db: /vortexfs1/omics/alexander/data/KEGG/diamond_db/family_eukaryotes.dmnd

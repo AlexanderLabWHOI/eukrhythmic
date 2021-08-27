@@ -14,7 +14,7 @@ __default__:
   cpupertask: 18
   mem: 180
   nodes: 1
-  queue: compute
+  queue: scavenger
   system: slurm
   tasks: 1
   time: 5000
@@ -54,7 +54,7 @@ transdecoder_MAD_simple:
   cpupertask: 40
 salmon_MAD:
   account: akrinos
-  queue: compute
+  queue: scavenger
   mem: 180
   time: 5000
   tasks: 1
