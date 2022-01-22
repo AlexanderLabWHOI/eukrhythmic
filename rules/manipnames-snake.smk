@@ -16,10 +16,10 @@ def getallmerged():
     return(" ".join(mergednames))
     
 def combineassemblers(assembly):
-    return(" ".join([os.path.join(OUTPUTDIR, "cluster1", assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS]))
+    return(" ".join([os.path.join(OUTPUTDIR, "assembled", assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS]))
   
 def combineassemblerslist(assembly):
-    return([os.path.join(OUTPUTDIR, "cluster1", assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS])
+    return([os.path.join(OUTPUTDIR, "assembled", assembly + "_" + curr + ".fasta") for curr in ASSEMBLERS])
 
 # this rule is meant to change the name of the headers for the FASTA files for each of the assemblies so that 
 # we can track where each of the headers originally came from

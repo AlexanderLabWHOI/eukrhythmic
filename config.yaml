@@ -32,6 +32,7 @@ assemblers:
     - megahit
 #    - velvet
     - spades
+    - rnaspades
     - trinity
     - transabyss
 separategroups: 1

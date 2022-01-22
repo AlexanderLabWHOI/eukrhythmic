@@ -28,38 +28,39 @@ def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = Fa
    
 print("CPUs in")
 print(MAXCPUSPERTASK * MAXTASKS)
-    
+       
 # This module needs to grab all of the list of the individual files associated with the specified
 # assembly group, after the scripts/make-assembly-file.py script builds said assembly groups 
 # according to user specifications.  
-rule spades:
+rule rnaspades:
     input:
         left = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "left", commas = False),
         right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = False)
     output:
-        os.path.join(OUTPUTDIR, "metaspades_{assembly}", "contigs.fasta")
+        os.path.join(OUTPUTDIR, "rnaspades_{assembly}", "transcripts.fasta")
     params:
         extra = "",
-        outdir = os.path.join(OUTPUTDIR, "metaspades_{assembly}"),
+        outdir = os.path.join(OUTPUTDIR, "rnaspades_{assembly}"),
         left = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "left", commas = True),
         right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = True),
         maxmem = MAXMEMORY,
         CPUs = MAXCPUSPERTASK * MAXTASKS
     log:
-        err = os.path.join("logs","spades","outputlog_{assembly}_err.log"),
-        out = os.path.join("logs","spades","outputlog_{assembly}_out.log")
+        err = os.path.join("logs","rnaspades","outputlog_{assembly}_err.log"),
+        out = os.path.join("logs","rnaspades","outputlog_{assembly}_out.log")
     conda: '../envs/spades-env.yaml'
     shell:
         '''
         echo {params.left}
-        spades.py --meta --pe1-1 {params.left} --pe1-2 {params.right} -o {params.outdir} 2> {log.err} 1> {log.out}
+        #spades.py --rna --pe1-1 {params.left} --pe1-2 {params.right} -o {params.outdir} 2> {log.err} 1> {log.out}
+        spades.py --continue -o {params.outdir} 2> {log.err} 1> {log.out}
         '''
    
-rule spades_cleanup:
+rule rnaspades_cleanup:
     input:
-        spadesfile = os.path.join(OUTPUTDIR, "metaspades_{assembly}", "contigs.fasta")
+        spadesfile = os.path.join(OUTPUTDIR, "rnaspades_{assembly}", "transcripts.fasta")
     output:
-        assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_spades.fasta")
+        assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_rnaspades.fasta")
     params:
         extra = ""
     shell:

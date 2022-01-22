@@ -79,3 +79,11 @@ velvet:
   queue: bigmem
   tasks: 1
   time: 15000
+rnaspades:
+  account: akrinos
+  cpupertask: 36
+  mem: 180
+  nodes: 2
+  queue: scavenger
+  tasks: 2
+  time: 5000
