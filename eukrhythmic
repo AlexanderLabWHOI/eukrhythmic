@@ -51,7 +51,7 @@ ruleorder: trinity > trinity_SE
 ruleorder: megahit > megahit_SE
 ruleorder: velvet > velvet_SE
 ruleorder: transdecoder_indiv > transdecoder_final_proteins > transdecoder_by_assembly
-ruleorder: transdecoder_indiv_clean > transdecoder_finalproteins_clean > transdecoder_by_assembly_clean
+#ruleorder: transdecoder_indiv_clean > transdecoder_finalproteins_clean > transdecoder_by_assembly_clean
 ruleorder: salmon_indiv > salmon_clustering
 ruleorder: salmon_clustering > salmon_clustering_raw
 ruleorder: combinequastmerge > quast_merged_transdecoded
@@ -94,10 +94,10 @@ rule all:
         # COMBINE QUAST OUTPUTS
         quastcombine = expand(os.path.join("{base}", "quast", "fullresults", "allresults.tsv"), base = OUTPUTDIR),
         # TRANSDECODER OUTPUTS - optionally, run TransDecoder on the individual assemblies
-        transdecoder_indiv = expand(os.path.join("{base}", "transdecoder_indiv", 
-                                                 "{assembly}_{assembler}.fasta.transdecoder.{tdextensions}"),  
-                                    base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS,
-                                    tdextensions = TDEXTENSIONS),
+#        transdecoder_indiv = expand(os.path.join("{base}", "transdecoder_indiv", 
+#                                                 "{assembly}_{assembler}.fasta.transdecoder.{tdextensions}"),  
+#                                    base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS,
+#                                    tdextensions = TDEXTENSIONS),
         # INDIVIDUAL CLUSTERING OUTPUTS
 #        clustering_each_assembler = expand(os.path.join("{base}", "cluster1", "{assembly}_{assembler}.fasta"), 
 #                                           base = OUTPUTDIR, assembly = assemblygroups, assembler = ASSEMBLERS),
