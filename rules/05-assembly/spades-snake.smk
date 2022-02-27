@@ -26,8 +26,8 @@ def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = Fa
     else:
         return samplelist
    
-print("CPUs in")
-print(MAXCPUSPERTASK * MAXTASKS)
+#print("CPUs in")
+#print(MAXCPUSPERTASK * MAXTASKS)
     
 # This module needs to grab all of the list of the individual files associated with the specified
 # assembly group, after the scripts/make-assembly-file.py script builds said assembly groups 

@@ -9,19 +9,28 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
 
-def get_filenames(sample, leftorright):
-    filenames = os.listdir(INPUTDIR)
+def get_filenames(sample, leftorright, stub=False):
     matchednames = []
     indexsample = [ind for ind in range(0,len(samplenames)) if sample.strip() == samplenames[ind]][0]
     sample_fastq = fastqnames[indexsample]
+    
+    search_dir = INPUTDIR
+    if len(sample_fastq.split("/")) > 1:
+        innerdir = sample_fastq.split("/")[0]
+        search_dir = os.path.join(search_dir,innerdir)
+        sample = sample_fastq.split("/")[1]
+    filenames = os.listdir(search_dir)
+    
     for fcurr in filenames: 
-        if sample_fastq in fcurr:
+        if sample_fastq.split("/")[-1] in fcurr:
             matchednames.append(fcurr)
     matchednames = sorted(matchednames)
+    if stub:
+        search_dir = ""
     if int(leftorright.strip()) == 1:
-        return matchednames[0]
+        return os.path.join(search_dir,matchednames[0])
     else:
-        return matchednames[1]
+        return os.path.join(search_dir,matchednames[1])
 
 def splitfilenames(inname):
     return inname.split(".")[0]
@@ -46,7 +55,7 @@ def getalloutputs():
     
 rule fastqc:
     input:
-        (lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"),\
+        (lambda filename: expand(os.path.join("{sampnames}"),\
         sampnames = get_filenames(filename.sample, filename.num)))
     output:
         html = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
@@ -60,7 +69,7 @@ rule fastqc:
         outname = (lambda filename: os.path.join(OUTPUTDIR, "intermediate-files",\
                   "01-setup","01-quality",\
                   "01a-fastqc", splitfilenames(get_filenames(filename.sample, \
-                  filename.num))))
+                  filename.num, stub=True))))
     conda: os.path.join("..", "envs", "01-setup-env.yaml")
     log: 
         err = os.path.join(OUTPUTDIR, "logs", "01-setup", "01-quality",\

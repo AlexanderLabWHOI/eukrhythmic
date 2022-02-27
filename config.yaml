@@ -1,18 +1,18 @@
 ### Parameters expected to be changed under normal use ###
 ## INPUT DATA AND FORMATTING ##
 # formatted input file; described in README
-jobname: mock
-metaT_sample: input/sampledata_MMETSP_2.txt  #input/sampledata.txt
+jobname: narragansett
+metaT_sample: input/NB_table.txt #sampledata_MMETSP_2.txt  #input/sampledata.txt
 spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
 spiketable: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/percentmapped_bbmap_volumes.tab
 adapter: static/adapters.fa
-## DIRECTORIES DURING PROCESSING ##
-inputDIR: ../eukrhythmic_paper_trials/jEUKebox-Trial2-5k/07-simulated_raw_reads
-outputDIR: ../eukrhythmic_paper_trials/jEUKebox-Trial2-5k/eukrhythmic_assembly
+## DIRECTORIES DURING PROCESSING ## jEUKebox-Trial2-50
+inputDIR: /vortexfs1/omics/alexander/data/narragansett
+outputDIR: ../eukrhythmic_paper_narragansett
 assembledDIR: intermediate-files/02-assembly/05-assembly
 renamedDIR: renamed
 # this is where all the intermediate outputs will go.
-scratch: ../5ktrial2scratch
+scratch: /vortexfs1/scratch/akrinos/NB_run_scratch
 ## ANALYSIS OPTIONS ##
 kegg: /vortexfs1/omics/alexander/data/KEGG
 kegg_prot_db: /vortexfs1/omics/alexander/data/KEGG/diamond_db/family_eukaryotes.dmnd

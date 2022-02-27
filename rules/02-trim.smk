@@ -25,12 +25,36 @@ def get_filenames_trim(sample, leftorright):
             return matchednames[1]   
         else:
             return ""
+        
+def get_filenames_trim(sample, leftorright):
+    matchednames = []
+    indexsample = [ind for ind in range(0,len(samplenames)) if sample.strip() == samplenames[ind]][0]
+    sample_fastq = fastqnames[indexsample]
+    
+    search_dir = INPUTDIR
+    if len(sample_fastq.split("/")) > 1:
+        innerdir = sample_fastq.split("/")[0]
+        search_dir = os.path.join(search_dir,innerdir)
+        sample = sample_fastq.split("/")[1]
+    filenames = os.listdir(search_dir)
+    
+    for fcurr in filenames: 
+        if sample_fastq.split("/")[-1] in fcurr:
+            matchednames.append(fcurr)
+    matchednames = sorted(matchednames)
+    if leftorright == "left":
+        return os.path.join(search_dir,matchednames[0])
+    else:
+        if len(matchednames) > 1:
+            return os.path.join(search_dir,matchednames[1]) 
+        else:
+            return ""
 
 rule trimmomatic:
     input:
-        r1 = lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"),\
+        r1 = lambda filename: expand(os.path.join("{sampnames}"),\
                                      sampnames = get_filenames_trim(filename.sample, "left")),
-        r2 = lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"),\
+        r2 = lambda filename: expand(os.path.join("{sampnames}"),\
                                      sampnames = get_filenames_trim(filename.sample, "right")),
         adapters = ADAPTER
     output:
@@ -61,8 +85,8 @@ rule trimmomatic:
         
 rule trimmomatic_SE:
     input:
-        r1 = lambda filename: expand(os.path.join(INPUTDIR, "{sampnames}"),\
-                                     sampnames = get_filenames(filename.sample, "left")),
+        r1 = lambda filename: expand(os.path.join("{sampnames}"),\
+                                     sampnames = get_filenames_trim(filename.sample, "left")),
         adapters = ADAPTER
     output:
         p1 = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\

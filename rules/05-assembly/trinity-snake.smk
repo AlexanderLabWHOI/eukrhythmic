@@ -39,7 +39,7 @@ rule trinity:
                                                     "right", commas = False)
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                          "05-assembly", "05a-trinity", "trinity_{assembly}", "Trinity.fasta")
+                          "05-assembly", "05a-trinity", "trinity_{assembly}.Trinity.fasta")
     params:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
@@ -57,7 +57,7 @@ rule trinity:
     shell:
         '''
         echo {params.left}
-        Trinity --seqType fq --max_memory {params.maxmem}G --CPU {params.CPUs} --max_memory 150G --left {params.left} --right {params.right} --output {params.outdir} --NO_SEQTK 2> {log.err} 1> {log.out}
+        Trinity --seqType fq --min_kmer_cov 2 --max_memory {params.maxmem}G --CPU {params.CPUs} --left {params.left} --right {params.right} --output {params.outdir} --NO_SEQTK 2> {log.err} 1> {log.out}
         '''
         
 rule trinity_SE:
@@ -87,7 +87,7 @@ rule trinity_SE:
 rule trinity_cleanup:
     input:
         trinityfile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
-                          "05-assembly", "05a-trinity", "trinity_{assembly}", "Trinity.fasta")
+                          "05-assembly", "05a-trinity", "trinity_{assembly}.Trinity.fasta")
     output:
         assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_trinity.fasta")
     params:
@@ -106,9 +106,9 @@ rule trinity_cleanup:
         mkdir -p {params.scratch}
         cp {input.trinityfile} {output.assembled}
         mkdir -p {params.jellyfish_dir}
-        mv {params.jellyfile} {params.jellyfish_final}
-        if [ {params.outdir} != {params.scratch} ]
-        then
-            mv {params.outdir} {params.scratch}
-        fi
+        #mv {params.jellyfile} {params.jellyfish_final}
+        #if [ {params.outdir} != {params.scratch} ]
+        #then
+        #    mv {params.outdir} {params.scratch}
+        #fi
         '''

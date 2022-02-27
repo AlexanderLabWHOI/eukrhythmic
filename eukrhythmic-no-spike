@@ -1,4 +1,5 @@
 configfile: "config.yaml"
+#"/vortexfs1/omics/alexander/akrinos/2021-tara-phaeo/2021-akrinos-tara-phaeo/eukrhythmic_setup/config.yaml"
 
 import io
 import os
