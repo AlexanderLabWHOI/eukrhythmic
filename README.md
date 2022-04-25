@@ -1,3 +1,5 @@
+This `README` file is a brief introduction to `eukrhythmic`. For more detailed information, please visit the [readthedocs](https://eukrhythmic.readthedocs.io/en/latest/). 
+
 ## Metatranscriptomic Pipelining
 
 [![Documentation Status](https://readthedocs.org/projects/eukrhythmic/badge/?version=latest)](https://eukrhythmic.readthedocs.io/en/latest/?badge=latest)
