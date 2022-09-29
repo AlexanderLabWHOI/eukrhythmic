@@ -7,3 +7,4 @@ dependencies:
     - transabyss
     - abyss
     - python
+    - icu==58.2

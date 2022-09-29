@@ -42,10 +42,10 @@ rule all:
         # TRIMMOMATIC OUTPUTS
         trimmed = expand([os.path.join("{base}", "intermediate-files", "01-setup",\
                           "02-trim",\
-                          "{filenames}_1.trimmed.fastq.gz"), 
+                          "{sample}_1.trimmed.fastq.gz"), 
                           os.path.join("{base}", "intermediate-files", "01-setup",\
                           "02-trim",\
-                          "{filenames}_2.trimmed.fastq.gz")], zip, 
+                          "{sample}_2.trimmed.fastq.gz")], zip, 
                          base = OUTPUTDIR, sample = filenames),
         # ASSEMBLER OUTPUTS
         assembly05 = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"),

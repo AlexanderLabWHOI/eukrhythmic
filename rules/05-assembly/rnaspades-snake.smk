@@ -8,7 +8,37 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
     
+<<<<<<< HEAD
 def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = False, retlen=False,retfirst=False,retlast=False):
+=======
+def get_samples_multiflag_spades(assemblygroup, dropspike, leftorright, flag = "--pe1"):
+    samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
+    foldername = os.path.join("intermediate-files", "01-setup",\
+                          "03-alignment-spike")
+    extensionname = "clean"
+    if dropspike == 0:
+        foldername = os.path.join("intermediate-files", "01-setup",\
+                          "02-trim")
+        extensionname = "trimmed"
+    if leftorright == "left":
+        samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
+                      for sample in samplelist]
+    elif leftorright == "right":
+        samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_2." + extensionname + ".fastq.gz") 
+                      for sample in samplelist]
+    else:
+        samplelist_out = []
+        [samplelist_out.extend(["-1 " + os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz"),
+                            "-2 " + os.path.join(OUTPUTDIR, foldername, sample + "_2." + extensionname + ".fastq.gz")])
+                      for sample in samplelist]
+        samplelist = samplelist_out
+    if flag != "":
+        return "--pe1" + " --pe1".join(samplelist)
+    else:
+        return samplelist
+    
+def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = False):
+>>>>>>> a350a6b1f0cc36a755fcb72e3de785643afcb2b3
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
     foldername = os.path.join("intermediate-files", "01-setup",\
                           "03-alignment-spike")
@@ -34,7 +64,7 @@ def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = Fa
     else:
         return samplelist
     
-print(get_samples_commas_spades("SH402", DROPSPIKE, "left", commas = False))
+#print(get_samples_commas_spades("SH402", DROPSPIKE, "left", commas = False))
        
 # This module needs to grab all of the list of the individual files associated with the specified
 # assembly group, after the scripts/make-assembly-file.py script builds said assembly groups 
@@ -51,7 +81,7 @@ rule rnaspades:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                      "05-assembly", "05d-rnaspades", "rna_{assembly}"),
-        left = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "left", commas = True),
+        fullstring = lambda filename: get_samples_multiflag_spades(filename.assembly, DROPSPIKE, "both"),
         right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = True),
         numsamps = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = False, retlen=True),
         left1 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "left", commas = False, retfirst=True),
@@ -70,6 +100,7 @@ rule rnaspades:
     conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")
     shell:
         '''
+<<<<<<< HEAD
         echo {params.left}
         if [ -f {params.outdir}/params.txt ]; then
             spades.py --continue -o {params.outdir} 2> {log.err} 1> {log.out}
@@ -78,6 +109,15 @@ rule rnaspades:
         else
             spades.py -m 150 -t 8 --rna --pe1-1 {params.left} --pe1-2 {params.right} -o {params.outdir} 2> {log.err} 1> {log.out}
         fi
+=======
+        echo {params.fullstring}
+        if [ -f {params.outdir}/params.txt ]; then
+            spades.py --continue -o {params.outdir} 2> {log.err} 1> {log.out}
+        else
+            spades.py --rna {params.fullstring} -o {params.outdir} 2> {log.err} 1> {log.out}
+        fi
+            
+>>>>>>> a350a6b1f0cc36a755fcb72e3de785643afcb2b3
         '''
    
 rule rnaspades_cleanup:

@@ -10,6 +10,7 @@ import yaml
 from snakemake.exceptions import print_exception, WorkflowError  
 sys.path.insert(1, 'scripts') 
 from importworkspace import *
+from snakemake.logging import logger
 
 ## THIS MAY ALL BE DELETED IN FUTURE ##
 with open('config.yaml') as f:
@@ -34,7 +35,7 @@ directories = [ASSEMBLEDDIR,INPUTDIR,OUTPUTDIR,SCRATCHDIR,RENAMEDDIR]
 ## END SECTION TO BE DELETED ##
 
 def checkrequirementsfct(): 
-    print("\033[1;35m Checking that configuration file entries are valid...  \n")
+    logger.info("\033[1;35m Checking that configuration file entries are valid...  \n")
     # Check to make sure a list of integer k-mer values is supplied.
     if isinstance(KMERVALS, list):
         for kmer in KMERVALS:
@@ -42,7 +43,7 @@ def checkrequirementsfct():
                 if not isinstance(kmer + 1, int):
                     raise ValueError
             except ValueError:
-                print("Please only specify integer k-mer values.")
+                logger.info("Please only specify integer k-mer values.")
                 sys.exit(1)
 
     # Check to make sure a valid list of assemblers is supplied.
@@ -57,13 +58,13 @@ def checkrequirementsfct():
                     else:
                         raise ValueError
             except ValueError:
-                print("Please only specify assemblers for which rules are available.")
+                logger.info("Please only specify assemblers for which rules are available.")
                 sys.exit(1)
     else:
         try:
             raise ValueError
         except ValueError:
-            print("Please specify your assemblers as a list. See examples for details.")
+            logger.info("Please specify your assemblers as a list. See examples for details.")
             sys.exit(1)
 
     # Check to make sure the user hasn't added trailing /.
@@ -72,7 +73,7 @@ def checkrequirementsfct():
             if ((dir_curr[len(dir_curr)-1] == '/') | (dir_curr[len(dir_curr)-1] == '\\')):
                 raise ValueError
         except ValueError:
-            print("Please do not add trailing slashes to input, output, scratch, assembled, or renamed directories.")
+            logger.info("Please do not add trailing slashes to input, output, scratch, assembled, or renamed directories.")
             sys.exit(1)
     
     # Check whether the required number of entries of each fastq file can be found in the input directory.
@@ -86,8 +87,8 @@ def checkrequirementsfct():
             try:
                 raise ValueError
             except ValueError:
-                print("There are too many occurrences of fastq file " + currfile + " in input directory.")
+                logger.info("There are too many occurrences of fastq file " + currfile + " in input directory.")
                 sys.exit(1)
                
     
-    print("\033[1;32m All initial checks complete.  \n")
+    logger.info("\033[1;32m All initial checks complete.  \n")

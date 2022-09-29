@@ -50,7 +50,7 @@ rule transabyss:
                             "05-assembly", "05c-transabyss", "{assembly}", "outputlog_{assembly}_{k}.err"),
         out = os.path.join(OUTPUTDIR, "logs",
                             "05-assembly", "05c-transabyss", "{assembly}", "outputlog_{assembly}_{k}.out")
-    conda: os.path.join("..","..","envs","02-assembly-env.yaml")
+    conda: os.path.join("..","..","envs","transabyss-env.yaml")
     shell:
         '''
         transabyss --pe {input.left} {input.right} --name {params.fastaname} --outdir {params.outdir} --kmer {params.kval} --threads 8 2> {log.err} 1> {log.out}

@@ -33,7 +33,7 @@ assemblers:
     - megahit
     - rnaspades
       #    - spades
-      #- trinity
+    - trinity
 #    - transabyss
 separategroups: 1
 
