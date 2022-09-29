@@ -8,12 +8,19 @@ import numpy as np
 import pathlib
 import yaml
 from snakemake.exceptions import print_exception, WorkflowError   
+from snakemake.logging import logger
 
-print("\033[1;35m Reading in variables from configuration file...  \n")
-with open('config.yaml') as f:
+#arguments = sys.argv
+configfile = "config.yaml" #"/vortexfs1/omics/alexander/akrinos/2021-tara-phaeo/2021-akrinos-tara-phaeo/eukrhythmic_setup/config.yaml"
+#if len(arguments) > 2:
+#    configfile = arguments[2]
+#    print(configfile,flush=True)
+
+logger.info("\033[1;35m Reading in variables from configuration file...  \n")
+with open(configfile) as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
     
-print("\033[1;35m Reading in variables from cluster configuration file...  \n")
+logger.info("\033[1;35m Reading in variables from cluster configuration file...  \n")
 with open('cluster.yaml') as f:
     cluster = yaml.load(f, Loader=yaml.FullLoader)
 
@@ -26,7 +33,7 @@ if (cluster != None):
                     offender = r
                     raise ValueError
             except ValueError:
-                print("Check that you have specified values in the cluster configuration file file. The missing entry that triggered this error was "  + str(offender) + ".")
+                logger.info("Check that you have specified values in the cluster configuration file file. The missing entry that triggered this error was "  + str(offender) + ".")
                 sys.exit(1)
 
 if "required" in cluster:
@@ -46,7 +53,7 @@ for r in required_entries:
             offender = r
             raise ValueError
     except ValueError:
-        print("Check that you have specified values in the configuration file. The missing entry that triggered this error was "  + str(offender) + ".")
+        logger.info("Check that you have specified values in the configuration file. The missing entry that triggered this error was "  + str(offender) + ".")
         sys.exit(1)
 
 ## READ IN WHETHER THE USER DOES NOT WANT US TO REWRITE THE CLUSTER CONFIGURATION FILE ##
@@ -83,6 +90,8 @@ else:
     ISFILESPIKE = 0
 ASSEMBLERS = [curr.lower() for curr in list(config['assemblers'])]
 SAMPLEINFO = pd.read_csv(DATAFILE, sep = "\t")
+SAMPLEINFO.SampleID = [str(curr) for curr in SAMPLEINFO.SampleID]
+SAMPLEINFO.AssemblyGroup = [str(curr) for curr in SAMPLEINFO.AssemblyGroup]
 ASSEMBLYDICT = dict(zip(list(SAMPLEINFO.AssemblyGroup), list(SAMPLEINFO.SampleName)))
 samplenames = list(SAMPLEINFO.SampleID);
 fastqnames = list(SAMPLEINFO.FastqFile);
@@ -112,17 +121,17 @@ else:
 
 directories = [ASSEMBLEDDIR,INPUTDIR,OUTPUTDIR,SCRATCHDIR,RENAMEDDIR]
         
-print("\033[1;35m Checking directory formatting...  \n")
+logger.info("\033[1;35m Checking directory formatting...  \n")
 # Check to make sure the user hasn't added trailing /.
 for dir_curr in directories:
     try:
         if ((dir_curr[len(dir_curr)-1] == '/') | (dir_curr[len(dir_curr)-1] == '\\')):
             raise ValueError
     except ValueError:
-        print("Please do not add trailing slashes to input, output, scratch, assembled, or renamed directories.")
+        logger.info("Please do not add trailing slashes to input, output, scratch, assembled, or renamed directories.")
         sys.exit(1)
 
-print("\033[1;35m Setting appropriate cluster.yaml entries if specified...  \n")
+logger.info("\033[1;35m Setting appropriate cluster.yaml entries if specified...  \n")
 for r in cluster.keys():
     if WRITECLUSTER == 1: # need to add additional flag to make sure only done once
         if "account" in cluster[r].keys():
@@ -140,15 +149,23 @@ if WRITECLUSTER == 1:
     with open('cluster.yaml', 'w') as f:
         yaml.dump(cluster, f)
 
-print("\033[1;35m Checking that appropriate input files exist...  \n")
-inputfiles = "|".join(os.listdir(INPUTDIR))
+logger.info("\033[1;35m Checking that appropriate input files exist...  \n")
+foundnames = []
+for filename in fastqnames:
+    search_dir = INPUTDIR
+    if "/" in str(filename):
+        innerdir = filename.split("/")[0]
+        search_dir = os.path.join(search_dir,innerdir)
+    foundnames.extend(os.listdir(search_dir))
+
+inputfiles = "|".join(list(set(foundnames)))
 filenames = []
 singleorpaired = []
 for currfile_ind in range(0, len(fastqnames)):
-    currfile = str(fastqnames[currfile_ind])
+    currfile = str(str(fastqnames[currfile_ind]).split("/")[-1])
     occurrences = inputfiles.count(currfile)
     if occurrences > 2:
-        print("There are too many occurrences of fastq file " + currfile + " in input directory.")
+        logger.info("There are too many occurrences of fastq file " + currfile + " in input directory.")
     elif occurrences == 2:
         singleorpaired.extend([1,2])
         filenames.extend([samplenames[currfile_ind]] * 2)
@@ -160,3 +177,4 @@ if config["separategroups"] == 1:
     assemblygroups = list(set(SAMPLEINFO.AssemblyGroup))
 else:
     assemblygroups = [1] * len(INPUTFILES)
+assemblygroups=[str(curr) for curr in assemblygroups]

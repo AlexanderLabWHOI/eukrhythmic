@@ -18,11 +18,25 @@ __default__:
   system: slurm
   tasks: 1
   time: 5000
+eukulele_pleuro:
+  account: akrinos
+  cpupertask: 18
+  queue: scavenger-bmem
+  mem: 750
+  time: 10000
+  tasks: 1
+rnaspades:
+  account: akrinos
+  cpupertask: 18 #20
+  mem: 180 #500
+  queue: scavenger #-bmem
+  time: 10000
+  tasks: 1
 fastqc:
   account: akrinos
   cpupertask: 5
   mem: 1
-  queue: scavenger
+  queue: compute
   tasks: 1
   time: 720
 salmon_MAD_index:
@@ -35,12 +49,12 @@ fastqc_trimmed:
   account: akrinos
   cpupertask: 5
   mem: 1
-  queue: scavenger
+  queue: compute
   tasks: 1
   time: 720
 required:
   accountname: akrinos
-  defaultqueue: scavenger
+  defaultqueue: compute
   maxcores: 1
   maxcpuspertask: 18
   maxmemory: 180
@@ -48,15 +62,23 @@ required:
 transdecoder_MAD_simple:
   account: akrinos
   queue: bigmem
-  mem: 600
-  time: 5000
+  mem: 1200
+  time: 8000
   tasks: 1
   cpupertask: 40
+transdecoder_CAG_simple:
+  account: akrinos
+  queue: scavenger-bmem
+  mem: 600
+  time: 8000
+  tasks: 1
+  cpupertask: 20
 salmon_MAD:
   account: akrinos
-  queue: compute
-  mem: 180
+  queue: scavenger-bmem
+  mem: 500
   time: 5000
+  cpupertask: 20
   tasks: 1
   cpupertask: 34
 transabyssmerge:
@@ -80,7 +102,7 @@ trimmomatic:
   cpupertask: 5
   mem: 48
   nodes: 1
-  queue: scavenger
+  queue: compute
   tasks: 1
   time: 1400
 trinity:

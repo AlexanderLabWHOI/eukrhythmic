@@ -8,7 +8,7 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
     
-def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = False):
+def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = False, retlen=False,retfirst=False,retlast=False):
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
     foldername = os.path.join("intermediate-files", "01-setup",\
                           "03-alignment-spike")
@@ -23,6 +23,12 @@ def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = Fa
     else:
         samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_2." + extensionname + ".fastq.gz") 
                       for sample in samplelist]
+    if retfirst:
+        return samplelist[0]
+    if retlast:
+        return samplelist[-1]
+    if retlen:
+        return len(samplelist)
     if commas:
         return ",".join(samplelist)
     else:
@@ -47,20 +53,31 @@ rule rnaspades:
                      "05-assembly", "05d-rnaspades", "rna_{assembly}"),
         left = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "left", commas = True),
         right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = True),
+        numsamps = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = False, retlen=True),
+        left1 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "left", commas = False, retfirst=True),
+        left2 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "left", commas = False, retlast=True),
+        right1 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = False, retfirst=True),
+        right2 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = False, retlast=True),
         maxmem = MAXMEMORY,
         CPUs = MAXCPUSPERTASK * MAXTASKS
     log:
         err = os.path.join(OUTPUTDIR, "logs",\
                            "05-assembly", "05d-rnaspades", "{assembly}",\
                            "outputlog_{assembly}_merge.err"),
-         out = os.path.join(OUTPUTDIR, "logs",\
+        out = os.path.join(OUTPUTDIR, "logs",\
                             "05-assembly", "05d-rnaspades", "{assembly}",\
                             "outputlog_{assembly}_merge.out") 
     conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")
     shell:
         '''
         echo {params.left}
-        spades.py --rna --pe1-1 {params.left} --pe1-2 {params.right} -o {params.outdir} 2> {log.err} 1> {log.out}
+        if [ -f {params.outdir}/params.txt ]; then
+            spades.py --continue -o {params.outdir} 2> {log.err} 1> {log.out}
+        elif [ {params.numsamps} -eq 2 ]; then
+            spades.py -m 150 -t 8 --rna --pe1-1 {params.left1} --pe1-2 {params.right1} --pe2-1 {params.left2} --pe2-2 {params.right2} -o {params.outdir} 2> {log.err} 1> {log.out}
+        else
+            spades.py -m 150 -t 8 --rna --pe1-1 {params.left} --pe1-2 {params.right} -o {params.outdir} 2> {log.err} 1> {log.out}
+        fi
         '''
    
 rule rnaspades_cleanup:

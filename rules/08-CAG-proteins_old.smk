@@ -39,24 +39,10 @@ rule transdecoder_CAG_simple:
         mkdir -p {params.wd_path}
         cp {input.fastafile} {params.merged}.fasta
         (cd {params.wd_path} && TransDecoder.LongOrfs -t {params.filename}.fasta -m {params.size}) 2> {log.err} 1> {log.out}
-        (cd {params.wd_path} && TransDecoder.Predict --no_refine_starts -t {params.filename}.fasta --no_refine_starts) 2>> {log.err} 1>> {log.out}
+        (cd {params.wd_path} && TransDecoder.Predict -t {params.filename}.fasta --no_refine_starts) 2>> {log.err} 1>> {log.out}
         rm {params.merged}.fasta
         sleep 10
         """
-
-rule cp_td:
-    input:
-        pep = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "08-CAG-proteins", "{assembly}_CAG.fasta.transdecoder.pep")
-    output:
-        pep = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "08-CAG-proteins", "eukulele_in",
-                           "{assembly}_CAG.pep")
-    shell:
-        """
-        cp {input.pep} {output.pep}
-        """
-
 
 rule transdecoder_CAG:
     input:

@@ -6,3 +6,4 @@ dependencies:
     - salmon
     - transdecoder
     - quast
+    - eggnog-mapper
