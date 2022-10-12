@@ -14,34 +14,83 @@ __default__:
   cpupertask: 18
   mem: 180
   nodes: 1
-  queue: scavenger
+  queue: compute
   system: slurm
   tasks: 1
   time: 5000
+eukulele_pleuro:
+  account: akrinos
+  cpupertask: 18
+  queue: scavenger-bmem
+  mem: 750
+  time: 10000
+  tasks: 1
+rnaspades:
+  account: akrinos
+  cpupertask: 18 #20
+  mem: 180 #500
+  queue: compute #-bmem
+  time: 10000
+  tasks: 1
 fastqc:
   account: akrinos
   cpupertask: 5
   mem: 1
-  queue: scavenger
+  queue: compute
   tasks: 1
   time: 720
+salmon_MAD_index:
+  account: akrinos
+  queue: compute
+  mem: 180
+  time: 5000
+  tasks: 1
 fastqc_trimmed:
   account: akrinos
   cpupertask: 5
   mem: 1
-  queue: scavenger
+  queue: compute
   tasks: 1
   time: 720
+#megahit:
+#  account: akrinos
+#  cpupertask: 70
+#  mem: 1000
+#  queue: scavenger-bmem
+#  tasks: 1
+#  time: 5000
 required:
   accountname: akrinos
-  defaultqueue: scavenger
+  defaultqueue: compute
   maxcores: 1
-  maxcpuspertask: 18
+  maxcpuspertask: 30
   maxmemory: 180
   maxtasks: 1
+transdecoder_MAD_simple:
+  account: akrinos
+  queue: bigmem
+  mem: 1200
+  time: 8000
+  tasks: 1
+  cpupertask: 40
+transdecoder_CAG_simple:
+  account: akrinos
+  queue: scavenger-bmem
+  mem: 600
+  time: 8000
+  tasks: 1
+  cpupertask: 20
+salmon_MAD:
+  account: akrinos
+  queue: scavenger
+  mem: 180
+  time: 5000
+  cpupertask: 20
+  tasks: 1
+  cpupertask: 34
 transabyssmerge:
   account: akrinos
-  cpupertask: 18
+  cpupertask: 25
   mem: 180
   nodes: 1
   queue: compute
@@ -49,28 +98,28 @@ transabyssmerge:
   time: 10000
 transabyss:
   account: akrinos
-  cpupertask: 36
-  mem: 180
-  nodes: 3
-  queue: compute
-  tasks: 3
+  cpupertask: 15
+  mem: 600
+  nodes: 1
+  queue: bigmem
+  tasks: 1
   time: 10000
 trimmomatic:
   account: akrinos
   cpupertask: 5
   mem: 48
   nodes: 1
-  queue: scavenger
+  queue: compute
   tasks: 1
   time: 1400
 trinity:
   account: akrinos
-  cpupertask: 72
-  mem: 800
+  cpupertask: 25
+  mem: 180
   nodes: 1
-  queue: bigmem
+  queue: compute
   tasks: 1
-  time: 10000
+  time: 5000
 velvet:
   account: akrinos
   cpupertask: 72
@@ -81,9 +130,9 @@ velvet:
   time: 15000
 rnaspades:
   account: akrinos
-  cpupertask: 36
+  cpupertask: 18
   mem: 180
-  nodes: 2
-  queue: scavenger
-  tasks: 2
+  nodes: 1
+  queue: compute #bigmem #scavenger-bmem #compute
+  tasks: 1
   time: 5000

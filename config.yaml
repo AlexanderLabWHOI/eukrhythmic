@@ -1,18 +1,19 @@
 ### Parameters expected to be changed under normal use ###
 ## INPUT DATA AND FORMATTING ##
 # formatted input file; described in README
-jobname: sample
-metaT_sample: input/metaT_wap.txt #input/sampledata.txt
+jobname: ER
+metaT_sample: input/metaT_Huetal.txt #input/WAP_experiments.txt #input/metaT_wap.txt  #input/sampledata.txt
 spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
 spiketable: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/percentmapped_bbmap_volumes.tab
 adapter: static/adapters.fa
 ## DIRECTORIES DURING PROCESSING ##
-inputDIR: /vortexfs1/omics/alexander/data/WAP
-outputDIR: ../WAP_5May2021
-assembledDIR: assembled
+inputDIR: /vortexfs1/omics/alexander/data/Hu-2022-ALOHA-SPOT/download-data
+outputDIR: /vortexfs1/omics/alexander/data/Hu-2022-ALOHA-SPOT/Hu_et_al_2022_eukrhythmic #../WAP_2March2022_experiments #../WAP_14July2021_remodeled
+assembledDIR: intermediate-files/02-assembly/05-assembly
+continue: 1 # set this to 1 if you want assemblers to continue where they last stopped if files are found
 renamedDIR: renamed
 # this is where all the intermediate outputs will go.
-scratch: ../testscratch 
+scratch: /vortexfs1/scratch/akrinos/Huetal_euk_scratch
 ## ANALYSIS OPTIONS ##
 kegg: /vortexfs1/omics/alexander/data/KEGG
 kegg_prot_db: /vortexfs1/omics/alexander/data/KEGG/diamond_db/family_eukaryotes.dmnd
@@ -30,9 +31,8 @@ kmers:
 #    - 110
 assemblers:
     - megahit
-#    - velvet
-    - spades
     - rnaspades
+    - spades
     - trinity
     - transabyss
 separategroups: 1

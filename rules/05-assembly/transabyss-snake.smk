@@ -14,10 +14,12 @@ def get_samples(assemblygroup):
     
 def get_samples_commas_TA(assemblygroup, dropspike, leftorright, commas = False):
     samplelist = list(set(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']))
-    foldername = "bbmap"
+    foldername = os.path.join("intermediate-files", "01-setup",\
+                          "03-alignment-spike")
     extensionname = "clean"
     if dropspike == 0:
-        foldername = "firsttrim"
+        foldername = os.path.join("intermediate-files", "01-setup",\
+                          "02-trim")
         extensionname = "trimmed"
     if leftorright == "left":
         samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
@@ -30,25 +32,25 @@ def get_samples_commas_TA(assemblygroup, dropspike, leftorright, commas = False)
     else:
         return samplelist
     
-
-#left = LEFTFILE,
-#right = RIGHTFILE
 rule transabyss:
     input:
         left = lambda filename: get_samples_commas_TA(filename.assembly, DROPSPIKE, "left", commas = False),
         right = lambda filename: get_samples_commas_TA(filename.assembly, DROPSPIKE, "right", commas = False)
     output:
-        os.path.join(OUTPUTDIR, "transabyss_{k}_{assembly}", "{assembly}_{k}_transabyss.fasta-final.fa")
+         os.path.join(ASSEMBLEDDIR, "05c-transabyss", "TA-transabyss",\
+                              "TA-{assembly}_{k}_transabyss.fasta-final.fa")
     params:
         extra = "",
         kval = "{k}",
-        fastaname = "{assembly}_{k}_transabyss.fasta",
-        outdir = os.path.join(OUTPUTDIR, "transabyss_{k}_{assembly}")
+        fastaname = "TA-{assembly}_{k}_transabyss.fasta",
+        outdir = os.path.join(ASSEMBLEDDIR, "05c-transabyss", "TA-transabyss")
     threads: 4
     log:
-        err = os.path.join("logs","transabyss","outputlog_{assembly}_{k}_err.log"),
-        out = os.path.join("logs","transabyss","outputlog_{assembly}_{k}_out.log")
-    conda: '../envs/transabyss-env.yaml'
+        err = os.path.join(OUTPUTDIR, "logs",
+                            "05-assembly", "05c-transabyss", "{assembly}", "outputlog_{assembly}_{k}.err"),
+        out = os.path.join(OUTPUTDIR, "logs",
+                            "05-assembly", "05c-transabyss", "{assembly}", "outputlog_{assembly}_{k}.out")
+    conda: os.path.join("..","..","envs","transabyss-env.yaml")
     shell:
         '''
         transabyss --pe {input.left} {input.right} --name {params.fastaname} --outdir {params.outdir} --kmer {params.kval} --threads 8 2> {log.err} 1> {log.out}

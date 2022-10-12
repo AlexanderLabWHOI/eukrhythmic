@@ -10,10 +10,12 @@ from importworkspace import *
     
 def get_samples_commas(assemblygroup, dropspike, leftorright, commas = False):
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
-    foldername = "bbmap"
+    foldername = os.path.join("intermediate-files", "01-setup",\
+                          "03-alignment-spike")
     extensionname = "clean"
     if dropspike == 0:
-        foldername = "firsttrim"
+        foldername = os.path.join("intermediate-files", "01-setup",\
+                          "02-trim")
         extensionname = "trimmed"
     if leftorright == "left":
         samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
@@ -38,17 +40,21 @@ rule megahit:
         left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = False),
         right = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "right", commas = False)
     output:
-        megafile = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa")
+        megafile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
+                          "05-assembly", "05b-megahit", "megahit_{assembly}", "final.contigs.fa")
     params:
-        megadir = directory(os.path.join(OUTPUTDIR, "megahit", "{assembly}")),
+        megadir = directory(os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
+                          "05-assembly", "05b-megahit", "megahit_{assembly}")),
         left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = True),
         right = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "right", commas = True),
         minkval = MINKVAL,
         maxkval = MAXKVAL
     log:
-        err = os.path.join("logs","megahit","outputlog_{assembly}_err.log"),
-        out = os.path.join("logs","megahit","outputlog_{assembly}_out.log")
-    conda: "../envs/megahit-env.yaml"
+        err = os.path.join(OUTPUTDIR, "logs",\
+                          "05-assembly", "05b-megahit", "megahit_{assembly}", "outputlog_{assembly.err"),
+        out = os.path.join(OUTPUTDIR, "logs",\
+                          "05-assembly", "05b-megahit", "megahit_{assembly}", "outputlog_{assembly}.out")
+    conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")
     shell:
         '''
         if [ -d {params.megadir} ]
@@ -63,16 +69,20 @@ rule megahit_SE:
     input:
         left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = False)
     output:
-        megafile = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa")
+        megafile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
+                          "05-assembly", "05b-megahit", "megahit_{assembly}", "final.contigs.fa")
     params:
-        megadir = directory(os.path.join(OUTPUTDIR, "megahit", "{assembly}")), 
+        megadir = directory(os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
+                          "05-assembly", "05b-megahit", "megahit_{assembly}")), 
         left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = True),
         minkval = MINKVAL,
         maxkval = MAXKVAL
     log:
-        err = os.path.join("logs","megahit","outputlog_{assembly}_err.log"),
-        out = os.path.join("logs","megahit","outputlog_{assembly}_out.log")
-    conda: "../envs/megahit-env.yaml"
+        err = os.path.join(OUTPUTDIR, "logs",\
+                          "05-assembly", "05b-megahit", "megahit_{assembly}", "outputlog_{assembly.err"),
+        out = os.path.join(OUTPUTDIR, "logs",\
+                          "05-assembly", "05b-megahit", "megahit_{assembly}", "outputlog_{assembly}.out")
+    conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")
     shell:
         '''
         if [ -d {params.megadir} ]
@@ -85,13 +95,15 @@ rule megahit_SE:
         
 rule megahit_cleanup:
     input:
-        megahitfile = os.path.join(OUTPUTDIR, "megahit", "{assembly}", "final.contigs.fa")
+        megahitfile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
+                          "05-assembly", "05b-megahit", "megahit_{assembly}", "final.contigs.fa")
     output:
-        assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_megahit.fasta"),
-        scratchout = directory(os.path.join(SCRATCHDIR, "megahit", "{assembly}"))
+        assembled = os.path.join(ASSEMBLEDDIR, "{assembly}_megahit.fasta")
     params:
-        outdir = os.path.join(OUTPUTDIR, "megahit", "{assembly}"),
-        scratch = os.path.join(SCRATCHDIR, "megahit")
+        outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
+                          "05-assembly", "05b-megahit", "megahit_{assembly}"),
+        scratch = os.path.join(SCRATCHDIR, "02-assembly",\
+                          "05-assembly", "05b-megahit", "{assembly}")
     shell:
         '''
         mkdir -p {params.scratch}

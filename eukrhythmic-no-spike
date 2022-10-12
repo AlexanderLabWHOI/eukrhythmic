@@ -1,4 +1,5 @@
 configfile: "config.yaml"
+#"/vortexfs1/omics/alexander/akrinos/2021-tara-phaeo/2021-akrinos-tara-phaeo/eukrhythmic_setup/config.yaml"
 
 import io
 import os
@@ -56,29 +57,29 @@ ruleorder: salmon_clustering_raw > salmon_clustering
 rule all:
     input:
         # FASTQC OUTPUTS
-        fastqc1 = expand([os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.html"), 
-                          os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.zip")], zip, 
-                         base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+#        fastqc1 = expand([os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.html"), 
+#                          os.path.join("{base}", "qc", "fastqc", "{sample}_{num}_fastqc.zip")], zip, 
+#                         base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # MULTIQC OUTPUTS
-        multiqc1 = expand(os.path.join("{base}", "qc", "multiqc", "firstqcreport", "multiqc_report.html"), zip, 
-                          base = OUTPUTDIR),
+#        multiqc1 = expand(os.path.join("{base}", "qc", "multiqc", "firstqcreport", "multiqc_report.html"), zip, 
+#                          base = OUTPUTDIR),
         # BBMAP OUTPUTS
-        bbmap = expand(os.path.join("{base}", "bbmap", "{sample}_{num}.clean.fastq.gz"), zip, base = OUTPUTDIR, 
-                       sample = filenames, num = singleorpaired),
+#        bbmap = expand(os.path.join("{base}", "bbmap", "{sample}_{num}.clean.fastq.gz"), zip, base = OUTPUTDIR, 
+#                       sample = filenames, num = singleorpaired),
         # TRIMMOMATIC OUTPUTS
-        trimmed = expand([os.path.join("{base}", "firsttrim", "{sample}_1.trimmed.fastq.gz"), 
-                          os.path.join("{base}", "firsttrim", "{sample}_2.trimmed.fastq.gz")], zip, 
-                         base = OUTPUTDIR, sample = filenames),
+#        trimmed = expand([os.path.join("{base}", "firsttrim", "{sample}_1.trimmed.fastq.gz"), 
+#                          os.path.join("{base}", "firsttrim", "{sample}_2.trimmed.fastq.gz")], zip, 
+#                         base = OUTPUTDIR, sample = filenames),
         # FASTQC 2 OUTPUTS (trimmed)
-        fastqc2 = expand([os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.html"), 
-                          os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.zip")], 
-                         zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+#        fastqc2 = expand([os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.html"), 
+#                          os.path.join("{base}", "qc", "fastqc_trimmed", "{sample}_{num}.trimmed_fastqc.zip")], 
+#                         zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
         # MULTIQC 2 OUTPUTS
-        multiqc2 = expand(os.path.join("{base}", "qc", "multiqc", "trimmedqcreport", "multiqc_report.html"), zip, 
-                          base = OUTPUTDIR),
+#        multiqc2 = expand(os.path.join("{base}", "qc", "multiqc", "trimmedqcreport", "multiqc_report.html"), zip, 
+#                          base = OUTPUTDIR),
         # ASSEMBLER OUTPUTS
-        assemblersout = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"), 
-                               base = ASSEMBLEDDIR, assembly = assemblygroups, assembler = ASSEMBLERS), 
+#        assemblersout = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"), 
+#                               base = ASSEMBLEDDIR, assembly = assemblygroups, assembler = ASSEMBLERS), 
         # QUAST OUTPUTS
         quast = expand(os.path.join("{base}", "quast", "{assembly}"), base = OUTPUTDIR, assembly = assemblygroups),
         # COMBINE QUAST OUTPUTS

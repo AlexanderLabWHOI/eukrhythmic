@@ -1,0 +1,11 @@
+name: assembly
+channels:
+    - bioconda
+    - conda-forge
+dependencies:
+    - trinity
+    - megahit
+    - transabyss
+    - spades
+    - velvet
+    - pyicu
