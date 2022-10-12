@@ -32,9 +32,9 @@ kmers:
 assemblers:
     - megahit
     - rnaspades
-      #    - spades
-      #- trinity
-#    - transabyss
+    - spades
+    - trinity
+    - transabyss
 separategroups: 1
 
 ### Parameters only to be changed by advanced users ###

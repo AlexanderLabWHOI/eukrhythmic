@@ -56,7 +56,7 @@ rule spades:
     shell:
         '''
         echo {params.left}
-        spades.py --meta -1 {params.left} -2 {params.right} -o {params.outdir} 2> {log.err} 1> {log.out}
+        spades.py --meta --pe1-1 {params.left} --pe1-2 {params.right} -o {params.outdir} 2> {log.err} 1> {log.out}
         '''
    
 rule spades_cleanup:
