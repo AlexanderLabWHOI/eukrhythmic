@@ -8,7 +8,7 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
     
-def get_samples_commas(assemblygroup, dropspike, leftorright, commas = False):
+def get_samples_commas(assemblygroup, dropspike, filterrrnas, leftorright, commas = False):
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
     foldername = os.path.join("intermediate-files", "01-setup",\
                           "03-alignment-spike")
@@ -17,6 +17,12 @@ def get_samples_commas(assemblygroup, dropspike, leftorright, commas = False):
         foldername = os.path.join("intermediate-files", "01-setup",\
                           "02-trim")
         extensionname = "trimmed"
+    
+    if filterrrnas == 1:
+        foldername = os.path.join("intermediate-files", "01-setup",\
+                          "04a-ribo")
+        extensionname = "ribodetector_rrna_reads"
+        
     if leftorright == "left":
         samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
                       for sample in samplelist]
@@ -34,9 +40,9 @@ def get_samples_commas(assemblygroup, dropspike, leftorright, commas = False):
 rule trinity:
     input:
         left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE,\
-                                                   "left", commas = False),
+                                                   REMOVERRNA, "left", commas = False),
         right = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE,\
-                                                    "right", commas = False)
+                                                    REMOVERRNA, "right", commas = False)
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                           "05-assembly", "05a-trinity", "trinity_{assembly}.Trinity.fasta")
@@ -44,8 +50,10 @@ rule trinity:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                           "05-assembly", "05a-trinity", "trinity_{assembly}"),
-        left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = True),
-        right = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "right", commas = True),
+        left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, REMOVERRNA,
+                                                   "left", commas = True),
+        right = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, REMOVERRNA,
+                                                    "right", commas = True),
         maxmem = MAXMEMORY,
         CPUs = MAXCPUSPERTASK * MAXTASKS
     log:
@@ -62,7 +70,8 @@ rule trinity:
         
 rule trinity_SE:
     input:
-        single = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = False)
+        single = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, REMOVERRNA, 
+                                                     "left", commas = False)
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                           "05-assembly", "05a-trinity", "trinity_{assembly}", "Trinity.fasta")
@@ -70,7 +79,8 @@ rule trinity_SE:
         extra = "",
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                           "05-assembly", "05a-trinity", "trinity_{assembly}"),
-        single = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = True),
+        single = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, REMOVERRNA,
+                                                     "left", commas = True),
         maxmem = MAXMEMORY,
         CPUs = MAXCPUSPERTASK * MAXTASKS
     log:

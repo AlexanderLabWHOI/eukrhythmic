@@ -8,7 +8,7 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
     
-def get_samples_multiflag_spades(assemblygroup, dropspike, leftorright, flag = "--pe1"):
+def get_samples_multiflag_spades(assemblygroup, dropspike, filterrrnas, leftorright, flag = "--pe1"):
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
     foldername = os.path.join("intermediate-files", "01-setup",\
                           "03-alignment-spike")
@@ -17,6 +17,10 @@ def get_samples_multiflag_spades(assemblygroup, dropspike, leftorright, flag = "
         foldername = os.path.join("intermediate-files", "01-setup",\
                           "02-trim")
         extensionname = "trimmed"
+    if filterrrnas == 1:
+        foldername = os.path.join("intermediate-files", "01-setup",\
+                          "04a-ribo")
+        extensionname = "ribodetector_rrna_reads"
     if leftorright == "left":
         samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
                       for sample in samplelist]
@@ -34,7 +38,7 @@ def get_samples_multiflag_spades(assemblygroup, dropspike, leftorright, flag = "
     else:
         return samplelist
 
-def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = False, retlen=False,retfirst=False,retlast=False):   
+def get_samples_commas_spades(assemblygroup, dropspike, filterrrnas, leftorright, commas = False, retlen=False,retfirst=False,retlast=False):   
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
     foldername = os.path.join("intermediate-files", "01-setup",\
                           "03-alignment-spike")
@@ -43,6 +47,12 @@ def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = Fa
         foldername = os.path.join("intermediate-files", "01-setup",\
                           "02-trim")
         extensionname = "trimmed"
+    
+    if filterrrnas == 1:
+        foldername = os.path.join("intermediate-files", "01-setup",\
+                          "04a-ribo")
+        extensionname = "ribodetector_rrna_reads"
+        
     if leftorright == "left":
         samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
                       for sample in samplelist]
@@ -66,8 +76,10 @@ def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = Fa
 # according to user specifications.  
 rule rnaspades:
     input:
-        left = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "left", commas = False),
-        right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = False)
+        left = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA,
+                                                          "left", commas = False),
+        right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA,
+                                                           "right", commas = False)
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                      "05-assembly", "05d-rnaspades",\
@@ -76,13 +88,19 @@ rule rnaspades:
         continue_flag = CONTINUEFLAG,
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                      "05-assembly", "05d-rnaspades", "rna_{assembly}"),
-        fullstring = lambda filename: get_samples_multiflag_spades(filename.assembly, DROPSPIKE, "both"),
-        right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = True),
-        numsamps = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = False, retlen=True),
-        left1 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "left", commas = False, retfirst=True),
-        left2 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "left", commas = False, retlast=True),
-        right1 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = False, retfirst=True),
-        right2 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = False, retlast=True),
+        fullstring = lambda filename: get_samples_multiflag_spades(filename.assembly, DROPSPIKE, REMOVERRNA, "both"),
+        right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
+                                                           "right", commas = True),
+        numsamps = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
+                                                              "right", commas = False, retlen=True),
+        left1 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
+                                                           "left", commas = False, retfirst=True),
+        left2 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
+                                                           "left", commas = False, retlast=True),
+        right1 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
+                                                            "right", commas = False, retfirst=True),
+        right2 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
+                                                            "right", commas = False, retlast=True),
         maxmem = MAXMEMORY,
         CPUs = MAXCPUSPERTASK * MAXTASKS
     log:

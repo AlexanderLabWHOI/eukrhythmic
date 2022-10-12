@@ -8,7 +8,7 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
     
-def get_samples_commas(assemblygroup, dropspike, leftorright, commas = False):
+def get_samples_commas(assemblygroup, dropspike, filterrrnas, leftorright, commas = False):
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
     foldername = os.path.join("intermediate-files", "01-setup",\
                           "03-alignment-spike")
@@ -17,6 +17,12 @@ def get_samples_commas(assemblygroup, dropspike, leftorright, commas = False):
         foldername = os.path.join("intermediate-files", "01-setup",\
                           "02-trim")
         extensionname = "trimmed"
+        
+    if filterrrnas == 1:
+        foldername = os.path.join("intermediate-files", "01-setup",\
+                          "04a-ribo")
+        extensionname = "ribodetector_rrna_reads"
+        
     if leftorright == "left":
         samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
                       for sample in samplelist]
@@ -37,16 +43,16 @@ if MAXKVAL % 2 == 0:
 
 rule megahit:
     input:
-        left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = False),
-        right = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "right", commas = False)
+        left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, REMOVERRNA, "left", commas = False),
+        right = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, REMOVERRNA, "right", commas = False)
     output:
         megafile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                           "05-assembly", "05b-megahit", "megahit_{assembly}", "final.contigs.fa")
     params:
         megadir = directory(os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                           "05-assembly", "05b-megahit", "megahit_{assembly}")),
-        left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = True),
-        right = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "right", commas = True),
+        left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, REMOVERRNA, "left", commas = True),
+        right = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, REMOVERRNA, "right", commas = True),
         minkval = MINKVAL,
         maxkval = MAXKVAL
     log:
@@ -67,14 +73,14 @@ rule megahit:
         
 rule megahit_SE:
     input:
-        left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = False)
+        left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, REMOVERRNA, "left", commas = False)
     output:
         megafile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                           "05-assembly", "05b-megahit", "megahit_{assembly}", "final.contigs.fa")
     params:
         megadir = directory(os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                           "05-assembly", "05b-megahit", "megahit_{assembly}")), 
-        left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, "left", commas = True),
+        left = lambda filename: get_samples_commas(filename.assembly, DROPSPIKE, REMOVERRNA, "left", commas = True),
         minkval = MINKVAL,
         maxkval = MAXKVAL
     log:

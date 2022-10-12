@@ -67,7 +67,18 @@ CONTINUEFLAG = 1
 if "continue" in config:
     if config["continue"] == 0:
         CONTINUEFLAG = 0
-        
+
+## READ IN THE AVERAGE READ LENGTH ##
+AVGREADLEN = 75
+if "avgreadlen" in config:
+    AVGREADLEN = config["avgreadlen"]
+
+## READ IN WHETHER WE WOULD LIKE TO REMOVE RRNAs ##
+REMOVERRNA = 0
+if "removerrna" in config:
+    if config["removerrna"] == 1:
+        REMOVERRNA = 1    
+    
 ## READ ALL RELEVANT DATA IN FROM CONFIGURATION FILE ##
 if "metaT_sample" in config:
     DATAFILE = config["metaT_sample"]

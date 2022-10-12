@@ -10,7 +10,7 @@ import statistics
 sys.path.insert(1, '../scripts')
 from importworkspace import *
 
-def get_samples_commas_velvet(assemblygroup, dropspike, leftorright, commas = False):
+def get_samples_commas_velvet(assemblygroup, dropspike, filterrrnas, leftorright, commas = False):
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
     foldername = os.path.join("intermediate-files", "01-setup",\
                           "03-alignment-spike")
@@ -19,6 +19,10 @@ def get_samples_commas_velvet(assemblygroup, dropspike, leftorright, commas = Fa
         foldername = os.path.join("intermediate-files", "01-setup",\
                           "02-trim")
         extensionname = "trimmed"
+    if filterrrnas == 1:
+        foldername = os.path.join("intermediate-files", "01-setup",\
+                          "04a-ribo")
+        extensionname = "ribodetector_rrna_reads"
     if leftorright == "left":
         samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
                       for sample in samplelist]
@@ -32,8 +36,8 @@ def get_samples_commas_velvet(assemblygroup, dropspike, leftorright, commas = Fa
     
 rule velvet:
     input:
-        r1 = lambda filename: get_samples_commas_velvet(filename.assembly, DROPSPIKE, "left", commas = False),
-        r2 = lambda filename: get_samples_commas_velvet(filename.assembly, DROPSPIKE, "right", commas = False)
+        r1 = lambda filename: get_samples_commas_velvet(filename.assembly, DROPSPIKE, REMOVERRNA, "left", commas = False),
+        r2 = lambda filename: get_samples_commas_velvet(filename.assembly, DROPSPIKE, REMOVERRNA, "right", commas = False)
     output:
         velvetfile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                      "05-assembly", "05e-velvet", "{assembly}", "contigs.fa"),
@@ -57,7 +61,7 @@ rule velvet:
         
 rule velvet_SE:
     input:
-        r1 = lambda filename: get_samples_commas_velvet(filename.assembly, DROPSPIKE, "left", commas = False)
+        r1 = lambda filename: get_samples_commas_velvet(filename.assembly, DROPSPIKE, REMOVERRNA, "left", commas = False)
     output:
         velvetfile = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                      "05-assembly", "05e-velvet", "{assembly}", "contigs.fa"),
