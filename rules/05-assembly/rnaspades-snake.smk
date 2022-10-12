@@ -8,9 +8,6 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
     
-<<<<<<< HEAD
-def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = False, retlen=False,retfirst=False,retlast=False):
-=======
 def get_samples_multiflag_spades(assemblygroup, dropspike, leftorright, flag = "--pe1"):
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
     foldername = os.path.join("intermediate-files", "01-setup",\
@@ -36,9 +33,8 @@ def get_samples_multiflag_spades(assemblygroup, dropspike, leftorright, flag = "
         return "--pe1" + " --pe1".join(samplelist)
     else:
         return samplelist
-    
-def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = False):
->>>>>>> a350a6b1f0cc36a755fcb72e3de785643afcb2b3
+
+def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = False, retlen=False,retfirst=False,retlast=False):   
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
     foldername = os.path.join("intermediate-files", "01-setup",\
                           "03-alignment-spike")
@@ -64,7 +60,6 @@ def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = Fa
     else:
         return samplelist
     
-#print(get_samples_commas_spades("SH402", DROPSPIKE, "left", commas = False))
        
 # This module needs to grab all of the list of the individual files associated with the specified
 # assembly group, after the scripts/make-assembly-file.py script builds said assembly groups 
@@ -78,7 +73,7 @@ rule rnaspades:
                      "05-assembly", "05d-rnaspades",\
                      "rna_{assembly}", "transcripts.fasta")
     params:
-        extra = "",
+        continue_flag = CONTINUEFLAG,
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                      "05-assembly", "05d-rnaspades", "rna_{assembly}"),
         fullstring = lambda filename: get_samples_multiflag_spades(filename.assembly, DROPSPIKE, "both"),
@@ -100,24 +95,12 @@ rule rnaspades:
     conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")
     shell:
         '''
-<<<<<<< HEAD
-        echo {params.left}
-        if [ -f {params.outdir}/params.txt ]; then
+        echo {params.left1}
+        if [ -f {params.outdir}/params.txt ] && [ {params.continue_flag} ]; then
             spades.py --continue -o {params.outdir} 2> {log.err} 1> {log.out}
         elif [ {params.numsamps} -eq 2 ]; then
-            spades.py -m 150 -t 8 --rna --pe1-1 {params.left1} --pe1-2 {params.right1} --pe2-1 {params.left2} --pe2-2 {params.right2} -o {params.outdir} 2> {log.err} 1> {log.out}
-        else
-            spades.py -m 150 -t 8 --rna --pe1-1 {params.left} --pe1-2 {params.right} -o {params.outdir} 2> {log.err} 1> {log.out}
+            spades.py -m 150 -t 16 --rna --pe1-1 {params.left1} --pe1-2 {params.right1} -o {params.outdir} 2> {log.err} 1> {log.out}
         fi
-=======
-        echo {params.fullstring}
-        if [ -f {params.outdir}/params.txt ]; then
-            spades.py --continue -o {params.outdir} 2> {log.err} 1> {log.out}
-        else
-            spades.py --rna {params.fullstring} -o {params.outdir} 2> {log.err} 1> {log.out}
-        fi
-            
->>>>>>> a350a6b1f0cc36a755fcb72e3de785643afcb2b3
         '''
    
 rule rnaspades_cleanup:

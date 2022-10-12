@@ -137,7 +137,7 @@ rule all:
         eggnogmapper_cag = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
                                   "19-CAG-emapper","{assembly}.emapper.hits"),
                                   assembly = assemblygroups),
-        eukulele = os.path.join(OUTPUTDIR, "CAG_eukulele_pleuro", "EUKulele_done.txt")
+        eukulele = expand(os.path.join(OUTPUTDIR, "intermediate-files","04-compare","CAG_eukulele", "EUKulele_{assembly}_done.txt"), assembly=assemblygroups) #os.path.join(OUTPUTDIR, "CAG_eukulele_pleuro", "EUKulele_done.txt")
         # QUALITY MERGED BY SAMPLES
         #madquality15 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
         #                       "15-MAD-quality", "quast", "report.tsv")

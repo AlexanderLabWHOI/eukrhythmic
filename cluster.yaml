@@ -14,7 +14,7 @@ __default__:
   cpupertask: 18
   mem: 180
   nodes: 1
-  queue: scavenger
+  queue: compute
   system: slurm
   tasks: 1
   time: 5000
@@ -29,7 +29,7 @@ rnaspades:
   account: akrinos
   cpupertask: 18 #20
   mem: 180 #500
-  queue: scavenger #-bmem
+  queue: compute #-bmem
   time: 10000
   tasks: 1
 fastqc:
@@ -130,9 +130,9 @@ velvet:
   time: 15000
 rnaspades:
   account: akrinos
-  cpupertask: 50
-  mem: 500
+  cpupertask: 18
+  mem: 180
   nodes: 1
-  queue: scavenger-bmem #compute
+  queue: compute #bigmem #scavenger-bmem #compute
   tasks: 1
   time: 5000

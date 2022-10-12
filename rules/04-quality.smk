@@ -47,7 +47,32 @@ rule fastqc_trimmed:
         mkdir -p {params.fastqdir}
         fastqc {input} -o {params.fastqdir} 2> {log.err} 1> {log.out}
         '''
-        
+
+rule ribodetector_trimmed:
+    input:
+        os.path.join(OUTPUTDIR, "intermediate-files", "01-setup", "02-trim",\
+                     "{sample}_{num}.trimmed.fastq.gz")
+    output:
+        ribodetector_filtered = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                            "04-quality",\
+                            "{sample}_{num}.trimmed_fastqc.html")
+    params: 
+        fastqdir = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                          "04-quality"),
+        outname = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                               "04-quality", "{sample}_{num}")
+    conda: os.path.join("..", "envs", "01-setup-env.yaml")
+    log: 
+        err = os.path.join(OUTPUTDIR, "logs",\
+                           "01-setup", "04-quality",\
+                           "{sample}_{num}_trimmed_err.log"),
+        out = os.path.join(OUTPUTDIR, "logs", "01-setup", "04-quality",\
+                           "{sample}_{num}_trimmed_out.log")
+    shell:
+        '''
+        mkdir -p {params.fastqdir}
+        fastqc {input} -o {params.fastqdir} 2> {log.err} 1> {log.out}
+        '''
 rule multiqc_trimmed:
     input:
         fastqcfiles = getalloutputs()

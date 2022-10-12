@@ -61,6 +61,12 @@ WRITECLUSTER = 1
 if "rewritecluster" in config:
     if config["rewritecluster"] == 0:
         WRITECLUSTER = 0
+
+## READ IN WHETHER WE WOULD LIKE EUKRHYTHMIC TO CONTINUE INCOMPLETE ASSEMBLIES ##
+CONTINUEFLAG = 1
+if "continue" in config:
+    if config["continue"] == 0:
+        CONTINUEFLAG = 0
         
 ## READ ALL RELEVANT DATA IN FROM CONFIGURATION FILE ##
 if "metaT_sample" in config:
