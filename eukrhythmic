@@ -58,13 +58,6 @@ ruleorder: ribodetector_trimmed_double > ribodetector_trimmed_single
 ruleorder: trinity > trinity_SE
 ruleorder: megahit > megahit_SE
 ruleorder: velvet > velvet_SE
-ruleorder: transdecoder_indiv > transdecoder_final_proteins > transdecoder_by_assembly
-ruleorder: salmon_indiv > salmon_clustering
-ruleorder: salmon_clustering > salmon_clustering_raw
-ruleorder: combinequastmerge > quast_merged_transdecoded
-ruleorder: clustering_mega_merge_mmseqs > clustering_by_assembly_group_mmseqs
-ruleorder: salmon_clustering_raw > salmon_clustering
-ruleorder: run_busco > busco
 
 print(assemblygroups,flush=True)
 
