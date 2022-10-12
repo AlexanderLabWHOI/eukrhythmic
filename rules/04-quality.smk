@@ -104,16 +104,14 @@ rule ribodetector_trimmed_double:
                             "04a-ribo",\
                             "{sample}_2.ribodetector_rrna_reads.fastq.gz")
     params: 
-        outname = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
-                               "04a-ribo", "{sample}_{num}"),
         readlen = AVGREADLEN
     conda: os.path.join("..", "envs", "01-setup-env.yaml")
     log: 
         err = os.path.join(OUTPUTDIR, "logs",\
                            "01-setup", "04a-ribo",\
-                           "{sample}_{num}_ribo_err.log"),
+                           "{sample}_ribo_err.log"),
         out = os.path.join(OUTPUTDIR, "logs", "01-setup", "04a-ribo",\
-                           "{sample}_{num}_ribo_out.log")
+                           "{sample}_ribo_out.log")
     shell:
         '''
         ribodetector -t 20 \
