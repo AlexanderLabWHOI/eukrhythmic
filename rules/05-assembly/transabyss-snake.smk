@@ -12,11 +12,16 @@ def get_samples(assemblygroup):
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
     return samplelist
     
-def get_samples_commas_TA(assemblygroup, dropspike, leftorright, commas = False):
+def get_samples_commas_TA(assemblygroup, dropspike, filterrrnas, leftorright, commas = False):
     samplelist = list(set(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']))
     foldername = os.path.join("intermediate-files", "01-setup",\
                           "03-alignment-spike")
     extensionname = "clean"
+    if filterrrnas == 1:
+        foldername = os.path.join("intermediate-files", "01-setup",\
+                          "04a-ribo")
+        extensionname = "ribodetector_rrna_reads"
+        
     if dropspike == 0:
         foldername = os.path.join("intermediate-files", "01-setup",\
                           "02-trim")
@@ -34,8 +39,10 @@ def get_samples_commas_TA(assemblygroup, dropspike, leftorright, commas = False)
     
 rule transabyss:
     input:
-        left = lambda filename: get_samples_commas_TA(filename.assembly, DROPSPIKE, "left", commas = False),
-        right = lambda filename: get_samples_commas_TA(filename.assembly, DROPSPIKE, "right", commas = False)
+        left = lambda filename: get_samples_commas_TA(filename.assembly, DROPSPIKE, REMOVERRNA,
+                                                      "left", commas = False),
+        right = lambda filename: get_samples_commas_TA(filename.assembly, DROPSPIKE, REMOVERRNA,
+                                                       "right", commas = False)
     output:
          os.path.join(ASSEMBLEDDIR, "05c-transabyss", "TA-transabyss",\
                               "TA-{assembly}_{k}_transabyss.fasta-final.fa")

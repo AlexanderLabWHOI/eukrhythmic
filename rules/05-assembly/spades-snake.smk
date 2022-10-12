@@ -8,13 +8,19 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
     
-def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = False):
+def get_samples_commas_spades(assemblygroup, dropspike, filterrrnas, leftorright, commas = False):
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
     foldername = "bbmap"
     extensionname = "clean"
     if dropspike == 0:
         foldername = "firsttrim"
         extensionname = "trimmed"
+        
+    if filterrrnas == 1:
+        foldername = os.path.join("intermediate-files", "01-setup",\
+                          "04a-ribo")
+        extensionname = "ribodetector_rrna_reads"
+        
     if leftorright == "left":
         samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
                       for sample in samplelist]
@@ -34,8 +40,10 @@ def get_samples_commas_spades(assemblygroup, dropspike, leftorright, commas = Fa
 # according to user specifications.  
 rule spades:
     input:
-        left = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "left", commas = False),
-        right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = False)
+        left = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA,
+                                                          "left", commas = False),
+        right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA,
+                                                           "right", commas = False)
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                      "05-assembly", "05f-metaspades",\
@@ -45,8 +53,10 @@ rule spades:
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                      "05-assembly", "05f-metaspades",\
                      "metaspades_{assembly}"),
-        left = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "left", commas = True),
-        right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, "right", commas = True),
+        left = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA,
+                                                          "left", commas = True),
+        right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA,
+                                                           "right", commas = True),
         maxmem = MAXMEMORY,
         CPUs = MAXCPUSPERTASK * MAXTASKS
     log:

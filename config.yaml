@@ -1,22 +1,25 @@
 ### Parameters expected to be changed under normal use ###
 ## INPUT DATA AND FORMATTING ##
 # formatted input file; described in README
-jobname: ER
-metaT_sample: input/metaT_Huetal.txt #input/WAP_experiments.txt #input/metaT_wap.txt  #input/sampledata.txt
-spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
-spiketable: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/percentmapped_bbmap_volumes.tab
+jobname: sample
+metaT_sample: input/sample-metaT.txt
+spikefile: spike.fa
+spiketable: percentmapped_bbmap_volumes.tab
 adapter: static/adapters.fa
-## DIRECTORIES DURING PROCESSING ##
-inputDIR: /vortexfs1/omics/alexander/data/Hu-2022-ALOHA-SPOT/download-data
-outputDIR: /vortexfs1/omics/alexander/data/Hu-2022-ALOHA-SPOT/Hu_et_al_2022_eukrhythmic #../WAP_2March2022_experiments #../WAP_14July2021_remodeled
-assembledDIR: intermediate-files/02-assembly/05-assembly
+avgreadlen: 75
+removerrna: 1 # set this to 1 if you would like to perform rRNA removal with RiboDetector
 continue: 1 # set this to 1 if you want assemblers to continue where they last stopped if files are found
+
+## DIRECTORIES DURING PROCESSING ##
+inputDIR: input-dir
+outputDIR: output-dir
+assembledDIR: intermediate-files/02-assembly/05-assembly
 renamedDIR: renamed
 # this is where all the intermediate outputs will go.
-scratch: /vortexfs1/scratch/akrinos/Huetal_euk_scratch
+scratch: scratch-dir
 ## ANALYSIS OPTIONS ##
-kegg: /vortexfs1/omics/alexander/data/KEGG
-kegg_prot_db: /vortexfs1/omics/alexander/data/KEGG/diamond_db/family_eukaryotes.dmnd
+kegg: kegg-dir
+kegg_prot_db: KEGG/diamond_db/family_eukaryotes.dmnd
 busco:
     - https://www.dropbox.com/s/uqbag10d3soks68/eukaryota_odb10.2019-11-20.tar.gz?dl=1
 pfam: ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
@@ -28,13 +31,11 @@ checkqual: 1
 kmers:
     - 31
     - 50
-#    - 110
 assemblers:
     - megahit
     - rnaspades
     - spades
     - trinity
-    - transabyss
 separategroups: 1
 
 ### Parameters only to be changed by advanced users ###

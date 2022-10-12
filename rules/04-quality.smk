@@ -48,31 +48,84 @@ rule fastqc_trimmed:
         fastqc {input} -o {params.fastqdir} 2> {log.err} 1> {log.out}
         '''
 
-rule ribodetector_trimmed:
+rule ribodetector_trimmed_single:
     input:
         os.path.join(OUTPUTDIR, "intermediate-files", "01-setup", "02-trim",\
                      "{sample}_{num}.trimmed.fastq.gz")
     output:
         ribodetector_filtered = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
-                            "04-quality",\
-                            "{sample}_{num}.trimmed_fastqc.html")
+                            "04a-ribo",\
+                            "{sample}_{num}.ribodetector_filt.fastq.gz"),
+        ribodetector_rrnas = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                            "04a-ribo",\
+                            "{sample}_{num}.ribodetector_rrna_reads.fastq.gz")
     params: 
         fastqdir = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
                           "04-quality"),
-        outname = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
-                               "04-quality", "{sample}_{num}")
+        readlen = AVGREADLEN
     conda: os.path.join("..", "envs", "01-setup-env.yaml")
     log: 
         err = os.path.join(OUTPUTDIR, "logs",\
-                           "01-setup", "04-quality",\
+                           "01-setup", "04a-ribo",\
                            "{sample}_{num}_trimmed_err.log"),
-        out = os.path.join(OUTPUTDIR, "logs", "01-setup", "04-quality",\
+        out = os.path.join(OUTPUTDIR, "logs", "01-setup", "04a-ribo",\
                            "{sample}_{num}_trimmed_out.log")
     shell:
         '''
-        mkdir -p {params.fastqdir}
-        fastqc {input} -o {params.fastqdir} 2> {log.err} 1> {log.out}
+        ribodetector -t 20 \
+          -l {params.readlen} \
+          -i {input} \
+          -m 50 \
+          -e rrna \
+          --chunk_size 256 \
+          -o {output.ribodetector_filtered} \
+          -r {output.ribodetector_rrnas}
         '''
+
+rule ribodetector_trimmed_double:
+    input:
+        p1 = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                          "02-trim",\
+                          "{sample}_1.trimmed.fastq.gz"),
+        p2 = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                          "02-trim",\
+                          "{sample}_2.trimmed.fastq.gz")
+    output:
+        ribodetector_filtered_p1 = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                            "04a-ribo",\
+                            "{sample}_1.ribodetector_filt.fastq.gz"),
+        ribodetector_filtered_p2 = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                            "04a-ribo",\
+                            "{sample}_2.ribodetector_filt.fastq.gz"),
+        ribodetector_rrnas_p1 = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                            "04a-ribo",\
+                            "{sample}_1.ribodetector_rrna_reads.fastq.gz"),
+        ribodetector_rrnas_p2 = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                            "04a-ribo",\
+                            "{sample}_2.ribodetector_rrna_reads.fastq.gz")
+    params: 
+        outname = os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                               "04a-ribo", "{sample}_{num}"),
+        readlen = AVGREADLEN
+    conda: os.path.join("..", "envs", "01-setup-env.yaml")
+    log: 
+        err = os.path.join(OUTPUTDIR, "logs",\
+                           "01-setup", "04a-ribo",\
+                           "{sample}_{num}_ribo_err.log"),
+        out = os.path.join(OUTPUTDIR, "logs", "01-setup", "04a-ribo",\
+                           "{sample}_{num}_ribo_out.log")
+    shell:
+        '''
+        ribodetector -t 20 \
+          -l {params.readlen} \
+          -i {input.p1} {input.p2} \
+          -m 50 \
+          -e rrna \
+          --chunk_size 256 \
+          -o {output.ribodetector_filtered_p1} {output.ribodetector_filtered_p2} \
+          -r {output.ribodetector_rrnas_p1} {output.ribodetector_rrnas_p2}
+        '''        
+        
 rule multiqc_trimmed:
     input:
         fastqcfiles = getalloutputs()
