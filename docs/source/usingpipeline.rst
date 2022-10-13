@@ -120,6 +120,11 @@ In order to run the pipeline with ``SLURM`` or any other similar scheduling plat
 
 If you set your account name at the top of the ``cluster.yaml`` file, as well as setting the default partition just once, and you do not change the parameter ``rewritecluster`` to 0 in ``config.yaml``, you can use the command line interface or the provided submission file to circumvent filling out the rest of ``cluster.yaml``. You can also do this by invoking ``python scripts/importworkspace.py`` once before running the pipeline, if you already have a valid ``config.yaml``. If you do this, you won't need to change these values for the specifications for all of the individual rules, unless you have specific computational needs or usage requirements, in which case you should set ``rewritecluster`` to 0. If defaults are not specified at the beginning of the ``cluster.yaml`` file for the user, maximum memory usage, maximum number of cores, and maximum number of threads, ``eukrhythmic`` will not execute successfully and an error will be thrown.
 
+Running the pipeline with ``PBS``
+---------------------------------
+
+There are four flags you can use with the ``python submit/eukrhythmic`` command for the use of an alternative scheduling system. These presently include the ``pbs`` and ``slurm`` systems; ``slurm`` is accessible with ``--system slurm`` or ``--system sbatch``, and ``pbs`` is accessible with ``--system pbs`` or ``--system qsub``. PBS is presently in beta mode for testing purposes, but should function more or less identically to the use of the ``SLURM`` system.
+
 Setting CPUs and memory requirements
 ------------------------------------
 
