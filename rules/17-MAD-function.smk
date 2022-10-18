@@ -37,7 +37,7 @@ rule emappermad:
         '''
         if [ {params.download_data} == "True" ]; then
             mkdir -p {params.eggnog_mapper_data}
-            download_eggnog_data.py --data_dir {params.eggnog_mapper_data}
+            download_eggnog_data.py -y --data_dir {params.eggnog_mapper_data}
         fi
         mkdir -p {params.outdir}
         mkdir -p {params.tmpdir}
