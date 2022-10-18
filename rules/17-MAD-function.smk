@@ -15,7 +15,7 @@ BUSCO_DATABASES = list(config["busco"])
 PFAM = config["pfam"]
 
 download_data=False
-if !os.path.isfile(os.path.join(EGGNOG_DATA_LOC,"eggnog_proteins.dmnd")):
+if not os.path.isfile(os.path.join(EGGNOG_DATA_LOC,"eggnog_proteins.dmnd")):
     download_data=True
 
 rule emappermad:
@@ -36,6 +36,7 @@ rule emappermad:
     shell:
         '''
         if [ {params.download_data} == "True" ]; then
+            mkdir -p {params.eggnog_mapper_data}
             download_eggnog_data.py --data_dir {params.eggnog_mapper_data}
         fi
         mkdir -p {params.outdir}
