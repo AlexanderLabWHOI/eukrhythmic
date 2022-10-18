@@ -31,6 +31,7 @@ rule emappermad:
         outdir = os.path.join(OUTPUTDIR, "intermediate-files",
                               "04-compare", "17-MAD-emapper"),
         tmpdir = os.path.join(SCRATCHDIR,"tmp_emapper_MAD"),
+        prefix = "MAD",
         eggnog_mapper_data = EGGNOG_DATA_LOC,
         download_data = download_data
     shell:

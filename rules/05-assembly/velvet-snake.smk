@@ -22,7 +22,7 @@ def get_samples_commas_velvet(assemblygroup, dropspike, filterrrnas, leftorright
     if filterrrnas == 1:
         foldername = os.path.join("intermediate-files", "01-setup",\
                           "04a-ribo")
-        extensionname = "ribodetector_rrna_reads"
+        extensionname = "ribodetector_filt"
     if leftorright == "left":
         samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
                       for sample in samplelist]

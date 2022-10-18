@@ -35,7 +35,7 @@ snakefile = "eukrhythmic"
 with open(args.config) as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 if ("spikefile" not in config) | ("spiketable" not in config):
-    snakefile = "eukrhythmic-no-spike"
+    snakefile = "eukrhythmic"#-no-spike"
 
 if args.subroutine == "setup":
     snakefile = "eukrhythmic-setup"

@@ -20,7 +20,7 @@ def get_samples_multiflag_spades(assemblygroup, dropspike, filterrrnas, leftorri
     if filterrrnas == 1:
         foldername = os.path.join("intermediate-files", "01-setup",\
                           "04a-ribo")
-        extensionname = "ribodetector_rrna_reads"
+        extensionname = "ribodetector_filt"
     if leftorright == "left":
         samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
                       for sample in samplelist]
@@ -66,7 +66,13 @@ def get_samples_commas_spades(assemblygroup, dropspike, filterrrnas, leftorright
     if retlen:
         return len(samplelist)
     if commas:
-        return ",".join(samplelist)
+        trailing_num=2
+        if leftorright == "left":
+            trailing_num=1
+        list_for_spades=["--pe"+str(number_in_row)+"-"+str(trailing_num)+" "+str(filename_in)\
+                         for filename_in,number_in_row in zip(samplelist,
+                                                              range(1,len(samplelist)+1))]
+        return " ".join(list_for_spades)
     else:
         return samplelist
     
@@ -89,18 +95,12 @@ rule rnaspades:
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly",\
                      "05-assembly", "05d-rnaspades", "rna_{assembly}"),
         fullstring = lambda filename: get_samples_multiflag_spades(filename.assembly, DROPSPIKE, REMOVERRNA, "both"),
-        right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
-                                                           "right", commas = True),
         numsamps = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
                                                               "right", commas = False, retlen=True),
-        left1 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
+        left = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
                                                            "left", commas = False, retfirst=True),
-        left2 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
-                                                           "left", commas = False, retlast=True),
-        right1 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
+        right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
                                                             "right", commas = False, retfirst=True),
-        right2 = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
-                                                            "right", commas = False, retlast=True),
         maxmem = MAXMEMORY,
         CPUs = MAXCPUSPERTASK * MAXTASKS
     log:
@@ -113,11 +113,11 @@ rule rnaspades:
     conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")
     shell:
         '''
-        echo {params.left1}
+        echo {params.left}
         if [ -f {params.outdir}/params.txt ] && [ {params.continue_flag} ]; then
             spades.py --continue -o {params.outdir} 2> {log.err} 1> {log.out}
-        elif [ {params.numsamps} -eq 2 ]; then
-            spades.py -m 150 -t 16 --rna --pe1-1 {params.left1} --pe1-2 {params.right1} -o {params.outdir} 2> {log.err} 1> {log.out}
+        else
+            spades.py -m 150 -t 16 --rna {params.right} {params.left} -o {params.outdir} 2> {log.err} 1> {log.out}
         fi
         '''
    
