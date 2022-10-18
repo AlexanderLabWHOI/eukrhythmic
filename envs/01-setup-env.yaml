@@ -9,3 +9,4 @@ dependencies:
     - decorator
     - networkx
     - trimmomatic
+    - ribodetector

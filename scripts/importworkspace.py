@@ -78,6 +78,11 @@ REMOVERRNA = 0
 if "removerrna" in config:
     if config["removerrna"] == 1:
         REMOVERRNA = 1    
+
+## READ IN LOCATION OF EGGNOGMAPPER DATA ##
+EGGNOG_DATA_LOC = "eggnog-data"
+if "eggnogDIR" in config:
+    EGGNOG_DATA_LOC = config["eggnogDIR"]
     
 ## READ ALL RELEVANT DATA IN FROM CONFIGURATION FILE ##
 if "metaT_sample" in config:

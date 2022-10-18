@@ -21,7 +21,7 @@ def get_samples_commas(assemblygroup, dropspike, filterrrnas, leftorright, comma
     if filterrrnas == 1:
         foldername = os.path.join("intermediate-files", "01-setup",\
                           "04a-ribo")
-        extensionname = "ribodetector_rrna_reads"
+        extensionname = "ribodetector_filt"
         
     if leftorright == "left":
         samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
@@ -57,7 +57,7 @@ rule megahit:
         maxkval = MAXKVAL
     log:
         err = os.path.join(OUTPUTDIR, "logs",\
-                          "05-assembly", "05b-megahit", "megahit_{assembly}", "outputlog_{assembly.err"),
+                          "05-assembly", "05b-megahit", "megahit_{assembly}", "outputlog_{assembly}.err"),
         out = os.path.join(OUTPUTDIR, "logs",\
                           "05-assembly", "05b-megahit", "megahit_{assembly}", "outputlog_{assembly}.out")
     conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")

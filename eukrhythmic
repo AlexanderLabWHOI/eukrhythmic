@@ -123,8 +123,8 @@ rule no_rrna_removal:
                                            "09-CAG-mapping", "salmon", "{assembly}_quant", "quant.sf"),
                                             assembly = assemblygroups),
         # GET QUAST RESULTS FROM CLUSTERED ASSEMBLY GROUP OUTPUT
-        cagquality08 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
-                                    "10-CAG-quality", "combined", "all.tsv"),
+        #cagquality08 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
+        #                            "10-CAG-quality", "combined", "all.tsv"),
         # MERGE ACROSS ALL SAMPLES
         swam11 = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly", "11-SWAM", "merged.fasta"),
         # CLUSTER MERGED BY SAMPLES
@@ -138,6 +138,9 @@ rule no_rrna_removal:
                                     "salmon", "{assembly}_quant", "quant.sf"), assembly = assemblygroups),
         madmapping14_merged = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",
                                     "salmon", "{assembly}_quant", "quant.sf"), assembly = "merged"),
+        eggnogmapper_mad = os.path.join(OUTPUTDIR, "intermediate-files",
+                                 "04-compare", "17-MAD-emapper",
+                                 "MAD.emapper.hits"),
         eggnogmapper_cag = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
                                   "19-CAG-emapper","{assembly}.emapper.hits"),
                                   assembly = assemblygroups),
@@ -236,6 +239,9 @@ rule rrna_removal:
         eggnogmapper_cag = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
                                   "19-CAG-emapper","{assembly}.emapper.hits"),
                                   assembly = assemblygroups),
+        eggnogmapper_mad = os.path.join(OUTPUTDIR, "intermediate-files",
+                                 "04-compare", "17-MAD-emapper",
+                                 "MAD.emapper.hits"),
         eukulele_cag = expand(os.path.join(OUTPUTDIR, "intermediate-files","04-compare","CAG_eukulele",
                                    "EUKulele_{assembly}_done.txt"), assembly=assemblygroups) 
         # QUALITY MERGED BY SAMPLES
