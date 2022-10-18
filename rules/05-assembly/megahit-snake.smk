@@ -57,7 +57,7 @@ rule megahit:
         maxkval = MAXKVAL
     log:
         err = os.path.join(OUTPUTDIR, "logs",\
-                          "05-assembly", "05b-megahit", "megahit_{assembly}", "outputlog_{assembly.err"),
+                          "05-assembly", "05b-megahit", "megahit_{assembly}", "outputlog_{assembly}.err"),
         out = os.path.join(OUTPUTDIR, "logs",\
                           "05-assembly", "05b-megahit", "megahit_{assembly}", "outputlog_{assembly}.out")
     conda: os.path.join("..", "..", "envs", "02-assembly-env.yaml")

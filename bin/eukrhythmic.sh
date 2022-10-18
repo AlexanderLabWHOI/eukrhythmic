@@ -4,6 +4,30 @@
 #SBATCH --partition=compute
 #SBATCH --mem=100gb
 
+# varsity font
+cat bin/eukrhythmic.ascii
+printf "%0.s*" {1..78}
+printf "\n"
+printf "%0.s*" {1..78}
+printf "\n"
+echo ""
+echo "Welcome to eukrhythmic! Visit the readthedocs for more information"
+echo "on how to use the command line functionality. Note that not all options"
+echo "will be implemented for the command line."
+printf "\n"
+printf "%0.s*" {1..78}
+printf "\n"
+printf "%0.s*" {1..78}
+echo ""
+printf "\n"
+
+## CHECK IF THERE ARE NO PARAMETERS ##
+if [ $# -eq 0 ]; then
+    echo "No arguments were given to eukrhythmic. Please provide arguments or run"
+    echo "eukrhythmic with the -h flag for more information."
+    exit 1
+fi
+
 ## PARAMETERS THAT MAY BE CHANGED FROM THE COMMAND LINE ##
 SUBROUTINE="all" # --subroutine
 JOBS=500 # --jobs; number of simultaneous Snakemake jobs
@@ -30,10 +54,28 @@ if [[ "$(cat config.yaml | grep checkqual | cut -d ":" -f 2 | cut -d " " -f 2)" 
 if [[ "$(cat config.yaml | grep runbbmap | cut -d ":" -f 2 | cut -d " " -f 2)" != "" ]]; then export CHECKQUALFLAG="$(cat config.yaml | grep runbbmap | cut -d ":" -f 2 | cut -d " " -f 2)"; fi 2> err.log
 if [[ "$(cat config.yaml | grep spikefile | cut -d ":" -f 2 | cut -d " " -f 2)" != "" ]]; then export RUNBBMAPARG="$(cat config.yaml | grep spikefile | cut -d ":" -f 2 | cut -d " " -f 2)"; fi 2> err.log
 
+Help()
+{
+   # Display Help
+   echo "Brief help is provided here for running eukrhythmic."
+   echo "For more detailed guidance, consult the readthedocs."
+   echo
+   echo "Syntax: eukrhythmic [-l|h|g -n|--job-name <jobname> -s|--sample-file-name <path-to-sample-file> -o|--out-dir <output_directory_name> -i|--in-dir <input_directory> ]"
+   echo "options:"
+   echo "l     Run the pipeline via SLURM."
+   echo "h     Print this help."
+   echo "g     Generate sample file automatically."
+   echo
+}
+
 # Baseline code for command parser borrowed from https://medium.com/@Drew_Stokes/bash-argument-parsing-54f3b81a6a8f
 PARAMS=""
 while (( "$#" )); do
   case "$1" in
+    -h|--help)
+      Help
+      exit
+      ;;
     -j|--jobs)
       if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
         JOBS=$2

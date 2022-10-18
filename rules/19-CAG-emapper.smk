@@ -26,11 +26,12 @@ rule emappercag:
         prefix = "{assembly}",
         outdir = os.path.join(OUTPUTDIR, "intermediate-files",
                               "04-compare", "19-CAG-emapper"),
-        tmpdir = os.path.join(tmpdir,"tmp_{assembly}_CAG")
+        tmpdir = os.path.join(tmpdir,"tmp_{assembly}_CAG"),
+        eggnog_mapper_data = EGGNOG_DATA_LOC
     shell:
         '''
         mkdir -p {params.outdir}
         mkdir -p {params.tmpdir}
-        export EGGNOG_DATA_DIR=/vortexfs1/omics/alexander/data/databases/eggnog-mapper-data/
+        export EGGNOG_DATA_DIR={params.eggnog_mapper_data}
         emapper.py --override -i {input.assembly_file} --itype proteins -m diamond -o {params.prefix} --output_dir {params.outdir} --temp_dir {params.tmpdir}
         '''

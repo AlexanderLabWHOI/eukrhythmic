@@ -21,6 +21,7 @@ Welcome to eukrhythmic's documentation!
    configuration.rst
    addingassemblers.rst
    cleanup.rst
+   potential-errors.rst
        
 Source Code
 -----------

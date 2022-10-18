@@ -14,6 +14,28 @@ KEGG_PATH = config["kegg"]
 BUSCO_DATABASES = list(config["busco"])
 PFAM = config["pfam"]
 
+rule emappermad:
+    input:
+        assembly_file = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
+                           "13-MAD-proteins", "MAD.fasta.transdecoder.pep")
+    output:
+        hits_file = os.path.join(OUTPUTDIR, "intermediate-files",
+                                 "04-compare", "17-MAD-emapper",
+                                 "MAD.emapper.hits")
+    conda: "../envs/04-compare-env.yaml"
+    params:
+        outdir = os.path.join(OUTPUTDIR, "intermediate-files",
+                              "04-compare", "17-MAD-emapper"),
+        tmpdir = os.path.join(SCRATCHDIR,"tmp_emapper_MAD"),
+        eggnog_mapper_data = EGGNOG_DATA_LOC
+    shell:
+        '''
+        mkdir -p {params.outdir}
+        mkdir -p {params.tmpdir}
+        export EGGNOG_DATA_DIR={params.eggnog_mapper_data}
+        emapper.py --override -i {input.assembly_file} --itype proteins -m diamond -o {params.prefix} --output_dir {params.outdir} --temp_dir {params.tmpdir}
+        '''
+
 rule diamond_database:
     input:
         tobuild = KEGG_PROT_DB

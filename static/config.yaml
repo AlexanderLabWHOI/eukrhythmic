@@ -23,10 +23,12 @@ kmers:
     - 110
 assemblers:
     - megahit
-    - velvet
     - trinity
 separategroups: 1
-
+kegg_prot_db: placeholder
+kegg: placeholder
+busco: placeholder
+pfam: placeholder
 ### Parameters only to be changed by advanced users ###
 transdecodercutoff: 100
 secondclustercutoff: 0.98

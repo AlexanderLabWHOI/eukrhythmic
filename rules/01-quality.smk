@@ -78,14 +78,12 @@ rule fastqc:
                            "01a-fastqc", "{sample}_{num}.out")
     shell:
         '''
-        echo hello{params.filenum}hello
-        if [ {params.filenum} == 1 ]; then
-            echo "hello"
-        fi
         mkdir -p {params.fastqdir}
-        fastqc {input} -o {params.fastqdir} 2> {log.err} 1> {log.out}
-        mv {params.outname}_fastqc.html {output.html} 2>/dev/null
-        mv {params.outname}_fastqc.zip {output.zip} 2>/dev/null
+        (fastqc {input} -o {params.fastqdir} 2> {log.err} 1> {log.out} ) || (true)
+        if [ {params.outname}_fastqc.html != {output.html} ]; then
+            mv {params.outname}_fastqc.html {output.html} 2>/dev/null
+            mv {params.outname}_fastqc.zip {output.zip} 2>/dev/null
+        fi
         '''
         
 rule multiqc:
