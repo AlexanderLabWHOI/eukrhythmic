@@ -28,19 +28,19 @@ Or invoke, standalone::
 if you prefer.
     
 .. image:: eukrhythmic_command_line.png
-  :width: 400
+  :width: 600
   :alt: Executing eukrhythmic from the command line.
 
 To run ``eukrhythmic`` on the provided sample data, invoke ``eukrhythmic`` on a clean install of the program without arguments. You can also run the sample data by using the argument ``--use-sample``, which will copy the relevant configuration entries. 
 
 .. image:: use_sample_eukrhythmic.png
-  :width: 400
+  :width: 600
   :alt: Running the sample files for eukrhythmic locally.
   
 Without any additional flags, ``eukrhythmic`` will be run against the provided sample data on your local machine (or your current node on the cluster, if you're logged into one). You should see a dialogue like this one:
 
 .. image:: eukrhythmic_dialogue_local_run.png
-  :width: 400
+  :width: 600
   :alt: Dialogue after running eukrhythmic locally.
 
 The exception is if you are running on an HPC system that uses the ``SLURM`` scheduler, invoke ``eukrhythmic`` with one argument: ``-l`` or ``--slurm`` to leverage your computing resources. In that case, you will also want to invoke ``sbatch eukrhythmic --slurm``, to avoid running any steps on your current remote machine. You can also use the ``-np`` or ``--dry_run`` flag to run do a ``Snakemake`` dry run, to see whether the jobs to be run align with your expectation (you can do this whether or not you are using a scheduler). A list of additional arguments required commonly by users is given below: 

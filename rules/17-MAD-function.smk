@@ -14,6 +14,10 @@ KEGG_PATH = config["kegg"]
 BUSCO_DATABASES = list(config["busco"])
 PFAM = config["pfam"]
 
+download_data=False
+if !os.path.isfile(os.path.join(EGGNOG_DATA_LOC,"eggnog_proteins.dmnd")):
+    download_data=True
+
 rule emappermad:
     input:
         assembly_file = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
@@ -27,9 +31,13 @@ rule emappermad:
         outdir = os.path.join(OUTPUTDIR, "intermediate-files",
                               "04-compare", "17-MAD-emapper"),
         tmpdir = os.path.join(SCRATCHDIR,"tmp_emapper_MAD"),
-        eggnog_mapper_data = EGGNOG_DATA_LOC
+        eggnog_mapper_data = EGGNOG_DATA_LOC,
+        download_data = download_data
     shell:
         '''
+        if [ {params.download_data} == "True" ]; then
+            download_eggnog_data.py --data_dir {params.eggnog_mapper_data}
+        fi
         mkdir -p {params.outdir}
         mkdir -p {params.tmpdir}
         export EGGNOG_DATA_DIR={params.eggnog_mapper_data}

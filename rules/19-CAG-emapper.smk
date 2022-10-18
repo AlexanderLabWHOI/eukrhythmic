@@ -9,6 +9,10 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
 
+download_data=False
+if !os.path.isfile(os.path.join(EGGNOG_DATA_LOC,"eggnog_proteins.dmnd")):
+    download_data=True
+
 #envvars:
 #    "TMPDIR"
 tmpdir="tmk-smk"
@@ -27,9 +31,13 @@ rule emappercag:
         outdir = os.path.join(OUTPUTDIR, "intermediate-files",
                               "04-compare", "19-CAG-emapper"),
         tmpdir = os.path.join(tmpdir,"tmp_{assembly}_CAG"),
-        eggnog_mapper_data = EGGNOG_DATA_LOC
+        eggnog_mapper_data = EGGNOG_DATA_LOC,
+        download_data = download_data
     shell:
         '''
+        if [ {params.download_data} == "True" ]; then
+            download_eggnog_data.py --data_dir {params.eggnog_mapper_data}
+        fi
         mkdir -p {params.outdir}
         mkdir -p {params.tmpdir}
         export EGGNOG_DATA_DIR={params.eggnog_mapper_data}

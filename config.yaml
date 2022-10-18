@@ -23,7 +23,6 @@ kmers:
     - 110
 assemblers:
     - megahit
-    - velvet
     - trinity
 separategroups: 1
 kegg_prot_db: placeholder
