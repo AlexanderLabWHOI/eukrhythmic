@@ -75,7 +75,6 @@ rule ribodetector_trimmed_single:
         ribodetector -t 20 \
           -l {params.readlen} \
           -i {input} \
-          -m 50 \
           -e rrna \
           --chunk_size 256 \
           -o {output.ribodetector_filtered} \
@@ -114,10 +113,9 @@ rule ribodetector_trimmed_double:
                            "{sample}_ribo_out.log")
     shell:
         '''
-        ribodetector -t 20 \
+        ribodetector_cpu -t 20 \
           -l {params.readlen} \
           -i {input.p1} {input.p2} \
-          -m 50 \
           -e rrna \
           --chunk_size 256 \
           -o {output.ribodetector_filtered_p1} {output.ribodetector_filtered_p2} \

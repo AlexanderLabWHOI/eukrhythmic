@@ -51,7 +51,7 @@ def get_samples_commas_spades(assemblygroup, dropspike, filterrrnas, leftorright
     if filterrrnas == 1:
         foldername = os.path.join("intermediate-files", "01-setup",\
                           "04a-ribo")
-        extensionname = "ribodetector_rrna_reads"
+        extensionname = "ribodetector_filt"
         
     if leftorright == "left":
         samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
@@ -98,9 +98,10 @@ rule rnaspades:
         numsamps = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
                                                               "right", commas = False, retlen=True),
         left = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
-                                                           "left", commas = False, retfirst=True),
+                                                           "left", commas = True, retfirst=False),
         right = lambda filename: get_samples_commas_spades(filename.assembly, DROPSPIKE, REMOVERRNA, 
-                                                            "right", commas = False, retfirst=True),
+                                                            "right", commas = True,
+                                        retfirst=False),
         maxmem = MAXMEMORY,
         CPUs = MAXCPUSPERTASK * MAXTASKS
     log:

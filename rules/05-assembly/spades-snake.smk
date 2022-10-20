@@ -8,18 +8,20 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
     
-def get_samples_commas_spades(assemblygroup, dropspike, filterrrnas, leftorright, commas = False):
+def get_samples_commas_spades(assemblygroup, dropspike, filterrrnas, leftorright, commas = False, retlen=False,retfirst=False,retlast=False):   
     samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assemblygroup]['SampleID']) 
-    foldername = "bbmap"
+    foldername = os.path.join("intermediate-files", "01-setup",\
+                          "03-alignment-spike")
     extensionname = "clean"
     if dropspike == 0:
-        foldername = "firsttrim"
+        foldername = os.path.join("intermediate-files", "01-setup",\
+                          "02-trim")
         extensionname = "trimmed"
-        
+    
     if filterrrnas == 1:
         foldername = os.path.join("intermediate-files", "01-setup",\
                           "04a-ribo")
-        extensionname = "ribodetector_filt"
+        extensionname = "ribodetector_rrna_reads"
         
     if leftorright == "left":
         samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_1." + extensionname + ".fastq.gz") 
@@ -27,8 +29,20 @@ def get_samples_commas_spades(assemblygroup, dropspike, filterrrnas, leftorright
     else:
         samplelist = [os.path.join(OUTPUTDIR, foldername, sample + "_2." + extensionname + ".fastq.gz") 
                       for sample in samplelist]
+    if retfirst:
+        return samplelist[0]
+    if retlast:
+        return samplelist[-1]
+    if retlen:
+        return len(samplelist)
     if commas:
-        return ",".join(samplelist)
+        trailing_num=2
+        if leftorright == "left":
+            trailing_num=1
+        list_for_spades=["--pe"+str(number_in_row)+"-"+str(trailing_num)+" "+str(filename_in)\
+                         for filename_in,number_in_row in zip(samplelist,
+                                                              range(1,len(samplelist)+1))]
+        return " ".join(list_for_spades)
     else:
         return samplelist
    
@@ -66,7 +80,7 @@ rule spades:
     shell:
         '''
         echo {params.left}
-        spades.py --meta --pe1-1 {params.left} --pe1-2 {params.right} -o {params.outdir} 2> {log.err} 1> {log.out}
+        spades.py --meta {params.left} {params.right} -o {params.outdir} 2> {log.err} 1> {log.out}
         '''
    
 rule spades_cleanup:
