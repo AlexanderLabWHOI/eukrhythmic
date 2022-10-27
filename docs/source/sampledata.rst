@@ -3,8 +3,6 @@ Running eukrhythmic with the sample data
 
 Note that running eukrhythmic on the sample data will take a little while. When we tested this functionality on our system, we used the following amounts of time and memory:
 
-test sample SLURM code: 2826247
-
 The sample data being run can be found in ``input/testdata/``, and contains five small sample raw read files. The sample metaT file for this dataset in in ``input/sampledata.txt``::
 
     SampleName	SampleID	AssemblyGroup	FastqFile
