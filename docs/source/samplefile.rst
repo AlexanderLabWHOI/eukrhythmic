@@ -1,5 +1,5 @@
-Sample file specification
-=========================
+Naming your samples and helping eukrhythmic find them
+=====================================================
 
 .. _naming: 
 

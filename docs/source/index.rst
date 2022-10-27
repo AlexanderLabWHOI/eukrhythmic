@@ -17,6 +17,7 @@ Welcome to eukrhythmic's documentation!
    installation.rst
    eukrhythmicoverview.rst
    usingpipeline.rst
+   sampledata.rst
    samplefile.rst
    configuration.rst
    addingassemblers.rst

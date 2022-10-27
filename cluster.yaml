@@ -1,9 +1,9 @@
 __default__:
-  account: akrinos
+  account: general
   command_options:
     slurm:
       account: --account={}
-      command: sbatch --parsable --qos=unlim
+      command: sbatch --parsable
       key_mapping: null
       mem: --mem={}g
       name: --job-name={}
@@ -14,110 +14,14 @@ __default__:
   cpupertask: 18
   mem: 180
   nodes: 1
-  queue: compute
+  queue: partitionname
   system: slurm
   tasks: 1
   time: 5000
-eukulele_pleuro:
-  account: akrinos
-  cpupertask: 18
-  mem: 750
-  queue: compute
-  tasks: 1
-  time: 10000
-fastqc:
-  account: akrinos
-  cpupertask: 5
-  mem: 1
-  queue: compute
-  tasks: 1
-  time: 720
-fastqc_trimmed:
-  account: akrinos
-  cpupertask: 5
-  mem: 1
-  queue: compute
-  tasks: 1
-  time: 720
 required:
-  accountname: akrinos
-  defaultqueue: compute
+  accountname: general
+  defaultqueue: partitionname
   maxcores: 1
   maxcpuspertask: 30
   maxmemory: 180
   maxtasks: 1
-rnaspades:
-  account: akrinos
-  cpupertask: 18
-  mem: 180
-  nodes: 1
-  queue: compute
-  tasks: 1
-  time: 5000
-salmon_MAD:
-  account: akrinos
-  cpupertask: 34
-  mem: 180
-  queue: compute
-  tasks: 1
-  time: 5000
-salmon_MAD_index:
-  account: akrinos
-  mem: 180
-  queue: compute
-  tasks: 1
-  time: 5000
-transabyss:
-  account: akrinos
-  cpupertask: 15
-  mem: 600
-  nodes: 1
-  queue: compute
-  tasks: 1
-  time: 10000
-transabyssmerge:
-  account: akrinos
-  cpupertask: 25
-  mem: 180
-  nodes: 1
-  queue: compute
-  tasks: 1
-  time: 10000
-transdecoder_CAG_simple:
-  account: akrinos
-  cpupertask: 20
-  mem: 600
-  queue: compute
-  tasks: 1
-  time: 8000
-transdecoder_MAD_simple:
-  account: akrinos
-  cpupertask: 40
-  mem: 1200
-  queue: compute
-  tasks: 1
-  time: 8000
-trimmomatic:
-  account: akrinos
-  cpupertask: 5
-  mem: 48
-  nodes: 1
-  queue: compute
-  tasks: 1
-  time: 1400
-trinity:
-  account: akrinos
-  cpupertask: 25
-  mem: 180
-  nodes: 1
-  queue: compute
-  tasks: 1
-  time: 5000
-velvet:
-  account: akrinos
-  cpupertask: 72
-  mem: 800
-  nodes: 1
-  queue: compute
-  tasks: 1
-  time: 15000
