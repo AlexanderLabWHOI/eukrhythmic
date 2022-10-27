@@ -1,5 +1,7 @@
-Configuring ``eukrhythmic``
-===========================
+Advanced: Writing a configuration file
+======================================
+
+To write a configuration file for ``eukrhythmic``, you need to edit the ``config.yaml`` file included in the ``eukrhythmic`` base directory. This YAML-formatted file can be modified by changing the entries to the right of each of the colons in each line of the file.
 
 .. _config: 
 
