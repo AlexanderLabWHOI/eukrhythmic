@@ -7,3 +7,4 @@ dependencies:
     - transdecoder
     - quast
     - eggnog-mapper
+    - EUKulele

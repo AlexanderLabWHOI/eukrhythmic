@@ -23,6 +23,7 @@ Welcome to eukrhythmic's documentation!
    addingassemblers.rst
    cleanup.rst
    potential-errors.rst
+   authors-and-acknowledgments.rst
        
 Source Code
 -----------
