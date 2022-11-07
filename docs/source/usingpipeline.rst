@@ -1,5 +1,11 @@
-Workflow for running eukrhythmic
-================================
+Running eukrhythmic
+===================
+
+Eukrhythmic is built using ``Snakemake`` (`documentation <https://snakemake.readthedocs.io/en/stable/>`_).
+
+Users who prefer to use command-line arguments and/or are unfamiliar with ``Snakemake`` should read the below section "How to use the pipeline from the command line".
+
+Users familiar with ``Snakemake`` that would like to execute the pipeline as a ``Snakemake`` workflow can skip to "How to use the pipeline directly through Snakemake".
 
 If you have trouble getting ``eukrhythmic`` configured, we suggest going to the "Running eukrhythmic with the sample data" tab of the docs and trying out running the software on our provided subsampled data.
 
