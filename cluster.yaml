@@ -1,0 +1,27 @@
+__default__:
+  account: general
+  command_options:
+    slurm:
+      account: --account={}
+      command: sbatch --parsable
+      key_mapping: null
+      mem: --mem={}g
+      name: --job-name={}
+      nodes: -N {}
+      queue: --partition={}
+      threads: -n {}
+      time: --time={}
+  cpupertask: 18
+  mem: 180
+  nodes: 1
+  queue: partitionname
+  system: slurm
+  tasks: 1
+  time: 5000
+required:
+  accountname: general
+  defaultqueue: partitionname
+  maxcores: 1
+  maxcpuspertask: 30
+  maxmemory: 180
+  maxtasks: 1
