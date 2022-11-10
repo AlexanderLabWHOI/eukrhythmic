@@ -17,7 +17,11 @@ If you want to receive further information or plan on executing from the command
 
     alias eukrhythmic='./bin/eukrhythmic.sh'
     
-Then, you can execute `eukrhythmic -h` to see that the software is present in the workspace, and refer to "Running the pipeline from the command line" for more information on using command-line arguments with `eukrhythmic`. We note that most of our documentation on the use of a scheduler to run ``eukrhythmic`` in parallel on multiple machines is written for the ``SLURM`` scheduling system. We provide some documentation on the use of the ``PBS`` system in the "Using eukrhythmic" section, but invite you to submit an issue on our GitHub page if you would like guidance on how to use ``PBS`` or an alternative system to run the pipeline.
+Then, you can execute `eukrhythmic -h` to see that the software is present in the workspace. 
+
+Refer to "Running the pipeline from the command line" for more information on using command-line arguments with `eukrhythmic`. 
+
+We note that most of our documentation on the use of a scheduler to run ``eukrhythmic`` in parallel on multiple machines is written for the ``SLURM`` scheduling system. We provide some documentation on the use of the ``PBS`` system in the "Using eukrhythmic" section, but invite you to submit an issue on our GitHub page if you would like guidance on how to use ``PBS`` or an alternative system to run the pipeline.
 
 Setting up a ``conda`` environment for running ``Snakemake``
 ------------------------------------------------------------
