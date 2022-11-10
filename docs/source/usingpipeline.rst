@@ -66,13 +66,13 @@ The arguments that you can use from the command line include:
      - scratch
      - Takes argument of the directory to be used as scratch space.
      
-If you need to use more options than this, you'll need to create a configuration file. You can edit the provided ``config.yaml`` file in order to do this. In the "" tab of the documentation, you can find a list of the supported entries that you can add to your ``config.yaml`` file.
+If you need to use more options than this, you'll need to create a configuration file. You can edit the provided ``config.yaml`` file in order to do this. In the "Advanced: Writing a configuration file" tab of the documentation, you can find a list of the supported entries that you can add to your ``config.yaml`` file.
 
 To get started using the pipeline, the most important thing to do is to specify the paths to your particular input and output directories. Strictly speaking, there are four things you'll probably want to specify before running ``eukrhythmic`` on your own data:
 
 - jobname - some random name that will determine how your SLURM sub-jobs are being called
 - metaT_sample - the location of that file you just created on Google Sheets, in TSV form, relative to the eukrhythmic dir, ideally in input/
-- inputDIR - where your fastq files are
+- inputDIR - where your raw fastq sequence files are
 - outputDIR - where you want your output to go
 - scratch - where you want non-essential intermediates to go
 
