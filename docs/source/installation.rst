@@ -1,7 +1,7 @@
 Installing eukrhythmic
 ======================
 
-``eukrhythmic`` is designed as a modular pipeline that you can fully customize as the user of the resource. As such, we recommend setting up the base environment provided in the ``environment.yaml`` file prior to running anything, but this isn't strictly necessary; what you need is ``Snakemake``, preferably newer than version 6, ``Python``, preferably newer than version 3.8, ``mamba``, some version of ``pandas`` and some version of ``pyyaml``. Having these things installed will help later steps go as smoothly as possible.
+``eukrhythmic`` is designed as a modular pipeline that you can fully customize as the user of the resource. As such, we recommend setting up the base environment provided in the ``environment.yaml`` file prior to running anything.
 
 Downloading eukrhythmic
 -----------------------
