@@ -7,7 +7,7 @@ Users who prefer to use command-line arguments and/or are unfamiliar with ``Snak
 
 Users familiar with ``Snakemake`` that would like to execute the pipeline as a ``Snakemake`` workflow can skip to "How to use the pipeline directly through Snakemake".
 
-If you have trouble getting ``eukrhythmic`` configured, we suggest going to the "Running eukrhythmic with the sample data" tab of the docs and trying out running the software on our provided subsampled data.
+If you have trouble getting ``eukrhythmic`` configured, we suggest navigating to the "Running eukrhythmic with the sample data" tab and running the software on our provided subsampled data.
 
 .. _commandline:
 
