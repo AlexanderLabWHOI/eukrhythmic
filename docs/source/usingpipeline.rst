@@ -71,7 +71,7 @@ If you need to use more options than this, you'll need to create a configuration
 To get started using the pipeline, the most important thing to do is to specify the paths to your particular input and output directories. Strictly speaking, there are four things you'll probably want to specify before running ``eukrhythmic`` on your own data:
 
 - jobname - some random name that will determine how your SLURM sub-jobs are being called
-- metaT_sample - the location of that file you just created on Google Sheets, in TSV form, relative to the eukrhythmic dir, ideally in input/
+- metaT_sample - the location of the file containing all relevant information needed to run the pipeline (e.g., created using Google Sheets in TSV form) ideally located in input/ (see below for more information on the metaT_sample file)
 - inputDIR - where your raw fastq sequence files are
 - outputDIR - where you want your output to go
 - scratch - where you want non-essential intermediates to go
