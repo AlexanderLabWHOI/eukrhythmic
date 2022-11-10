@@ -82,11 +82,11 @@ Which could be done on the command line using::
 
 All input ``fastq`` files must be contained in the same directory, the ``inputDIR`` location, specified by the ``--in-dir`` flag. Only these metatranscriptomic data will be included in the analysis. These files do *not*, however, need to be located inside the ``eukrhythmic`` directory (and it is recommended that they are located elsewhere). 
 
-The next thing that needs to be done is to produce the sample file, containing all of the relevant information to run the pipeline. You can create this yourself (:ref:``_manual_``), using only a list of Sample IDs (:ref:``_fastqauto_``), or completely automatically (:ref:``_fullauto_``), which can be done all in one with the ``eukrhythmic`` bash script, by specifying::
+The next thing that needs to be done is to produce the sample file, containing all of the relevant information to run the pipeline. You can create this yourself (:ref:manual), using only a list of Sample IDs (:ref:fastqauto), or completely automatically (:ref:fullauto), which can be done all in one with the ``eukrhythmic`` bash script, by specifying::
 
     eukrhythmic --in-dir <name-of-your-input> --out-dir <name-of-your-output> -g
 
-using the ``-g`` or ``--generate-file`` option, which runs the included script (:ref:``_fullauto_``). For further information on any of these options, please read the "Naming your samples and helping eukrhythmic find them" section of the documentation.
+using the ``-g`` or ``--generate-file`` option, which runs the included script (:ref:fullauto). For further information on any of these options, please read the "Naming your samples and helping eukrhythmic find them" section of the documentation.
 
 **Using a scheduler**
 
