@@ -7,7 +7,7 @@ You can reference this flowchart for an idea of the steps involved in the ``eukr
   :width: 400
   :alt: eukrhythmic flowchart
   
-And this diagram for an idea of the outputs that are returned as part of the pipeline:
+And this diagram for the outputs returned from the pipeline:
 
 .. image:: eukrhythmic_reorg.png
   :width: 400
