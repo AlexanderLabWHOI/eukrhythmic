@@ -82,11 +82,11 @@ Which could be done on the command line using::
 
 All input ``fastq`` files must be contained in the same directory, the ``inputDIR`` location, specified by the ``--in-dir`` flag. Only these metatranscriptomic data will be included in the analysis. These files do *not*, however, need to be located inside the ``eukrhythmic`` directory (and it is recommended that they are located elsewhere). 
 
-The next thing that needs to be done is to produce the sample file, containing all of the relevant information to run the pipeline. You can create this yourself (:ref:manual), using only a list of Sample IDs (:ref:fastqauto), or completely automatically (:ref:fullauto), which can be done all in one with the ``eukrhythmic`` bash script, by specifying::
+The next thing that needs to be done is to produce the sample file, containing all of the relevant information to run the pipeline. You can create this yourself (:ref:``manual``), using only a list of Sample IDs (:ref:``fastqauto``), or completely automatically (:ref:``fullauto``), which can be done all in one with the ``eukrhythmic`` bash script, by specifying::
 
     eukrhythmic --in-dir <name-of-your-input> --out-dir <name-of-your-output> -g
 
-using the ``-g`` or ``--generate-file`` option, which runs the included script (:ref:fullauto). For further information on any of these options, please read the "Naming your samples and helping eukrhythmic find them" section of the documentation.
+using the ``-g`` or ``--generate-file`` option, which runs the included script (:ref:``fullauto``). For further information on any of these options, please read the "Naming your samples and helping eukrhythmic find them" section of the documentation.
 
 **Using a scheduler**
 
@@ -99,7 +99,7 @@ If you use ``PBS``, a flag already exists. Otherwise, please submit an issue on 
 How to use the pipeline directly through Snakemake
 --------------------------------------------------
 
-To use the pipeline as a ``Snakemake`` workflow, the most important thing to do is to populate ``config.yaml`` with the paths to your particular input and output directories, and to generate the sample file (either manually (:ref:manual) or using a semi (:ref:fastqauto) or completely automatic procedure (:ref:``fullauto``). Personalizing this will allow the pipeline to pull the relevant files when computing the results of individual rules, so this step is crucial. You should also edit any other important parts of the configuration file, as described in the separate section of the documentation. 
+To use the pipeline as a ``Snakemake`` workflow, the most important thing to do is to populate ``config.yaml`` with the paths to your particular input and output directories, and to generate the sample file (either manually (:ref:``manual``) or using a semi (:ref:``fastqauto``) or completely automatic procedure (:ref:``fullauto``). Personalizing this will allow the pipeline to pull the relevant files when computing the results of individual rules, so this step is crucial. You should also edit any other important parts of the configuration file, as described in the separate section of the documentation. 
 
 You'll find further information about the configuration file in "Advanced: Writing a configuration file", and more information about the sample file in "Naming your samples and helping eukrhythmic find them".
 
