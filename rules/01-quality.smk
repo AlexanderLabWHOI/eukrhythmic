@@ -13,7 +13,6 @@ def get_filenames(sample, leftorright, stub=False):
     matchednames = []
     indexsample = [ind for ind in range(0,len(samplenames)) if sample.strip() == samplenames[ind]][0]
     sample_fastq = fastqnames[indexsample]
-    
     search_dir = INPUTDIR
     if len(sample_fastq.split("/")) > 1:
         innerdir = sample_fastq.split("/")[0]

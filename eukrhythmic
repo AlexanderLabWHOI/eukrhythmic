@@ -49,6 +49,7 @@ include: "rules/16-MAD-taxonomy.smk"
 include: "rules/17-MAD-function.smk"
 include: "rules/18-CAG-taxonomy.smk"
 include: "rules/19-CAG-emapper.smk"
+include: "rules/20-MAD-filter-and-annotate.smk"
 
 include: "rules/busco-snake.smk"
 include: "rules/hardclean-snake.smk"
@@ -80,6 +81,11 @@ rule no_rrna_removal:
                                             "01-quality", "01b-multiqc",\
                                             "multiqc_report.html"), zip,
                                             base = OUTPUTDIR),
+        # CHARTER RRNA REMOVAL
+#        qual04_rrna = expand(os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+#                            "04a-ribo",\
+#                            "{sample}_{num}.ribodetector_filt.fastq.gz"), zip,\
+#                          base = OUTPUTDIR, sample = filenames, num=singleorpaired),
         # TRIMMOMATIC OUTPUTS
         trim02 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
                           "02-trim",\
@@ -106,9 +112,9 @@ rule no_rrna_removal:
 #                               base = ASSEMBLEDDIR,
 #                               assembly = assemblygroups, assembler = ASSEMBLERS), 
         # MERGE BY ASSEMBLY GROUP
-        agm06 = expand(os.path.join(OUTPUTDIR, "intermediate-files", 
-                                    "02-assembly", "06-AGM", "{assembly}_merged.fasta"), zip,
-                                    assembly = assemblygroups),
+        #agm06 = expand(os.path.join(OUTPUTDIR, "intermediate-files", 
+        #                            "02-assembly", "06-AGM", "{assembly}_merged.fasta"), zip,
+        #                            assembly = assemblygroups),
         # CLUSTER MERGED ASSEMBLY GROUPS
         cag07 = expand(os.path.join(OUTPUTDIR, "intermediate-files",\
                                 "03-merge", "07-CAG",\
@@ -126,26 +132,35 @@ rule no_rrna_removal:
         #cagquality08 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
         #                            "10-CAG-quality", "combined", "all.tsv"),
         # MERGE ACROSS ALL SAMPLES
-        swam11 = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly", "11-SWAM", "merged.fasta"),
+        #swam11 = os.path.join(OUTPUTDIR, "intermediate-files", "02-assembly", "11-SWAM", "merged.fasta"),
         # CLUSTER MERGED BY SAMPLES
         mad12 = os.path.join(OUTPUTDIR, "intermediate-files",
                             "03-merge", "12-MAD", "MAD.fasta"),
         # TRANSDECODER MERGED BY SAMPLES
-        madproteins13 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
-                                     "13-MAD-proteins", "MAD.fasta.transdecoder.pep"),
+#        madproteins13 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
+#                                     "13-MAD-proteins", "MAD.fasta.transdecoder.pep"),
         # MAPPING MERGED BY SAMPLES
         madmapping14 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",
                                     "salmon", "{assembly}_quant", "quant.sf"), assembly = assemblygroups),
-        madmapping14_merged = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",
-                                    "salmon", "{assembly}_quant", "quant.sf"), assembly = "merged"),
-        eggnogmapper_mad = os.path.join(OUTPUTDIR, "intermediate-files",
-                                 "04-compare", "17-MAD-emapper",
-                                 "MAD.emapper.hits"),
+#        madmapping14_merged = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",
+#                                    "salmon", "{assembly}_quant", "quant.sf"), assembly = "merged"),
+#        eggnogmapper_mad = os.path.join(OUTPUTDIR, "intermediate-files",
+#                                 "04-compare", "17-MAD-emapper",
+#                                 "MAD.emapper.hits"),
         eggnogmapper_cag = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
                                   "19-CAG-emapper","{assembly}.emapper.hits"),
                                   assembly = assemblygroups),
         eukulele_cag = expand(os.path.join(OUTPUTDIR, "intermediate-files","04-compare","CAG_eukulele",
-                                   "EUKulele_{assembly}_done.txt"), assembly=assemblygroups) 
+                                   "EUKulele_{assembly}_done.txt"), assembly=assemblygroups),
+        mad_filter_salmon = expand(os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "20-MAD-filtered",\
+                     "salmon_sample", "{sample}_quant", "quant.sf"),sample=filenames),
+        mad_filter_eukulele = os.path.join(OUTPUTDIR, "intermediate-files","03-merge",
+                    "20-MAD-filtered","EUKulele","taxonomy_estimation",
+                    "MAD.fasta.transdecoder-estimated-taxonomy.out"),
+        mad_filter_eggnog = os.path.join(OUTPUTDIR, "intermediate-files",
+                                 "03-merge", "20-MAD-filtered", "emapper",
+                                 "MAD.emapper.hits")
+        
         # QUALITY MERGED BY SAMPLES
         #madquality15 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
         #                       "15-MAD-quality", "quast", "report.tsv")
@@ -204,9 +219,9 @@ rule rrna_removal:
 #                               base = ASSEMBLEDDIR,
 #                               assembly = assemblygroups, assembler = ASSEMBLERS), 
         # MERGE BY ASSEMBLY GROUP
-        agm06 = expand(os.path.join(OUTPUTDIR, "intermediate-files", 
-                                    "02-assembly", "06-AGM", "{assembly}_merged.fasta"), zip,
-                                    assembly = assemblygroups),
+        #agm06 = expand(os.path.join(OUTPUTDIR, "intermediate-files", 
+        #                            "02-assembly", "06-AGM", "{assembly}_merged.fasta"), zip,
+        #                            assembly = assemblygroups),
         # CLUSTER MERGED ASSEMBLY GROUPS
         cag07 = expand(os.path.join(OUTPUTDIR, "intermediate-files",\
                                 "03-merge", "07-CAG",\

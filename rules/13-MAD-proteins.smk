@@ -36,6 +36,7 @@ rule transdecoder_MAD_simple:
     shell:
         """
         unset PERL5LIB
+        rm -rf {params.merged}*
         mkdir -p {params.wd_path}
         cp {input.fastafile} {params.merged}.fasta
         (cd {params.wd_path} && TransDecoder.LongOrfs -t {params.filename}.fasta -m {params.size}) 2> {log.err} 1> {log.out}
