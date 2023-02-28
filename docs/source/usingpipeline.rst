@@ -7,7 +7,7 @@ Users who prefer to use command-line arguments and/or are unfamiliar with ``Snak
 
 Users familiar with ``Snakemake`` that would like to execute the pipeline as a ``Snakemake`` workflow can skip to "How to use the pipeline directly through Snakemake".
 
-If you have trouble getting ``eukrhythmic`` configured, we suggest going to the "Running eukrhythmic with the sample data" tab of the docs and trying out running the software on our provided subsampled data.
+If you have trouble getting ``eukrhythmic`` configured, we suggest navigating to the "Running eukrhythmic with the sample data" tab and running the software on our provided subsampled data.
 
 .. _commandline:
 
@@ -66,13 +66,13 @@ The arguments that you can use from the command line include:
      - scratch
      - Takes argument of the directory to be used as scratch space.
      
-If you need to use more options than this, you'll need to create a configuration file. You can edit the provided ``config.yaml`` file in order to do this. In the "" tab of the documentation, you can find a list of the supported entries that you can add to your ``config.yaml`` file.
+If you need to use more options than this, you'll need to create a configuration file. You can edit the provided ``config.yaml`` file in order to do this. In the "Advanced: Writing a configuration file" tab of the documentation, you can find a list of the supported entries that you can add to your ``config.yaml`` file.
 
 To get started using the pipeline, the most important thing to do is to specify the paths to your particular input and output directories. Strictly speaking, there are four things you'll probably want to specify before running ``eukrhythmic`` on your own data:
 
 - jobname - some random name that will determine how your SLURM sub-jobs are being called
-- metaT_sample - the location of that file you just created on Google Sheets, in TSV form, relative to the eukrhythmic dir, ideally in input/
-- inputDIR - where your fastq files are
+- metaT_sample - the location of the file containing all relevant information needed to run the pipeline (e.g., created using Google Sheets in TSV form) ideally located in input/ (see below for more information on the metaT_sample file)
+- inputDIR - where your raw fastq sequence files are
 - outputDIR - where you want your output to go
 - scratch - where you want non-essential intermediates to go
 
@@ -90,14 +90,18 @@ using the ``-g`` or ``--generate-file`` option, which runs the included script (
 
 **Using a scheduler**
 
-If you are running on an HPC system that uses the ``SLURM`` scheduler, invoke ``eukrhythmic`` with one argument: ``-l`` or ``--slurm`` to leverage your computing resources. In that case, you will also want to invoke ``sbatch eukrhythmic --slurm``, to avoid running any steps on your current remote machine. You can also use the ``-np`` or ``--dry_run`` flag to run do a ``Snakemake`` dry run, to see whether the jobs to be run align with your expectation (you can do this whether or not you are using a scheduler). If you need to use a different scheduler than ``SLURM``, please run the pipeline through Snakemake (instructions below). If you use ``PBS``, a flag already exists. Otherwise, please submit an issue on our GitHub repository so that we can work together to find a solution! You will want to edit the ``cluster.yaml`` file to reflect the memory and time requirements of your system. Just populating the ``_default_`` and ``required`` sections will do.
+If you are running on an HPC system that uses the ``SLURM`` scheduler, invoke ``eukrhythmic`` with one argument: ``-l`` or ``--slurm`` to leverage your computing resources. In that case, you will also want to invoke ``sbatch eukrhythmic --slurm``, to avoid running any steps on your current remote machine. You can also use the ``-np`` or ``--dry_run`` flag to run do a ``Snakemake`` dry run, to see whether the jobs to be run align with your expectation (you can do this whether or not you are using a scheduler). If you need to use a different scheduler than ``SLURM``, please run the pipeline through Snakemake (instructions below). 
+
+If you use ``PBS``, a flag already exists. Otherwise, please submit an issue on our GitHub repository so that we can work together to find a solution! You will want to edit the ``cluster.yaml`` file to reflect the memory and time requirements of your system. Just populating the ``_default_`` and ``required`` sections will do.
 
 .. _pipeline:
 
 How to use the pipeline directly through Snakemake
 --------------------------------------------------
 
-To use the pipeline as a ``Snakemake`` workflow, the most important thing to do is to populate ``config.yaml`` with the paths to your particular input and output directories, and to generate the sample file (either manually (:ref:``manual``) or using a semi (:ref:``fastqauto``) or completely (:ref:``fullauto``) automatic procedure. Personalizing this will allow the pipeline to pull the relevant files when computing the results of individual rules, so this step is crucial. You should also edit any other important parts of the configuration file, as described in the separate section of the documentation. You'll find further information about the configuration file in "Advanced: Writing a configuration file", and more information about the sample file in "Naming your samples and helping eukrhythmic find them".
+To use the pipeline as a ``Snakemake`` workflow, the most important thing to do is to populate ``config.yaml`` with the paths to your particular input and output directories, and to generate the sample file (either manually (:ref:``manual``) or using a semi (:ref:``fastqauto``) or completely automatic procedure (:ref:``fullauto``). Personalizing this will allow the pipeline to pull the relevant files when computing the results of individual rules, so this step is crucial. You should also edit any other important parts of the configuration file, as described in the separate section of the documentation. 
+
+You'll find further information about the configuration file in "Advanced: Writing a configuration file", and more information about the sample file in "Naming your samples and helping eukrhythmic find them".
 
 Once the pieces are in place, and you have either activated an environment using ``environment.yaml`` or otherwise installed ``snakemake``, you can run the pipeline using::
 

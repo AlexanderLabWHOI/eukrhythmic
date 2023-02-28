@@ -24,7 +24,7 @@ As detailed in `scripts/make_sampleinfo.ipynb`, the minimum required to run the 
 Autogeneration of full ``metaT_sample`` file
 --------------------------------------------
 
-Using the script ``scripts/autogenerate_metaT_sample.py``, you can autogenerate a working sample file for whatever files are present in the directory specified in your configuration file as ``inputDIR``. This file should be run from the base `eukrhythmic` directory. At minimum, it requires a name for the output ``metaT_sample`` file as a parameter, which will be saved in the `input` directory, and then should be specified in the configuration file as the `metaT_sample` file. (Note: in the future, autopopulate the config file with this entry and allow users to run the pipeline without even running this separately, with a default name for the ``metaT_sample`` file, as long as the ``inputDIR`` is specified). 
+Using the script ``scripts/autogenerate_metaT_sample.py``, you can autogenerate a working sample file for whatever files are present in the directory specified in your configuration file as ``inputDIR``. This file should be run from the base `eukrhythmic` directory. At minimum, it requires a name for the output ``metaT_sample`` file as a parameter, which will be saved in the `input` directory, and then should be specified in the configuration file as the `metaT_sample` file. (*Note: in the future, we aim to autopopulate the config file with this entry and allow users to run the pipeline without even running this separately, with a default name for the ``metaT_sample`` file, as long as the ``inputDIR`` is specified*). 
 
 So within the base ``eukrhythmic`` directory, the following command may be run::
 
