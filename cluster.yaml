@@ -48,10 +48,10 @@ required:
   maxtasks: 1
 rnaspades:
   account: akrinos
-  cpupertask: 18
-  mem: 500
+  cpupertask: 30
+  mem: 1000
   nodes: 1
-  queue: bigmem
+  queue: scavenger-bmem
   tasks: 1
   time: 5000
 salmon_MAD:
@@ -93,8 +93,22 @@ transdecoder_CAG_simple:
 transdecoder_MAD_simple:
   account: akrinos
   cpupertask: 40
-  mem: 1200
-  queue: bigmem
+  mem: 1500
+  queue: bigmem #scavenger-bmem
+  tasks: 1
+  time: 8000
+eukulele_run:
+  account: akrinos
+  cpupertask: 20
+  mem: 400
+  queue: scavenger-bmem
+  tasks: 1
+  time: 8000
+emappermad:
+  account: akrinos
+  cpupertask: 20
+  mem: 400
+  queue: scavenger-bmem
   tasks: 1
   time: 8000
 trimmomatic:
@@ -107,10 +121,10 @@ trimmomatic:
   time: 1400
 trinity:
   account: akrinos
-  cpupertask: 18
-  mem: 500
+  cpupertask: 30
+  mem: 1500
   nodes: 1
-  queue: bigmem
+  queue: scavenger-bmem
   tasks: 1
   time: 5000
 velvet:

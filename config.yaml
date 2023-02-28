@@ -1,21 +1,18 @@
 ### Parameters expected to be changed under normal use ###
-## INPUT DATA AND FORMATTING ##
-# formatted input file; described in README
-jobname: sample
-metaT_sample: input/metaT_Huetal.txt
+## INPUT DATA AND FORMATTING ## 
+# formatted input file; described in README 
+jobname: ALOHA
+metaT_sample: input/ALOHA-cut.txt #input/sampledata.txt
+adapter: static/adapters.fa
 spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
 spiketable: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/percentmapped_bbmap_volumes.tab
-adapter: static/adapters.fa
-
 ## DIRECTORIES DURING PROCESSING ##
-inputDIR: /vortexfs1/omics/alexander/data/Hu-2022-ALOHA-SPOT/download-data
-outputDIR: /vortexfs1/omics/alexander/data/Hu-2022-ALOHA-SPOT/Hu_et_al_2022_eukrhythmic 
+inputDIR: /vortexfs1/omics/alexander/data/EAGER-ALOHA/full-run #../2021-EAGER-ALOHA
+outputDIR: ../2021-09-ALOHA
 assembledDIR: intermediate-files/02-assembly/05-assembly
-eggnogDIR: /vortexfs1/omics/alexander/data/databases/eggnog-mapper-data/
-continue: 1 # set this to 1 if you want assemblers to continue where they last stopped if files are found
 renamedDIR: renamed
 # this is where all the intermediate outputs will go.
-scratch: /vortexfs1/scratch/akrinos/Huetal_euk_scratch
+scratch: ../testscratch
 ## ANALYSIS OPTIONS ##
 kegg: /vortexfs1/omics/alexander/data/KEGG
 kegg_prot_db: /vortexfs1/omics/alexander/data/KEGG/diamond_db/family_eukaryotes.dmnd
@@ -25,6 +22,7 @@ pfam: ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
 
 # 1 indicates that "spikefile" is used to clean reads
 runbbmap: 0
+
 # flag to be used to decide whether QUAST/salmon quantification performed
 checkqual: 1
 kmers:
@@ -33,9 +31,9 @@ kmers:
 #    - 110
 assemblers:
     - megahit
-#    - rnaspades
-#    - spades
-#    - trinity
+    - rnaspades
+      #    - spades
+    - trinity
 #    - transabyss
 separategroups: 1
 

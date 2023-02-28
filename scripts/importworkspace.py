@@ -79,10 +79,26 @@ if "removerrna" in config:
     if config["removerrna"] == 1:
         REMOVERRNA = 1    
 
+## READ IN WHETHER WE WOULD LIKE TO FILTER SEQUENCES THAT DO NOT RECRUIT READS ##
+FILTERLOWREADS = 0
+if "filterlowreads" in config:
+    if config["filterlowreads"] == 1:
+        FILTERLOWREADS = 1    
+        
 ## READ IN LOCATION OF EGGNOGMAPPER DATA ##
 EGGNOG_DATA_LOC = "eggnog-data"
 if "eggnogDIR" in config:
     EGGNOG_DATA_LOC = config["eggnogDIR"]
+    
+## READ IN EUKULELE DATABASE NAME ##
+EUKULELE_DATABASE = "marmmetsp"
+if "eukuleleDB" in config:
+    EUKULELE_DATABASE = config["eukuleleDB"]
+    
+## READ IN LOCATION OF PREDOWNLOADED EUKULELE DATABASE ##
+EUKULELE_REFERENCE_DIR = "None"
+if "eukuleleDIR" in config:
+    EUKULELE_REFERENCE_DIR = config["eukuleleDIR"]
     
 ## READ ALL RELEVANT DATA IN FROM CONFIGURATION FILE ##
 if "metaT_sample" in config:

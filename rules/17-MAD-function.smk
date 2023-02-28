@@ -21,16 +21,16 @@ if not os.path.isfile(os.path.join(EGGNOG_DATA_LOC,"eggnog_proteins.dmnd")):
 rule emappermad:
     input:
         assembly_file = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
-                           "13-MAD-proteins", "MAD.fasta.transdecoder.pep")
+                           "13-MAD-proteins-{filter_keyword}", "MAD.fasta.transdecoder.pep")
     output:
         hits_file = os.path.join(OUTPUTDIR, "intermediate-files",
-                                 "04-compare", "17-MAD-emapper",
+                                 "04-compare", "17-MAD-emapper-{filter_keyword}",
                                  "MAD.emapper.hits")
     conda: "../envs/04-compare-env.yaml"
     params:
         outdir = os.path.join(OUTPUTDIR, "intermediate-files",
-                              "04-compare", "17-MAD-emapper"),
-        tmpdir = os.path.join(SCRATCHDIR,"tmp_emapper_MAD"),
+                              "04-compare", "17-MAD-emapper-{filter_keyword}"),
+        tmpdir = os.path.join(SCRATCHDIR,"tmp_emapper_MAD_{filter_keyword}"),
         prefix = "MAD",
         eggnog_mapper_data = EGGNOG_DATA_LOC,
         download_data = download_data

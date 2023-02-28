@@ -91,7 +91,7 @@ rule trinity_SE:
     conda: os.path.join("..", "envs", "02-assembly-env.yaml")
     shell:
         '''
-        Trinity --seqType fq --max_memory {params.maxmem}G --CPU {params.CPUs} --max_memory 150G --bflyCalculateCPU --single {params.single} --output {params.outdir} --NO_SEQTK 2> {log.err} 1> {log.out}
+        Trinity --seqType fq --max_memory 1500G --CPU {params.CPUs} --bflyCalculateCPU --single {params.single} --output {params.outdir} --NO_SEQTK 2> {log.err} 1> {log.out}
         '''
    
 rule trinity_cleanup:

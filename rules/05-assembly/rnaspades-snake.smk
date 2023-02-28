@@ -116,9 +116,9 @@ rule rnaspades:
         '''
         echo {params.left}
         if [ -f {params.outdir}/params.txt ] && [ {params.continue_flag} ]; then
-            spades.py --restart-from last -m 500 -o {params.outdir} 2> {log.err} 1> {log.out}
+            spades.py --restart-from last -m 500 -t 16 -o {params.outdir} 2> {log.err} 1> {log.out}
         else
-            spades.py -m 100 -t 8 --rna {params.right} {params.left} -o {params.outdir} 2> {log.err} 1> {log.out}
+            spades.py -m 500 -t 16 --rna {params.right} {params.left} -o {params.outdir} 2> {log.err} 1> {log.out}
         fi
         '''
    
