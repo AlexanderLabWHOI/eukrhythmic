@@ -11,21 +11,29 @@ from importworkspace import *
 
 rule eukulele_run:
     input:
-        pep = (lambda filename: expand(os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins", 
-                                                    "{assembly}.fasta.transdecoder.pep"), 
-               assembly = assemblygroups)),
-        salmon = (lambda filename: expand(os.path.join(OUTPUTDIR, "salmon_mega_merge",
-                                                       "salmon_quant_assembly_merged", "quant.sf"), 
-               assembly = assemblygroups, folder = filename.folder))
+        pep = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "{filter_workflow}",\
+                           "13-MAD-proteins", "MAD.fasta.transdecoder.pep")
     output:
-        eukulele_directory = directory(os.path.join(OUTPUTDIR, "eukulele_{folder}")),
-        tax_est = os.path.join(OUTPUTDIR, "eukulele_{folder}", "taxonomy_estimation", )
+        eukulele_done = os.path.join(OUTPUTDIR, "intermediate-files","04-compare","{filter_workflow}",
+                                     "16-MAD-taxonomy",
+                                     "EUKulele_done.txt")
     params:
-        sampledir = os.path.join(OUTPUTDIR, "transdecoder_{folder}_finalproteins"),
-        salmondir = (lambda filename: expand(os.path.join(OUTPUTDIR, "salmon_mega_merge")))
-    conda:
-        os.path.join("..","envs","eukulele-env.yaml")
+        sampledir = os.path.join(OUTPUTDIR, "intermediate-files",
+                                 "04-compare",
+                                 "{filter_workflow}",
+                                 "13-MAD-proteins"),
+        eukulele_directory = os.path.join(OUTPUTDIR, "intermediate-files", 
+                                          "04-compare",
+                                          "{filter_workflow}",
+                                          "16-MAD-taxonomy"),
+        eukulele_reference_dir = EUKULELE_REFERENCE_DIR,
+        eukulele_database = EUKULELE_DATABASE
     shell:
         """
-        EUKulele --mets_or_mags mets --sample_dir {params.sampledir} --p_ext ".pep" --n_ext ".cds" --database mmetsp --use_salmon_counts --salmon_dir {params.salmondir}
+        if [ {params.eukulele_reference_dir} != "None" ]; do
+            EUKulele --mets_or_mags mets --sample_dir {params.sampledir} --p_ext ".pep" --reference_dir {params.eukulele_reference_dir} -o {params.eukulele_directory}
+        else
+            EUKulele --mets_or_mags mets --sample_dir {params.sampledir} --p_ext ".pep" --database {params.eukulele_database} -o {params.eukulele_directory}
+        fi
+        touch {output.eukulele_done}
         """

@@ -1,37 +1,47 @@
 ### Parameters expected to be changed under normal use ###
-## INPUT DATA AND FORMATTING ##
-# formatted input file; described in README
-jobname: sample
-metaT_sample: input/sampledata.txt
-spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
+## INPUT DATA AND FORMATTING ## 
+# formatted input file; described in README 
+jobname: ALOHA
+metaT_sample: input/ALOHA-cut.txt #input/sampledata.txt
 adapter: static/adapters.fa
+spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
+spiketable: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/percentmapped_bbmap_volumes.tab
 ## DIRECTORIES DURING PROCESSING ##
-inputDIR: input/testdata
-outputDIR: ../testoutput
-assembledDIR: assembled
+inputDIR: /vortexfs1/omics/alexander/data/EAGER-ALOHA/full-run #../2021-EAGER-ALOHA
+outputDIR: ../2021-09-ALOHA
+assembledDIR: intermediate-files/02-assembly/05-assembly
 renamedDIR: renamed
 # this is where all the intermediate outputs will go.
-scratch: ../testscratch 
+scratch: ../testscratch
 ## ANALYSIS OPTIONS ##
+kegg: /vortexfs1/omics/alexander/data/KEGG
+kegg_prot_db: /vortexfs1/omics/alexander/data/KEGG/diamond_db/family_eukaryotes.dmnd
+busco:
+    - https://www.dropbox.com/s/uqbag10d3soks68/eukaryota_odb10.2019-11-20.tar.gz?dl=1
+pfam: ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
+
 # 1 indicates that "spikefile" is used to clean reads
-runbbmap: 1
+runbbmap: 0
+
 # flag to be used to decide whether QUAST/salmon quantification performed
 checkqual: 1
 kmers:
-    - 20
+    - 31
     - 50
-    - 110
+#    - 110
 assemblers:
     - megahit
+    - rnaspades
+    - spades
     - trinity
+#    - transabyss
 separategroups: 1
-kegg_prot_db: placeholder
-kegg: placeholder
-busco: placeholder
-pfam: placeholder
+filterlowreads: 1
+filterlowreadscag: 1
+
 ### Parameters only to be changed by advanced users ###
-transdecodercutoff: 100
+transdecodercutoff: 50
 secondclustercutoff: 0.98
 defaultkmer: 25
 mincontig: 100
-rewritecluster: 1
+rewritecluster: 0
