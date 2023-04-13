@@ -73,13 +73,13 @@ rule salmon_MAD:
         right = lambda filename: salmon_get_samples(filename.assembly, "right", list_format = True)
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "{filter_workflow}", "14-MAD-mapping",\
-                     "salmon", "{assembly}_quant", "quant.sf")
+                     "salmon_sample", "{assembly}_quant", "quant.sf")
     params:
         libtype = "A",
         indexname = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "{filter_workflow}", "14-MAD-mapping",\
                      "salmon", "MAD_index"),
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "{filter_workflow}", "14-MAD-mapping",\
-                     "salmon", "{assembly}_quant"),
+                     "salmon_sample", "{assembly}_quant"),
         kval = 31
     log:
         err = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping-{filter_workflow}", "{assembly}_salmon.err"),

@@ -12,13 +12,13 @@ def select_right_MAD(workflow):
     if workflow == "madfiltered":
         return os.path.join(OUTPUTDIR,"intermediate-files", "03-merge",
                             "merged", "20-MAD-filtered", "MAD.filtered.fasta")
-    else if workflow == "fullfiltered":
+    elif workflow == "fullfiltered":
         return os.path.join(OUTPUTDIR,"intermediate-files", "03-merge",
                             "filtered", "20-MAD-filtered", "MAD.filtered.fasta")
-    else if workflow == "cagfiltered":
+    elif workflow == "cagfiltered":
         return  os.path.join(OUTPUTDIR, "intermediate-files",\
                              "03-merge", "12-MAD-intermed", "MAD.filtered.fasta")
-    else if workflow == "nofilter":
+    elif workflow == "nofilter":
         return  os.path.join(OUTPUTDIR, "intermediate-files",\
                              "03-merge", "12-MAD-intermed", "MAD.merged.fasta")
 
@@ -175,8 +175,8 @@ rule salmon_MAD_temp:
                      "salmon_sample_{filter}", "{assembly}_quant"),
         kval = 31
     log:
-        err = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "{assembly}_salmon.err"),
-        out = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "{assembly}_salmon.out")
+        err = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "{assembly}_{filter}_salmon.err"),
+        out = os.path.join(OUTPUTDIR, "logs", "14-MAD-mapping", "{assembly}_{filter}_salmon.out")
     conda: os.path.join("..", "envs", "04-compare-env.yaml")
     shell:
         """
@@ -217,7 +217,7 @@ rule seqtk_by_salmon:
                                    "20-MAD-filtered", "MAD.seqs.txt"),
         salmon_files = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", 
                                            "14-MAD-mapping",\
-                     "salmon_sample_{filter}", "{assembly}_quant", "quant.sf"),assembly=filenames),
+                     "salmon_sample_{filter}", "{assembly}_quant", "quant.sf"),assembly=filenames,filter="{filter}"),
         MAD_file = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD",\
                                  "MAD.{filter}.nospace.fasta")
     output:

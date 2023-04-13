@@ -65,7 +65,7 @@ rrnas = REMOVERRNA
 
 rule all:
     input:
-        subroutine_done = expand("pipeline_complete_{RRNAs}_{filtercag}_{filtermad}.txt",
+        subroutine_done = expand("pipeline_complete_{RRNAs}_{filter_cag}_{filter_mad}.txt",
                 RRNAs = rrnas, filter_cag = FILTERLOWREADSCAG, filter_mad = FILTERLOWREADS)
         
 rule rrna_removal_step0:
@@ -124,6 +124,57 @@ rule rrna_removal_step0:
         touch {output}
         """
 
+rule no_rrna_removal_step0:
+    input:
+        # FASTQC OUTPUTS
+        qual01_fastqc = expand([os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                        "01-quality", "01a-fastqc", "{sample}_{num}_fastqc.html"),
+                        os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                        "01-quality", "01a-fastqc", "{sample}_{num}_fastqc.zip")], zip, 
+                        base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        # MULTIQC OUTPUTS
+        qual01_multiqc = expand(os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                                            "01-quality", "01b-multiqc",\
+                                            "multiqc_report.html"), zip,
+                                            base = OUTPUTDIR),
+        # TRIMMOMATIC OUTPUTS
+        trim02 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                          "02-trim",\
+                          "{sample}_1.trimmed.fastq.gz"), zip, 
+                         base = OUTPUTDIR, sample = filenames),
+        # BBMAP OUTPUTS
+        alignment03 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                          "03-alignment-spike", "{sample}_{num}.clean.fastq.gz"),\
+                          zip, base = OUTPUTDIR,
+                          sample = filenames, num = singleorpaired),
+        # FASTQC 2 OUTPUTS (trimmed)
+        qual04_fastqc = expand([os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                                "04-quality","{sample}_{num}.trimmed_fastqc.html"),\
+                                os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                                "04-quality", "{sample}_{num}.trimmed_fastqc.zip")],
+                                zip, base = OUTPUTDIR, sample = filenames, num = singleorpaired),
+        # MULTIQC 2 OUTPUTS
+        qual04_multiqc = expand(os.path.join(OUTPUTDIR, "intermediate-files", "01-setup",\
+                                  "04-quality", "multiqc",\
+                                  "multiqc_report.html"), zip,\
+                          base = OUTPUTDIR),
+        # ASSEMBLER OUTPUTS
+        assembly05 = expand(os.path.join("{base}", "{assembly}_{assembler}.fasta"),
+                               base = ASSEMBLEDDIR,
+                               assembly = assemblygroups, assembler = ASSEMBLERS), 
+        # MERGE BY ASSEMBLY GROUP
+        # CLUSTER MERGED ASSEMBLY GROUPS
+        cag07 = expand(os.path.join(OUTPUTDIR, "intermediate-files",\
+                                "03-merge", "07-CAG",\
+                                "{assembly}_merged.fasta"), assembly = assemblygroups)
+    output:
+        os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
+                     "step0_RRNAs_0.done")
+    shell:
+        """
+        touch {output}
+        """
+        
 ## rule option if we first filter CAG files according to those that don't recruit reads.
 ## This will float down to cag_no_mad_step2 or cag_w_mad_step2 depending on whether 
 ## we want to keep going with the MAD filtering.
@@ -165,7 +216,7 @@ rule no_filter_reads_step1:
         # MERGE ACROSS ALL SAMPLES
         # CLUSTER MERGED BY SAMPLES
         mad12 = os.path.join(OUTPUTDIR, "intermediate-files",
-                            "03-merge", "12-MAD", "MAD.nofilter.fasta"),
+                            "03-merge", "nofilter", "12-MAD", "MAD.fasta"),
         
         # TRANSDECODER MERGED BY SAMPLES
         madproteins13 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "nofilter",
@@ -177,9 +228,9 @@ rule no_filter_reads_step1:
         eukulele_mad = os.path.join(OUTPUTDIR, "intermediate-files",
                                     "04-compare","nofilter","16-MAD-taxonomy",
                                     "EUKulele_done.txt"),
-        mad_eggnog = os.path.join(OUTPUTDIR, "intermediate-files", "nofilter",
-                      "04-compare", "17-MAD-emapper",
-                       "split_unite","MAD.emapper.annotations")
+        mad_eggnog = os.path.join(OUTPUTDIR, "intermediate-files",
+                      "04-compare", "nofilter", "17-MAD-emapper",
+                      "split_unite","MAD.emapper.annotations")
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
                                 "FILTER_0_CAG_0_RRNAREMOVAL_{rrnas}_STEPF.done")
@@ -195,7 +246,7 @@ rule cag_no_mad_step2:
         step0 = os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
                      "step0_RRNAs_{rrnas}.done"),
         ## make sure that CAG-based filtering has already been completed.
-        step0 = os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
+        step1 = os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
                      "step0_RRNAs_{rrnas}.done"),
         # TRANSDECODER MERGED BY SAMPLES
         madproteins13 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "cagfiltered",
@@ -207,8 +258,8 @@ rule cag_no_mad_step2:
         eukulele_mad = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "cagfiltered",
                               "16-MAD-taxonomy",
                               "EUKulele_done.txt"),
-        eggnog_mapper_file = os.path.join(OUTPUTDIR, "intermediate-files", "cagfiltered",  
-                      "04-compare", "17-MAD-emapper-filtered","split_unite","MAD.emapper.annotations")
+        eggnog_mapper_file = os.path.join(OUTPUTDIR, "intermediate-files", 
+                      "04-compare", "cagfiltered", "17-MAD-emapper-filtered","split_unite","MAD.emapper.annotations")
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
                                 "FILTER_0_CAG_1_RRNAREMOVAL_{rrnas}_STEPF.done")
@@ -218,19 +269,20 @@ rule cag_no_mad_step2:
         """
 
 ## we want to filter from the CAG, and we also want to do so from the MAD
-rule cag_no_mad_step2:
+rule cag_w_mad_step2:
     input:
         ## make sure that step0 has already been completed.
         step0 = os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
                      "step0_RRNAs_{rrnas}.done"),
         ## make sure that CAG-based filtering has already been completed.
-        step0 = os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
+        step1 = os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
                      "step0_RRNAs_{rrnas}.done"),
         # TRANSDECODER MERGED BY SAMPLES
         madproteins13 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "fullfiltered",
                                      "13-MAD-proteins", "MAD.fasta.transdecoder.pep"),
         # MAPPING MERGED BY SAMPLES
-        madmapping14 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "fullfiltered",
+        madmapping14 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
+                                    "fullfiltered",
                                     "14-MAD-mapping",
                                     "salmon_sample", "{sample}_quant", "quant.sf"), sample = filenames),
         eukulele_mad = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "fullfiltered",
@@ -250,9 +302,9 @@ rule cag_no_mad_step2:
 rule final_step:
     input:
         os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
-                                "FILTER_{filter}_CAG_{filter_cag}_RRNAREMOVAL_{rrnas}_STEPF.done")
+                                "FILTER_{filter_mad}_CAG_{filter_cag}_RRNAREMOVAL_{rrnas}_STEPF.done")
     output:
-        "pipeline_complete_{RRNAs}_{filtercag}_{filtermad}.txt"
+        "pipeline_complete_{rrnas}_{filter_cag}_{filter_mad}.txt"
     shell:
         """
         touch {output}
