@@ -34,4 +34,4 @@ transdecodercutoff: 100
 secondclustercutoff: 0.98
 defaultkmer: 25
 mincontig: 100
-rewritecluster: 1
+rewritecluster: 0

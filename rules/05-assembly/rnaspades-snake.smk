@@ -103,6 +103,7 @@ rule rnaspades:
                                                             "right", commas = True,
                                         retfirst=False),
         maxmem = MAXMEMORY,
+        threads = MAXCORES,
         CPUs = MAXCPUSPERTASK * MAXTASKS
     log:
         err = os.path.join(OUTPUTDIR, "logs",\
@@ -116,9 +117,9 @@ rule rnaspades:
         '''
         echo {params.left}
         if [ -f {params.outdir}/params.txt ] && [ {params.continue_flag} ]; then
-            spades.py --continue -o {params.outdir} 2> {log.err} 1> {log.out}
+            spades.py --restart-from last -m {params.maxmem} -t {params.threads} -o {params.outdir} 2> {log.err} 1> {log.out}
         else
-            spades.py -m 100 -t 8 --rna {params.right} {params.left} -o {params.outdir} 2> {log.err} 1> {log.out}
+            spades.py -m {params.maxmem} -t {params.threads} --rna {params.right} {params.left} -o {params.outdir} 2> {log.err} 1> {log.out}
         fi
         '''
    

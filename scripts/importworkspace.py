@@ -41,7 +41,7 @@ if "required" in cluster:
     DEFAULTUSER = cluster["required"]["accountname"]
     MAXMEMORY = cluster["required"]["maxmemory"]
     MAXTASKS = cluster["required"]["maxtasks"]
-    MAXNODES = cluster["required"]["maxcores"]
+    MAXCORES = cluster["required"]["maxcores"]
     MAXCPUSPERTASK = cluster["required"]["maxcpuspertask"]
     
 required_entries = ["metaT_sample","inputDIR","checkqual","spikefile","runbbmap",\

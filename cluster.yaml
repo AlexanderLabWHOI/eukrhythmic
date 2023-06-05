@@ -21,7 +21,7 @@ __default__:
 required:
   accountname: general
   defaultqueue: partitionname
-  maxcores: 1
+  maxcores: 16
   maxcpuspertask: 30
   maxmemory: 180
   maxtasks: 1
