@@ -291,7 +291,7 @@ rule mad_no_cag_step2:
                       "04-compare", "madfiltered", "17-MAD-emapper-filtered","split_unite","MAD.emapper.annotations")
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
-                                "FILTER_0_CAG_1_RRNAREMOVAL_{rrnas}_STEPF.done")
+                                "FILTER_1_CAG_0_RRNAREMOVAL_{rrnas}_STEPF.done")
     shell:
         """
         touch {output}
