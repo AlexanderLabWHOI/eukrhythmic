@@ -58,6 +58,7 @@ ruleorder: ribodetector_trimmed_double > ribodetector_trimmed_single
 ruleorder: trinity > trinity_SE
 ruleorder: megahit > megahit_SE
 ruleorder: velvet > velvet_SE
+ruleorder: convert_mad_no_space_temp_intermed > mad_mmseqs
 
 print(assemblygroups,flush=True)
 
@@ -288,7 +289,7 @@ rule mad_no_cag_step2:
                               "16-MAD-taxonomy",
                               "EUKulele_done.txt"),
         eggnog_mapper_file = os.path.join(OUTPUTDIR, "intermediate-files", 
-                      "04-compare", "madfiltered", "17-MAD-emapper-filtered","split_unite","MAD.emapper.annotations")
+                      "04-compare", "madfiltered", "17-MAD-emapper","split_unite","MAD.emapper.annotations")
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
                                 "FILTER_1_CAG_0_RRNAREMOVAL_{rrnas}_STEPF.done")
