@@ -82,7 +82,7 @@ rule mad_mmseqs:
 
 ## select the file that we want to be used as our final MAD. this could be either an unfiltered file,
 ## a file filtered by CAG only, MAD only, or both CAG+MAD
-rule:
+rule select_proper_file:
     input:
         selected_file = lambda filename: select_right_MAD(filename.filter_workflow)
     output:
@@ -137,9 +137,21 @@ rule convert_mad_no_space_temp:
         sed 's, ,_,g' {input.fastafile} > {output.fastafile}
         '''
 
+rule convert_mad_no_space_temp_intermed:
+    input:
+        fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD-intermed",\
+                                 "MAD.{filter}.fasta")
+    output:
+        fastafile = temp(os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD-intermed",\
+                                 "MAD.{filter}.nospace.fasta"))
+    shell:
+        '''
+        sed 's, ,_,g' {input.fastafile} > {output.fastafile}
+        '''
+        
 rule salmon_MAD_index_temp:
     input: 
-        fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD",\
+        fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD-intermed",\
                                  "MAD.{filter}.nospace.fasta")
     output:
         temp(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
@@ -189,7 +201,7 @@ rule mad_filter_by_salmon:
                                            "14-MAD-mapping",\
                      "salmon_sample_{filter}", "{assembly}_quant", "quant.sf"),assembly=filenames,filter="{filter}"),
         MAD_file = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge",
-                                 "12-MAD",\
+                                 "12-MAD-intermed",\
                                  "MAD.{filter}.nospace.fasta")
     output:
         seq_extract = temp(os.path.join(OUTPUTDIR,"intermediate-files",
@@ -218,7 +230,7 @@ rule seqtk_by_salmon:
         salmon_files = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", 
                                            "14-MAD-mapping",\
                      "salmon_sample_{filter}", "{assembly}_quant", "quant.sf"),assembly=filenames,filter="{filter}"),
-        MAD_file = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD",\
+        MAD_file = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD-intermed",\
                                  "MAD.{filter}.nospace.fasta")
     output:
         os.path.join(OUTPUTDIR,"intermediate-files", "03-merge", "{filter}", "20-MAD-filtered", "MAD.filtered.fasta")
