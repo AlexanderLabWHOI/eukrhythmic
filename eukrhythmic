@@ -268,6 +268,35 @@ rule cag_no_mad_step2:
         touch {output}
         """
 
+## we want to filter from the MAD, but do not filter at the CAG step.
+rule mad_no_cag_step2:
+    input:
+        ## make sure that step0 has already been completed.
+        step0 = os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
+                     "step0_RRNAs_{rrnas}.done"),
+        ## make sure that CAG-based filtering has already been completed.
+        step1 = os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
+                     "step0_RRNAs_{rrnas}.done"),
+        # TRANSDECODER MERGED BY SAMPLES
+        madproteins13 = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "madfiltered",
+                                     "13-MAD-proteins", "MAD.fasta.transdecoder.pep"),
+        # MAPPING MERGED BY SAMPLES
+        madmapping14 = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "madfiltered",
+                                    "14-MAD-mapping",
+                                    "salmon_sample", "{sample}_quant", "quant.sf"), sample = filenames),
+        eukulele_mad = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "madfiltered",
+                              "16-MAD-taxonomy",
+                              "EUKulele_done.txt"),
+        eggnog_mapper_file = os.path.join(OUTPUTDIR, "intermediate-files", 
+                      "04-compare", "madfiltered", "17-MAD-emapper-filtered","split_unite","MAD.emapper.annotations")
+    output:
+        os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
+                                "FILTER_0_CAG_1_RRNAREMOVAL_{rrnas}_STEPF.done")
+    shell:
+        """
+        touch {output}
+        """
+        
 ## we want to filter from the CAG, and we also want to do so from the MAD
 rule cag_w_mad_step2:
     input:
