@@ -108,7 +108,7 @@ rule replace_mad_ids:
     input:
         mad = os.path.join(OUTPUTDIR, "intermediate-files",\
                            "03-merge", "12-MAD-intermed", "MAD.{filter}.fasta"),
-        concordance = os.path.join(OUTPUTDIR,"MAD.{filter_workflow}.concordance.tsv")
+        concordance = os.path.join(OUTPUTDIR,"MAD.{filter}.concordance.tsv")
     output:
         mad = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD-intermed",\
                            "MAD.{filter}.fasta")
