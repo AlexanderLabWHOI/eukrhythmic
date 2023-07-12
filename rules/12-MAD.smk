@@ -87,7 +87,7 @@ rule select_proper_file:
         selected_file = lambda filename: select_right_MAD(filename.filter_workflow)
     output:
         new_mad_loc = os.path.join(OUTPUTDIR, "intermediate-files",
-                           "03-merge", "{filter_workflow}", "12-MAD-intermed", "MAD.fasta")
+                           "03-merge", "{filter_workflow}", "12-MAD", "MAD.fasta")
     shell:
         """
         mv {input.selected_file} {output.new_mad_loc}
