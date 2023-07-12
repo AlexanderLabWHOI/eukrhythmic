@@ -96,8 +96,8 @@ rule select_proper_file:
 ## create concordance between all IDs in MAD to be used in place of cumbersome name
 rule create_id_concord:
     input:
-        mad =  os.path.join(OUTPUTDIR, "intermediate-files",
-                           "03-merge", "{filter_workflow}", "12-MAD-intermed", "MAD.fasta")
+        mad =  os.path.join(OUTPUTDIR, "intermediate-files",\
+                            "03-merge", "12-MAD-intermed", "MAD.{filter}.fasta")
     output:
         concordance = os.path.join(OUTPUTDIR,"MAD.{filter_workflow}.concordance.tsv")
     run:
@@ -106,12 +106,12 @@ rule create_id_concord:
         
 rule replace_mad_ids:
     input:
-        mad = os.path.join(OUTPUTDIR, "intermediate-files",
-                           "03-merge", "{filter_workflow}", "12-MAD-intermed", "MAD.fasta"),
+        mad = os.path.join(OUTPUTDIR, "intermediate-files",\
+                           "03-merge", "12-MAD-intermed", "MAD.{filter}.fasta"),
         concordance = os.path.join(OUTPUTDIR,"MAD.{filter_workflow}.concordance.tsv")
     output:
-        mad = os.path.join(OUTPUTDIR, "intermediate-files",\
-                           "03-merge", "{filter_workflow}", "12-MAD", "MAD.fasta")
+        mad = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD-intermed",\
+                           "MAD.{filter}.fasta")
     shell:
         """
         ## modified from https://unix.stackexchange.com/questions/652523/replacing-the-seq-ids-of-fasta-file-based-on-the-new-ids-from-a-list
@@ -127,8 +127,10 @@ rule replace_mad_ids:
 
 rule convert_mad_no_space_temp:
     input:
-        fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD",\
-                                 "MAD.{filter}.fasta")
+        fastafile = os.path.join(OUTPUTDIR, "intermediate-files",
+                                 "03-merge", "{filter_workflow}", "12-MAD-intermed", "MAD.fasta")
+        #os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD",\
+        #                         "MAD.{filter}.fasta")
     output:
         fastafile = temp(os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD",\
                                  "MAD.{filter}.nospace.fasta"))
