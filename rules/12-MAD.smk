@@ -145,7 +145,7 @@ rule convert_mad_no_space_temp_intermed:
                                  "rename","MAD.{filter}.fasta")
     output:
         fastafile = temp(os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD-intermed",\
-                                 "MAD.{filter}.nospace.fasta"))
+                                 "rename","MAD.{filter}.nospace.fasta"))
     shell:
         '''
         sed 's, ,_,g' {input.fastafile} > {output.fastafile}
@@ -154,7 +154,7 @@ rule convert_mad_no_space_temp_intermed:
 rule salmon_MAD_index_temp:
     input: 
         fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD-intermed",\
-                                 "MAD.{filter}.nospace.fasta")
+                                 "rename","MAD.{filter}.nospace.fasta")
     output:
         temp(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
                      "salmon", "MAD_{filter}_index", "versionInfo.json"))
@@ -204,7 +204,7 @@ rule mad_filter_by_salmon:
                      "salmon_sample_{filter}", "{assembly}_quant", "quant.sf"),assembly=filenames,filter="{filter}"),
         MAD_file = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge",
                                  "12-MAD-intermed",\
-                                 "MAD.{filter}.nospace.fasta")
+                                 "rename","MAD.{filter}.nospace.fasta")
     output:
         seq_extract = temp(os.path.join(OUTPUTDIR,"intermediate-files",
                                         "03-merge", "{filter}", "20-MAD-filtered", "MAD.seqs.txt"))
@@ -233,7 +233,7 @@ rule seqtk_by_salmon:
                                            "14-MAD-mapping",\
                      "salmon_sample_{filter}", "{assembly}_quant", "quant.sf"),assembly=filenames,filter="{filter}"),
         MAD_file = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD-intermed",\
-                                 "MAD.{filter}.nospace.fasta")
+                                 "rename","MAD.{filter}.nospace.fasta")
     output:
         os.path.join(OUTPUTDIR,"intermediate-files", "03-merge", "{filter}", "20-MAD-filtered", "MAD.filtered.fasta")
     conda: "../envs/03-merge-env.yaml"
