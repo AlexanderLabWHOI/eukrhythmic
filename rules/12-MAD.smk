@@ -111,7 +111,7 @@ rule replace_mad_ids:
         concordance = os.path.join(OUTPUTDIR,"MAD.{filter}.concordance.tsv")
     output:
         mad = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD-intermed",\
-                           "MAD.{filter}.rename.fasta")
+                           "rename","MAD.{filter}.fasta")
     shell:
         """
         ## modified from https://unix.stackexchange.com/questions/652523/replacing-the-seq-ids-of-fasta-file-based-on-the-new-ids-from-a-list
@@ -142,7 +142,7 @@ rule convert_mad_no_space_temp:
 rule convert_mad_no_space_temp_intermed:
     input:
         fastafile = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD-intermed",\
-                                 "MAD.{filter}.rename.fasta")
+                                 "rename","MAD.{filter}.fasta")
     output:
         fastafile = temp(os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD-intermed",\
                                  "MAD.{filter}.nospace.fasta"))
