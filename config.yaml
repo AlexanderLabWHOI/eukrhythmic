@@ -2,6 +2,7 @@
 ## INPUT DATA AND FORMATTING ##
 # formatted input file; described in README
 jobname: sample
+shortid_code: Seq
 metaT_sample: input/sampledata.txt
 spikefile: /vortexfs1/omics/alexander/ncohen/BATS2019-clio-metaT/spike/spike.fa
 adapter: static/adapters.fa
@@ -32,6 +33,7 @@ pfam: placeholder
 ### Parameters only to be changed by advanced users ###
 transdecodercutoff: 100
 secondclustercutoff: 0.98
+percentidcutoff: 0.98
 defaultkmer: 25
 mincontig: 100
 rewritecluster: 0

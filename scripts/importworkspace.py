@@ -127,6 +127,14 @@ if "spiketable" in config:
     SPIKETABLE = config["spiketable"]
 TRANSDECODERORFSIZE = config["transdecodercutoff"]
 MINCOVERAGECLUST2 = config["secondclustercutoff"]
+if "shortid_code" in config:
+    SHORTIDRENAME = config["shortid_code"]
+else:
+    SHORTIDRENAME = "Seq"
+if "percentidcutoff" in config:
+    PERCENTIDCUTOFF = config["percentidcutoff"]
+else:
+    PERCENTIDCUTOFF = 1.00
 ADAPTER = config["adapter"]
 if os.path.isfile(SPIKEFILE):
     ISFILESPIKE = 1
