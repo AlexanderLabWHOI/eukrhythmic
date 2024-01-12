@@ -59,6 +59,7 @@ ruleorder: trinity > trinity_SE
 ruleorder: megahit > megahit_SE
 ruleorder: velvet > velvet_SE
 ruleorder: convert_mad_no_space_temp_intermed > mad_mmseqs
+ruleorder: convert_mad_no_space_temp_intermed > replace_mad_ids
 
 print(assemblygroups,flush=True)
 

@@ -97,7 +97,7 @@ rule select_proper_file:
 rule create_id_concord:
     input:
         mad =  os.path.join(OUTPUTDIR, "intermediate-files",\
-                            "03-merge", "12-MAD-intermed", "MAD.{filter}.fasta")
+                            "03-merge", "12-MAD-intermed", "MAD.{filter_workflow}.fasta")
     output:
         concordance = os.path.join(OUTPUTDIR,"MAD.{filter_workflow}.concordance.tsv")
     params:
@@ -108,12 +108,12 @@ rule create_id_concord:
         
 rule replace_mad_ids:
     input:
-        mad = os.path.join(OUTPUTDIR, "intermediate-files",
-                           "03-merge", "{filter_workflow}", "12-MAD-intermed", "MAD.fasta"),
+        mad = os.path.join(OUTPUTDIR, "intermediate-files",\
+                                "03-merge", "12-MAD-intermed", "MAD.{filter_workflow}.fasta"),
         concordance = os.path.join(OUTPUTDIR,"MAD.{filter_workflow}.concordance.tsv")
     output:
-        mad = os.path.join(OUTPUTDIR, "intermediate-files",\
-                           "03-merge", "{filter_workflow}", "12-MAD", "MAD.fasta")
+        mad = os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD-intermed",\
+                                 "rename","MAD.{filter_workflow}.fasta")
     run:
         sequences=[curr for curr in SeqIO.parse(input.mad,"fasta")]
         concordance=pd.read_csv(input.concordance,sep="\s+")
@@ -129,11 +129,9 @@ rule convert_mad_no_space_temp:
     input:
         fastafile = os.path.join(OUTPUTDIR, "intermediate-files",
                                  "03-merge", "{filter_workflow}", "12-MAD-intermed", "MAD.fasta")
-        #os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD",\
-        #                         "MAD.{filter}.fasta")
     output:
         fastafile = temp(os.path.join(OUTPUTDIR, "intermediate-files", "03-merge", "12-MAD",\
-                                 "MAD.{filter}.nospace.fasta"))
+                                 "MAD.{filter_workflow}.nospace.fasta"))
     shell:
         '''
         sed 's, ,_,g' {input.fastafile} > {output.fastafile}
@@ -184,7 +182,7 @@ rule salmon_MAD_temp:
     params:
         libtype = "A",
         indexname = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
-                     "salmon_sample_{filter}", "MAD_{filter}_index"),
+                     "salmon", "MAD_{filter}_index"),
         outdir = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "14-MAD-mapping",\
                      "salmon_sample_{filter}", "{assembly}_quant"),
         kval = 31
@@ -211,7 +209,8 @@ rule mad_filter_by_salmon:
     run:
         all_quant=pd.DataFrame()
         for quant_file in input.salmon_files:
-            if (not "quant" in quant_file)|("merged" in quant_file):
+            if not "quant" in quant_file:
+                #|("merged" in quant_file):
                 continue
             current_quant=pd.read_csv(os.path.join(quant_file),sep="\t")
             current_quant=current_quant.loc[current_quant.NumReads>0,["Name","NumReads"]]
@@ -221,7 +220,7 @@ rule mad_filter_by_salmon:
         summed_quant=all_quant.groupby(["Name"]).NumReads.sum().reset_index()
         zerod_names=summed_quant.loc[summed_quant.NumReads==0,"Name"]
         to_keep_seq=list(set(summed_quant.Name)-set(zerod_names))
-        with open(params.seq_extract,"w") as f:
+        with open(output.seq_extract,"w") as f:
             f.write("\n".join(to_keep_seq))
 
             
@@ -241,4 +240,4 @@ rule seqtk_by_salmon:
         """
         seqtk subseq {input.MAD_file} {input.seq_extract} > {output}
         """
-        
+
