@@ -213,9 +213,9 @@ else
         echo "Running on SLURM."
         if [[ DRYRUNFLAG -eq 1 ]]
         then
-            submit/eukrhythmic $SUBROUTINE --jobs $JOBS -np
+            python submit/eukrhythmic $SUBROUTINE --jobs $JOBS -np
         else
-            submit/eukrhythmic $SUBROUTINE --jobs $JOBS
+            python submit/eukrhythmic $SUBROUTINE --jobs $JOBS
         fi
     else
         echo "Running locally."
