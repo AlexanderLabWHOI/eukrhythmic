@@ -1,5 +1,4 @@
 SampleName	SampleID	AssemblyGroup	FastqFile
-HN008_subsampled	HN008	samplegroup1	HN008/HN008_subsampled
 HN009_subsampled	HN009	samplegroup2	HN009_subsampled
 HN016_subsampled	HN016	samplegroup1	HN016_subsampled
 HN036_subsampled	HN036	samplegroup1	HN036_subsampled
