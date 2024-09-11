@@ -139,8 +139,8 @@ rule create_funct_tax_table_cag:
             function_file["AssemblyGroup"] = function_file_path.split("/")[-1].split(".emapper")[0]
             function_files=pd.concat([function_files,function_file])
         taxonomy_files=pd.DataFrame()
-        for taxonomy_file_path in input.taxonomy_files:
-            taxonomy_file=pd.read_csv(input.taxonomy_file,sep="\t")
+        for taxonomy_file_path in input.taxonomy_file:
+            taxonomy_file=pd.read_csv(taxonomy_file_path,sep="\t")
             taxonomy_file["AssemblyGroup"] = taxonomy_file_path.split("/")[-1].split("_CAG")[0]
             taxonomy_files=pd.concat([taxonomy_files,taxonomy_file])
         combined_file=function_files[["query","seed_ortholog","COG_category",
