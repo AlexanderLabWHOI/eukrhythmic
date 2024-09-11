@@ -17,7 +17,7 @@ PFAM = config["pfam"]
 download_data=False
 if not os.path.isfile(os.path.join(EGGNOG_DATA_LOC,"eggnog_proteins.dmnd")):
     download_data=True
-
+    
 rule split_files:
     input:
         os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "{filter_workflow}",\
@@ -25,21 +25,22 @@ rule split_files:
     output:
         temp(expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
                            "{filter_workflow}", "13-MAD-proteins",
-                           "MAD.{splitno}.fasta.transdecoder.pep"),filter_workflow="{filter_workflow}",
-                           splitno=[str(curr).zfill(2) for curr in list(range(0,30))]))
+                           "MAD.fasta.transdecoder.pep.part-{splitno}"),filter_workflow="{filter_workflow}",
+                           splitno=[str(curr).zfill(2) for curr in list(range(1,numbersplits))]))
     params:
         td_dir = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "{filter_workflow}",\
                            "13-MAD-proteins")
     shell:
         """
-        (cd {params.td_dir} && pyfasta split -n 30 {input})
+        c_wd=$(pwd)
+        (cd {params.td_dir} && perl $c_wd/fasta-splitter.pl --n-parts 30 $c_wd/{input})
         """
 
 rule emappermad_split:
     input:
         assembly_file = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",\
                            "{filter_workflow}", "13-MAD-proteins", 
-                           "MAD.{splitno}.fasta.transdecoder.pep")
+                           "MAD.fasta.transdecoder.pep.part-{splitno}")
     output:
         hits_file = temp(os.path.join(OUTPUTDIR, "intermediate-files",
                                  "04-compare", "{filter_workflow}",
@@ -72,7 +73,7 @@ rule write_eggnog_annots:
                                  "04-compare", "{filter_workflow}",
                                  "17-MAD-emapper","split_{splitno}",
                                  "MAD_{splitno}.emapper.seed_orthologs"),filter_workflow="{filter_workflow}",
-                           splitno=[str(curr).zfill(2) for curr in list(range(0,30))])
+                           splitno=[str(curr).zfill(2) for curr in list(range(1,numbersplits))])
     output:
         final_file=os.path.join(OUTPUTDIR, "intermediate-files",      
                       "04-compare", "{filter_workflow}",

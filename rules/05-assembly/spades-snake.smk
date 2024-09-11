@@ -80,7 +80,12 @@ rule spades:
     shell:
         '''
         echo {params.left}
-        spades.py --meta {params.left} {params.right} -o {params.outdir} 2> {log.err} 1> {log.out}
+	if [ -f {params.outdir}/params.txt ]; then
+            spades.py --restart-from last -m {params.maxmem} -t {params.threads} -o {params.outdir} 2> {log.err} 1> {log.out}
+        else
+            spades.py -m {params.maxmem} -t {params.threads} --rna {params.right} {params.left} -o {params.outdir} 2> {log.err} 1> {log.out}
+        fi    
+#    spades.py --meta {params.left} {params.right} -o {params.outdir} 2> {log.err} 1> {log.out}
         '''
    
 rule spades_cleanup:

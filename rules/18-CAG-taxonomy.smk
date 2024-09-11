@@ -8,7 +8,7 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
 
-rule eukulele_cag_indiv:
+rule cag_taxonomic:
     input:
         pep = os.path.join(OUTPUTDIR, "intermediate-files",
                          "04-compare",\
@@ -19,7 +19,10 @@ rule eukulele_cag_indiv:
                  "salmon", "{assembly}_quant", "quant.sf")
     output:
         eukulele_done = os.path.join(OUTPUTDIR, "intermediate-files","04-compare","18-CAG-taxonomy",
-                                     "EUKulele_{assembly}_done.txt")
+                                     "EUKulele_{assembly}_done.txt"),
+        taxonomy_estimation = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
+                                     "18-CAG-taxonomy","taxonomy_estimation",
+                                     "{assembly}_CAG.fasta.transdecoder-estimated-taxonomy.out")
     params:
         sampledir = os.path.join(OUTPUTDIR, "intermediate-files",
                                              "04-compare",\
@@ -29,7 +32,7 @@ rule eukulele_cag_indiv:
         eukulele_database = EUKULELE_DATABASE
     shell:
         """
-        if [ {params.eukulele_reference_dir} != "None" ]; do
+        if [ {params.eukulele_reference_dir} != "None" ]; then
             EUKulele --mets_or_mags mets --sample_dir {params.sampledir} --p_ext ".pep" --reference_dir {params.eukulele_reference_dir} -o {params.eukulele_directory}
         else
             EUKulele --mets_or_mags mets --sample_dir {params.sampledir} --p_ext ".pep" --database {params.eukulele_database} -o {params.eukulele_directory}

@@ -12,7 +12,7 @@ from importworkspace import *
 rule link_nt_assembly:
     input:
         os.path.join(OUTPUTDIR, "intermediate-files",
-                     "03-merge", "{filter_workflow}", "12-MAD", "MAD.fasta")
+                     "03-merge", "{workflow}", "12-MAD", "MAD.fasta")
     output:
         os.path.join(OUTPUTDIR, "final-files", "00-nucleotide_assembly", 
                      "MAD.{workflow}.fasta")
@@ -23,26 +23,9 @@ rule link_nt_assembly:
         
 rule link_pep_assembly:
     input:
-        pep = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "{filter_workflow}",\
+        pep = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "{workflow}",\
                            "13-MAD-proteins", "MAD.fasta.transdecoder.pep"),
-        cds = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare","{filter_workflow}",\
-                           "13-MAD-proteins", "MAD.fasta.transdecoder.cds")
-    output:
-        pep = os.path.join(OUTPUTDIR, "final-files", "01-predicted_proteins", 
-                           "MAD.{workflow}.pep"),
-        cds = os.path.join(OUTPUTDIR, "final-files", "01-predicted_proteins", 
-                           "MAD.{workflow}.cds")
-    shell:
-        """
-        ln -s {input.pep} {output.pep}
-        ln -s {input.cds} {output.cds}
-        """
-        
-rule link_pep_assembly:
-    input:
-        pep = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "{filter_workflow}",\
-                           "13-MAD-proteins", "MAD.fasta.transdecoder.pep"),
-        cds = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare","{filter_workflow}",\
+        cds = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare","{workflow}",\
                            "13-MAD-proteins", "MAD.fasta.transdecoder.cds")
     output:
         pep = os.path.join(OUTPUTDIR, "final-files", "01-predicted_proteins", 
@@ -129,3 +112,39 @@ rule create_funct_tax_table:
             rename({"query":"SequenceID"},axis="columns")
         combined_file.to_csv(output.combined_table,sep="\t")
         
+
+rule create_funct_tax_table_cag:
+    input:
+        function_file = expand(os.path.join(OUTPUTDIR, "intermediate-files",
+                                 "04-compare", "19-CAG-emapper",
+                                 "{assembly}.emapper.hits"),
+                                 assembly=assemblygroups),
+        taxonomy_file = expand(os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
+                                 "18-CAG-taxonomy","taxonomy_estimation",
+                                 "{assembly}_CAG.fasta.transdecoder-estimated-taxonomy.out"),
+                                 assembly=assemblygroups)
+    output:
+        combined_table = os.path.join(OUTPUTDIR, "final-files", "02-annotation_table",
+            "TaxonomicAndFunctionalAnnotations_CAG.csv")
+    run:
+        function_files=pd.DataFrame()
+        for function_file_path in input.function_file:
+            function_file=pd.read_csv(function_file_path,sep="\t",header=None,comment="#",
+                                      names=["query","seed_ortholog","evalue",
+                                             "score","eggNOG_OGs","max_annot_lvl",
+                                             "COG_category","Description","Preferred_name",
+                                             "GOs","EC","KEGG_ko","KEGG_Pathway","KEGG_Module",
+                                             "KEGG_Reaction","KEGG_rclass","BRITE",
+                                             "KEGG_TC","CAZy","BiGG_Reaction","PFAMs"])
+            function_file["AssemblyGroup"] = function_file_path.split("/")[-1].split(".emapper")[0]
+            function_files=pd.concat([function_files,function_file])
+        taxonomy_files=pd.DataFrame()
+        for taxonomy_file_path in input.taxonomy_files:
+            taxonomy_file=pd.read_csv(input.taxonomy_file,sep="\t")
+            taxonomy_file["AssemblyGroup"] = taxonomy_file_path.split("/")[-1].split("_CAG")[0]
+            taxonomy_files=pd.concat([taxonomy_files,taxonomy_file])
+        combined_file=function_files[["query","seed_ortholog","COG_category",
+                                     "GOs","KEGG_ko","PFAMs"]].merge(taxonomy_files,left_on="query",
+                                                                     right_on="transcript_name").\
+            rename({"query":"SequenceID"},axis="columns")
+        combined_file.to_csv(output.combined_table,sep="\t")

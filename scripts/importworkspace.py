@@ -79,6 +79,11 @@ if "removerrna" in config:
     if config["removerrna"] == 1:
         REMOVERRNA = 1    
 
+ANNOTATECAG = 0
+if "annotatecag" in config:
+    if config["annotatecag"] == 1:
+        ANNOTATECAG = 1
+        
 ## READ IN WHETHER WE WOULD LIKE TO FILTER SEQUENCES THAT DO NOT RECRUIT READS ##
 FILTERLOWREADS = 0
 if "filterlowreads" in config:
@@ -95,6 +100,10 @@ if "filterlowreadscag" in config:
 EGGNOG_DATA_LOC = "eggnog-data"
 if "eggnogDIR" in config:
     EGGNOG_DATA_LOC = config["eggnogDIR"]
+
+numbersplits=30
+if "numbersplits" in config:
+    numbersplits = int(config["numbersplits"])
     
 ## READ IN EUKULELE DATABASE NAME ##
 EUKULELE_DATABASE = "marmmetsp"

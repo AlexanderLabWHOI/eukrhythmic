@@ -49,6 +49,7 @@ include: "rules/16-MAD-taxonomy.smk"
 include: "rules/17-MAD-function.smk"
 include: "rules/18-CAG-taxonomy.smk"
 include: "rules/19-CAG-emapper.smk"
+include: "rules/00-clean-up.smk"
 
 include: "rules/busco-snake.smk"
 include: "rules/hardclean-snake.smk"
@@ -65,8 +66,21 @@ print(assemblygroups,flush=True)
 
 rrnas = REMOVERRNA
 
+extra_files = list()
+
+if ANNOTATECAG:
+    extra_files.append(expand(os.path.join(OUTPUTDIR, "intermediate-files",
+        "04-compare", "19-CAG-emapper",
+        "{assembly}.emapper.hits"), assembly = assemblygroups))
+    extra_files.append(expand(os.path.join(OUTPUTDIR, "intermediate-files",
+        "04-compare","18-CAG-taxonomy",
+        "EUKulele_{assembly}_done.txt"), assembly = assemblygroups))
+    extra_files.append(os.path.join(OUTPUTDIR, "final-files", "02-annotation_table",
+        "TaxonomicAndFunctionalAnnotations_CAG.csv"))
+
 rule all:
     input:
+        extra_files,
         subroutine_done = expand("pipeline_complete_{RRNAs}_{filter_cag}_{filter_mad}.txt",
                 RRNAs = rrnas, filter_cag = FILTERLOWREADSCAG, filter_mad = FILTERLOWREADS)
         
@@ -232,7 +246,10 @@ rule no_filter_reads_step1:
                                     "EUKulele_done.txt"),
         mad_eggnog = os.path.join(OUTPUTDIR, "intermediate-files",
                       "04-compare", "nofilter", "17-MAD-emapper",
-                      "split_unite","MAD.emapper.annotations")
+                      "split_unite","MAD.emapper.annotations"),
+        merged_table = expand(os.path.join(OUTPUTDIR, "final-files", "02-annotation_table", 
+                      "{workflow}","TaxonomicAndFunctionalAnnotations.csv"),
+                      workflow="nofilter")
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
                                 "FILTER_0_CAG_0_RRNAREMOVAL_{rrnas}_STEPF.done")
@@ -261,7 +278,11 @@ rule cag_no_mad_step2:
                               "16-MAD-taxonomy",
                               "EUKulele_done.txt"),
         eggnog_mapper_file = os.path.join(OUTPUTDIR, "intermediate-files", 
-                      "04-compare", "cagfiltered", "17-MAD-emapper-filtered","split_unite","MAD.emapper.annotations")
+                      "04-compare", "cagfiltered", "17-MAD-emapper-filtered","split_unite",
+                      "MAD.emapper.annotations"),
+        merged_table = expand(os.path.join(OUTPUTDIR, "final-files", "02-annotation_table", 
+                      "{workflow}","TaxonomicAndFunctionalAnnotations.csv"),
+                      workflow="cagfiltered")
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
                                 "FILTER_0_CAG_1_RRNAREMOVAL_{rrnas}_STEPF.done")
@@ -290,7 +311,11 @@ rule mad_no_cag_step2:
                               "16-MAD-taxonomy",
                               "EUKulele_done.txt"),
         eggnog_mapper_file = os.path.join(OUTPUTDIR, "intermediate-files", 
-                      "04-compare", "madfiltered", "17-MAD-emapper","split_unite","MAD.emapper.annotations")
+                      "04-compare", "madfiltered", "17-MAD-emapper","split_unite",
+                      "MAD.emapper.annotations"),
+        merged_table = expand(os.path.join(OUTPUTDIR, "final-files", "02-annotation_table", 
+                      "{workflow}","TaxonomicAndFunctionalAnnotations.csv"),
+                      workflow="madfiltered")
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
                                 "FILTER_1_CAG_0_RRNAREMOVAL_{rrnas}_STEPF.done")
@@ -321,7 +346,10 @@ rule cag_w_mad_step2:
                               "EUKulele_done.txt"),
         eggnog_mapper_file = os.path.join(OUTPUTDIR, "intermediate-files",
                       "04-compare", "fullfiltered", "17-MAD-emapper-filtered",
-                      "split_unite","MAD.emapper.annotations")
+                      "split_unite","MAD.emapper.annotations"),
+        merged_table = expand(os.path.join(OUTPUTDIR, "final-files", "02-annotation_table", 
+                      "{workflow}","TaxonomicAndFunctionalAnnotations.csv"),
+                      workflow="fullfiltered")
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "checkpoints", 
                                 "FILTER_1_CAG_1_RRNAREMOVAL_{rrnas}_STEPF.done")

@@ -24,7 +24,7 @@ kmers:
     - 110
 assemblers:
     - megahit
-    - trinity
+#    - trinity
 separategroups: 1
 kegg_prot_db: placeholder
 kegg: placeholder
@@ -37,3 +37,5 @@ percentidcutoff: 0.98
 defaultkmer: 25
 mincontig: 100
 rewritecluster: 0
+annotatecag: 1
+eggnogDIR: /vortexfs1/omics/alexander/data/databases/eggnog-mapper-data/

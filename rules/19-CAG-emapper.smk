@@ -16,7 +16,8 @@ if not os.path.isfile(os.path.join(EGGNOG_DATA_LOC,"eggnog_proteins.dmnd")):
 #envvars:
 #    "TMPDIR"
 tmpdir="tmk-smk"
-rule emappercag:
+
+rule cag_functional:
     input:
         assembly_file = os.path.join(OUTPUTDIR, "intermediate-files",
                                              "04-compare",\

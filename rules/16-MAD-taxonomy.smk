@@ -16,7 +16,11 @@ rule eukulele_run:
     output:
         eukulele_done = os.path.join(OUTPUTDIR, "intermediate-files","04-compare","{filter_workflow}",
                                      "16-MAD-taxonomy",
-                                     "EUKulele_done.txt")
+                                     "EUKulele_done.txt"),
+        taxonomy_estimation = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare",
+                                     "{filter_workflow}",
+                                     "16-MAD-taxonomy","taxonomy_estimation",
+                                     "MAD.fasta.transdecoder-estimated-taxonomy.out")
     params:
         sampledir = os.path.join(OUTPUTDIR, "intermediate-files",
                                  "04-compare",
@@ -30,7 +34,7 @@ rule eukulele_run:
         eukulele_database = EUKULELE_DATABASE
     shell:
         """
-        if [ {params.eukulele_reference_dir} != "None" ]; do
+        if [ {params.eukulele_reference_dir} != "None" ]; then
             EUKulele --mets_or_mags mets --sample_dir {params.sampledir} --p_ext ".pep" --reference_dir {params.eukulele_reference_dir} -o {params.eukulele_directory}
         else
             EUKulele --mets_or_mags mets --sample_dir {params.sampledir} --p_ext ".pep" --database {params.eukulele_database} -o {params.eukulele_directory}

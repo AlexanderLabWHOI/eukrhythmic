@@ -8,7 +8,7 @@ import sys
 sys.path.insert(1, '../scripts')
 from importworkspace import *
     
-def salmon_get_samples(assembly,left_or_right,list_format):
+def salmon_get_samples(sample_id,left_or_right,list_format,assembly_or_filename="assembly"):
     foldername = os.path.join("intermediate-files", "01-setup",\
                           "03-alignment-spike")
     extensionname = "clean"
@@ -16,8 +16,12 @@ def salmon_get_samples(assembly,left_or_right,list_format):
         foldername = os.path.join("intermediate-files", "01-setup",\
                           "02-trim")
         extensionname = "trimmed"
-    samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == assembly]['SampleID']) 
-    if assembly == "merged":
+    if assembly_or_filename=="assembly":
+        samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['AssemblyGroup'] == sample_id]['SampleID']) 
+    else:
+        samplelist = list(SAMPLEINFO.loc[SAMPLEINFO['SampleID'] == sample_id]['SampleID']) 
+        
+    if sample_id == "merged":
         samplelist = list(SAMPLEINFO['SampleID'])
 
     if left_or_right == "left":
@@ -30,7 +34,6 @@ def salmon_get_samples(assembly,left_or_right,list_format):
         return filenames
     else:
         return " ".join(filenames)
-
 
 rule convert_mad_no_space:
     input:
@@ -69,8 +72,10 @@ rule salmon_MAD:
     input: 
         indexname = os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "{filter_workflow}", "14-MAD-mapping",\
                      "salmon", "MAD_index", "versionInfo.json"),
-        left = lambda filename: salmon_get_samples(filename.assembly, "left", list_format = True),
-        right = lambda filename: salmon_get_samples(filename.assembly, "right", list_format = True)
+        left = lambda filename: salmon_get_samples(filename.assembly, "left", list_format = True,
+                                                   assembly_or_filename="sampleid"),
+        right = lambda filename: salmon_get_samples(filename.assembly, "right", list_format = True,
+                                                    assembly_or_filename="sampleid")
     output:
         os.path.join(OUTPUTDIR, "intermediate-files", "04-compare", "{filter_workflow}", "14-MAD-mapping",\
                      "salmon_sample", "{assembly}_quant", "quant.sf")
