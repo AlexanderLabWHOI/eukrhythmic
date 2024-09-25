@@ -116,7 +116,7 @@ rule replace_mad_ids:
                                  "rename","MAD.{filter_workflow}.fasta")
     run:
         sequences=[curr for curr in SeqIO.parse(input.mad,"fasta")]
-        concordance=pd.read_csv(input.concordance,sep="\s+")
+        concordance=pd.read_csv(input.concordance,sep="\\s+")
         concord_dict=dict(zip(concordance["MAD_id"],concordance["Concordance_Short_ID"]))
         for i,curr in enumerate(sequences):
             curr.id = concord_dict[curr.id]
