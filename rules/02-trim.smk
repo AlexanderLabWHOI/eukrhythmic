@@ -72,7 +72,7 @@ rule trimmomatic:
                           "{sample}_2.unpaired.fastq.gz")
     log:
         err = os.path.join(OUTPUTDIR, "logs",\ 
-                           "01-setup", "02-trim",\ 
+                           "01-setup", "02-trim",\
                            "PE_{sample}_err.log"),
         out = os.path.join(OUTPUTDIR, "logs",\
                            "01-setup", "02-trim",\
